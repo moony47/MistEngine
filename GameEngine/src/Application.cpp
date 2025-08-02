@@ -2,138 +2,155 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 
-struct ShaderProgramSource {
-    std::string VertexSource;
-    std::string FragmentSource;
-};
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
-static ShaderProgramSource ParseShader(const std::string& filepath) {
-    enum class ShaderType {
-        NONE = -1, VERTEX = 0, FRAGMENT = 1
-    };
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
-    ShaderType type = ShaderType::NONE;
-    std::stringstream ss[2];
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+#include "Shader.h"
+#include "Texture.h"
 
-    std::ifstream stream(filepath);
-    std::string line;
-    while (getline(stream, line)) {
-        if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex") != std::string::npos)
-                type = ShaderType::VERTEX;
-            else if (line.find("fragment") != std::string::npos)
-                type = ShaderType::FRAGMENT;
-        } else
-            ss[(int)type] << line << '\n';
-    }
-
-    return { ss[0].str(), ss[1].str() };
-}
-
-static unsigned int CompileShader(unsigned int type, const std::string& source) {
-    unsigned int id = glCreateShader(type);
-    const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-
-    // Check compilation was successfull
-    int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (!result) {
-        int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*) alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, &length, message);
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader" << std::endl;
-        std::cout << message << std::endl;
-        glDeleteShader(id);
-        return 0;
-    }
-
-    return id;
-}
-
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-    unsigned int program = glCreateProgram();
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-
-    return program;
-}
+#include "tests/TestClearColour.h"
+#include "tests/TestSprites.h"
 
 int main(void) {
     GLFWwindow* window;
 
-    /* Initialize the library */
+    // Initialize the library
     if (!glfwInit())
         return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create a windowed mode window and its OpenGL context
+    int windowWidth = 1600, windowHeight = 900;
+    window = glfwCreateWindow(windowWidth, windowHeight, "Hello World", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
     }
 
-    /* Make the window's context current */
+    // Make the window's context current
     glfwMakeContextCurrent(window);
+
+    glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
         std::cout << "GLEW Init failed" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    float positions[6] = {
-        -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
-    };
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init((char*)glGetString(330));
+    ImGui::StyleColorsDark();
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-    ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        Renderer renderer;
+        glm::mat4 proj = (glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight));
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        ImGuiIO& io = ImGui::GetIO();
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        test::Test* test = nullptr;
+
+        // Loop until the user closes the window
+        while (!glfwWindowShouldClose(window))
+        {
+            // Render here
+            renderer.Clear();
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            if (test != nullptr) {
+                test->OnUpdate(1.0f);
+                test->OnRender(renderer, proj);  
+                if (test->OnImGuiRender())
+                    test = nullptr;
+            } else {
+                ImGui::Begin("Select a Test");
+
+                if (ImGui::Button("Clear Colour"))
+                    test = new test::TestClearColour();
+                else if (ImGui::Button("Sprites"))
+                    test = new test::TestSprites();
+
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+                ImGui::End();
+            }
+
+            //{
+            //    model = glm::translate(glm::mat4(1.0f), translationA);
+            //    mvp = proj * view * model;
+
+            //    shader.Bind();
+            //    shader.SetUniformMat4f("u_MVP", mvp);
+            //    shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+
+            //    renderer.Draw(va, ib, shader);
+            //}
+
+            //{
+            //    model = glm::translate(glm::mat4(1.0f), translationB);
+            //    mvp = proj * view * model;
+
+            //    shader.Bind();
+            //    shader.SetUniformMat4f("u_MVP", mvp);
+            //    shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+
+            //    renderer.Draw(va, ib, shader);
+            //}
+
+            //// Animate the colour
+            //if (r < 0.0f || r > 1.0f)
+            //    rIncrement = -rIncrement;
+            //r += rIncrement;
+
+            //{
+            //    ImGui::Begin("Object Controls");
+
+            //    ImGui::SliderFloat("Translation1X", &translationA.x, 50.0f, windowWidth - 50.0f);
+            //    ImGui::SliderFloat("Translation1Y", &translationA.y, 50.0f, windowHeight - 50.0f);
+
+            //    ImGui::SliderFloat("Translation2X", &translationB.x, 50.0f, windowWidth - 50.0f);
+            //    ImGui::SliderFloat("Translation2Y", &translationB.y, 50.0f, windowHeight - 50.0f);
+            //    
+            //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            //    ImGui::End();
+            //}
+
+
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
 
-    glDeleteProgram(shader);
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
+
     return 0;
 }
