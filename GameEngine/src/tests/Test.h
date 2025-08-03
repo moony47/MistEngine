@@ -6,10 +6,11 @@ namespace test {
 	class Test {
 	public:
 		Test() {}
+		Test(float width, float height) {}
 		virtual ~Test() {}
 
 		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnRender(const Renderer& renderer, const glm::mat4& proj) {}
-		virtual bool OnImGuiRender() { return false; }
+		virtual void OnRender(const Renderer& renderer) {}
+		virtual void OnImGuiRender() {}
 	};
 }

@@ -4,7 +4,7 @@
 
 Texture::Texture(const std::string& path) 
 	: m_RendererID(0), m_Filepath(path), m_LocalBuffer(nullptr), 
-	m_Width(0), m_Height(0), m_BPP(0) {
+	m_Width(0), m_Height(0), m_BPP(0), m_Slot(0) {
 	stbi_set_flip_vertically_on_load(1);
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 	
@@ -27,11 +27,14 @@ Texture::~Texture() {
 	GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
-void Texture::Bind(unsigned int slot) const {
-	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+void Texture::Bind(unsigned int slot) {
+	m_Slot = slot;
+	GLCall(glActiveTexture(GL_TEXTURE0 + m_Slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
-void Texture::Unbind() const {
+void Texture::Unbind() {
+	GLCall(glActiveTexture(GL_TEXTURE0 + m_Slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+	m_Slot = 0;
 }

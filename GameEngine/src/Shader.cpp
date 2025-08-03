@@ -28,20 +28,29 @@ void Shader::Unbind() const {
     GLCall(glUseProgram(0));
 }
 
-void Shader::SetUniformMat4f(const std::string& name, glm::mat4& mat) {
-    GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &mat[0][0]));
+void Shader::SetUniformMat4f(int loc, const glm::mat4& mat) {
+    Bind();
+    GLCall(glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]));
 }
 
-void Shader::SetUniform1i(const std::string& name, int v0) {
-    GLCall(glUniform1i(GetUniformLocation(name), v0));
+void Shader::SetUniform1i(int loc, int v0) {
+    Bind();
+    GLCall(glUniform1i(loc, v0));
 }
 
-void Shader::SetUniform1f(const std::string& name, float v0) {
-    GLCall(glUniform1f(GetUniformLocation(name), v0));
+void Shader::SetUniform1iv(int loc, unsigned int count, int* v) {
+    Bind();
+    GLCall(glUniform1iv(loc, count, v));
 }
 
-void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
-    GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+void Shader::SetUniform1f(int loc, float v0) {
+    Bind();
+    GLCall(glUniform1f(loc, v0));
+}
+
+void Shader::SetUniform4f(int loc, float v0, float v1, float v2, float v3) {
+    Bind();
+    GLCall(glUniform4f(loc, v0, v1, v2, v3));
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& filepath) {
@@ -107,13 +116,13 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
     return program;
 }
 
-int Shader::GetUniformLocation(const std::string& name) {
-    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
-        return m_UniformLocationCache[name];
+int Shader::GetUniformLocation(const std::string& name) const {
+    //if (auto locationIter = m_UniformLocationCache.find(name); locationIter != m_UniformLocationCache.end())
+    //    return locationIter->second;
 
     GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
     if (location == -1)
         std::cout << "Warning: uniform '" << name << "' doesn't exist" << std::endl;
-    m_UniformLocationCache[name] = location;
+    //m_UniformLocationCache[name] = location;
     return location;
 }

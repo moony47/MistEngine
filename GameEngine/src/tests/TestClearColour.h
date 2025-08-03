@@ -5,12 +5,10 @@
 namespace test {
     class TestClearColour : public Test {
     public:
-        TestClearColour();
-        ~TestClearColour();
+        TestClearColour(float width, float height);
 
-        void OnUpdate(float deltaTime) override;
-        void OnRender(const Renderer& renderer, const glm::mat4& proj) override;
-        bool OnImGuiRender() override;
+        void OnRender(const Renderer& renderer) override;
+        void OnImGuiRender() override;
     private:
         float m_ClearColour[4];
     };

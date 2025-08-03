@@ -1,85 +1,108 @@
 #include "TestSprites.h"
 
-#include <cstdlib>
-
+#include "VertexBufferLayout.h"
 #include "imgui/imgui.h"
 
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
 
-float positions[] = {
-	-50.0f, -50.0f, 0.0f, 0.0f,
-	 50.0f, -50.0f, 1.0f, 0.0f,
-	 50.0f,  50.0f, 1.0f, 1.0f,
-	-50.0f,  50.0f, 0.0f, 1.0f
-};
+test::TestSprites::TestSprites(float winWidth, float winHeight)
+	: m_Width(winWidth), m_Height(winHeight) {
+	const int numSprites = 4096;
 
-unsigned int indices[] = {
-	0, 1, 2,
-	2, 3, 0
-};
+	m_StarSprites.reserve(numSprites / 2);
+	m_DiamondSprites.reserve(numSprites / 2);
 
-test::TestSprites::TestSprites() : 
-	m_Sprites{},
-	vb(positions, sizeof(positions)),
-	ib(indices, sizeof(indices) / sizeof(indices[0])),
-	shader("res/shaders/Basic.shader"),
-	texture("res/textures/diamond.png"),
-	view(glm::mat4(1.0f)) {
+	float tex, Vx, Vy, Cr, Cg, Cb;
+	for (int i = 0; i < numSprites; i++) {
+		tex = static_cast <float>(rand()) / static_cast <float>(RAND_MAX);
+		Vx = static_cast <float>(rand()) / static_cast <float>(RAND_MAX) * 500.0f - 250.0f;
+		Vy = static_cast <float>(rand()) / static_cast <float>(RAND_MAX) * 500.0f - 250.0f;
+		Cr = static_cast <float>(rand()) / static_cast <float>(RAND_MAX) * 2.5f + 0.5f;
+		Cg = static_cast <float>(rand()) / static_cast <float>(RAND_MAX) * 2.5f + 0.5f;
+		Cb = static_cast <float>(rand()) / static_cast <float>(RAND_MAX) * 2.5f + 0.5f;
+		if (tex > 0.5f)
+			m_StarSprites.emplace_back(
+				true,
+				glm::vec4(0.3f, 0.3f, 0.8f, 1.0f),
+				glm::vec4(Cr, Cg, Cb, 0.0f),
+				glm::vec3(500.0f, 500.0f, 0.0f),
+				glm::vec3(Vx, Vy, 0.0f)
+			);
+		else
+			m_DiamondSprites.emplace_back(
+				false,
+				glm::vec4(0.3f, 0.3f, 0.8f, 1.0f),
+				glm::vec4(Cr, Cg, Cb, 0.0f),
+				glm::vec3(500.0f, 500.0f, 0.0f),
+				glm::vec3(Vx, Vy, 0.0f)
+			);
+	}
 
-	for (int i = 0; i < 1; i++)
-		m_Sprites.push_back(Sprite(
-			glm::vec4(0.3f, 0.3f, 0.8f, 1.0f),
-			glm::vec4(0.05f, 0.05f, 0.05f, 0.0f),
-			glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3(5.0f, 5.0f, 0.0f)
-		));
+	m_VA = std::make_unique<VertexArray>();
 
-	// Vertex Buffer Layout
-	layout.Push<float>(2);
-	layout.Push<float>(2);
+	VertexBuffer vb(test::singleQuadVertices, 16 * sizeof(float));
+	VertexBufferLayout vbl;
+	vbl.Push<float>(2);
+	vbl.Push<float>(2);
 
-	// Vertex Array
-	va.AddBuffer(vb, layout);
+	m_VA->AddBuffer(vb, vbl);
 
-	// Add texture to shader
-	shader.Bind();
-	texture.Bind();
-	shader.SetUniform1i("u_Texture", 0);
+	m_IB = std::make_unique<IndexBuffer>(test::singleQuadIndices, 6);
 
-	va.Unbind();
+	m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
+
+	m_uVPLoc = m_Shader->GetUniformLocation("u_VP");
+	m_uTexLoc = m_Shader->GetUniformLocation("u_Texture");
+	m_uMLoc = m_Shader->GetUniformLocation("u_M");
+	m_uColourLoc = m_Shader->GetUniformLocation("u_Colour");
+
+	// Add textures
+	m_TexDiamond = std::make_unique<Texture>("res/textures/diamond.png");
+	m_TexStar = std::make_unique<Texture>("res/textures/star.png");
+	m_TexDiamond->Bind(0);
+	m_TexStar->Bind(1);
+
+	glm::mat4 proj = glm::ortho(0.0f, m_Width, 0.0f, m_Height);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 mvp = proj * view;
+	m_Shader->SetUniformMat4f(m_uVPLoc, mvp);
+
 	vb.Unbind();
-	ib.Unbind();
-	shader.Unbind();
-	texture.Unbind();
-}
-
-test::TestSprites::~TestSprites() {
-	for (int i = 0; i < m_Sprites.size(); i++)
-		delete &m_Sprites[i];
-	delete &m_Sprites;
+	m_VA->Unbind();
+	m_IB->Unbind();
+	m_Shader->Unbind();
 }
 
 void test::TestSprites::OnUpdate(float deltaTime) {
-	return;
-	for (int i = 0; i < m_Sprites.size(); i++)
-		m_Sprites[i] = m_Sprites[i].Update(deltaTime);
+	for (auto& sprite : m_StarSprites)
+		sprite.Update(deltaTime, m_Width, m_Height);
+	for (auto& sprite : m_DiamondSprites)
+		sprite.Update(deltaTime, m_Width, m_Height);
 }
 
-void test::TestSprites::OnRender(const Renderer& renderer, const glm::mat4& proj) {
-	for (int i = 0; i < m_Sprites.size(); i++) {
-		shader.Bind();
+void test::TestSprites::OnRender(const Renderer& renderer) {
+	glm::mat4 model(1.0f);
 
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Sprites[i].Position);
-		glm::mat4 mvp = proj * view * model;
-		shader.SetUniformMat4f("u_MVP", mvp);
+	m_Shader->SetUniform1i(m_uTexLoc, 1);
+	for (auto& sprite : m_StarSprites) {
+		model[3].x = sprite.Position.x;
+		model[3].y = sprite.Position.y;
+		m_Shader->SetUniformMat4f(m_uMLoc, model);
 
-		shader.SetUniform4f("u_Colour", m_Sprites[i].Colour.r, m_Sprites[i].Colour.g, m_Sprites[i].Colour.b, m_Sprites[i].Colour.a);
+		m_Shader->SetUniform4f(m_uColourLoc, sprite.Colour.r, sprite.Colour.g, sprite.Colour.b, sprite.Colour.a);
 
-		renderer.Draw(va, ib, shader);
+		renderer.Draw(*m_VA, *m_Shader, m_IB->GetCount());
 	}
-}
 
-bool test::TestSprites::OnImGuiRender() {
-	return ImGui::Button("Return to Menu");
+	m_Shader->SetUniform1i(m_uTexLoc, 0);
+	for (auto& sprite : m_DiamondSprites) {
+		model[3].x = sprite.Position.x;
+		model[3].y = sprite.Position.y;
+		m_Shader->SetUniformMat4f(m_uMLoc, model);
+
+		m_Shader->SetUniform4f(m_uColourLoc, sprite.Colour.r, sprite.Colour.g, sprite.Colour.b, sprite.Colour.a);
+
+		renderer.Draw(*m_VA, *m_Shader, m_IB->GetCount());
+	}
 }
