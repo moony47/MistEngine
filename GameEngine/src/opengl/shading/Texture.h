@@ -2,19 +2,26 @@
 
 #include "Renderer.h"
 
+#include <string>
+
+class ShaderController;
+
 class Texture
 {
 private:
-	unsigned int m_RendererID;
 	std::string m_Filepath;
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_BPP;
-	unsigned int m_Slot;
+
+	unsigned int m_RendererID;
+	int m_Slot;
+
+	ShaderController& m_ShaderController;
 public:
-	Texture(const std::string& path);
+	Texture(ShaderController& shaderController, const std::string& path);
 	~Texture();
 
-	void Bind(unsigned int slot = 0);
+	void Bind(unsigned int slot);
 	void Unbind();
 
 	inline int GetWidth() const { return m_Width; }

@@ -1,7 +1,12 @@
 #include "Renderer.h"
 
-#include <iostream>
 #include <GL/glew.h>
+
+#include "geometry/VertexArray.h"
+#include "geometry/IndexBuffer.h"
+#include "shading/Shader.h"
+
+#include <iostream>
 
 void GLClearError() {
     while (glGetError());

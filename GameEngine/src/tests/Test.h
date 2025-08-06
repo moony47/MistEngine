@@ -2,15 +2,23 @@
 
 #include "Renderer.h"
 
-namespace test {
-	class Test {
-	public:
-		Test() {}
-		Test(float width, float height) {}
-		virtual ~Test() {}
+namespace Testing {
 
-		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnRender(const Renderer& renderer) {}
-		virtual void OnImGuiRender() {}
-	};
-}
+class Test {
+public:
+    Test() {
+    }
+    Test(float width, float height) {
+    }
+    virtual ~Test() {
+    }
+
+    virtual void OnUpdate(double deltaTime) {
+    }
+    virtual void OnRender(const Renderer& renderer) {
+    }
+    virtual void OnImGuiRender() {
+    }
+};
+
+} // namespace Testing

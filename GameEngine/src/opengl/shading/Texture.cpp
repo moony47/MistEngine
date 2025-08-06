@@ -1,10 +1,18 @@
 #include "Texture.h"
 
 #include "stb_image/stb_image.h"
+#include "ShaderController.h"
 
-Texture::Texture(const std::string& path) 
-	: m_RendererID(0), m_Filepath(path), m_LocalBuffer(nullptr), 
-	m_Width(0), m_Height(0), m_BPP(0), m_Slot(0) {
+Texture::Texture(ShaderController& shaderController, const std::string& path) : 
+	m_RendererID(0), 
+	m_Filepath(path), 
+	m_LocalBuffer(nullptr), 
+	m_Width(0), 
+	m_Height(0), 
+	m_BPP(0), 
+	m_Slot(0), 
+	m_ShaderController(shaderController) {
+
 	stbi_set_flip_vertically_on_load(1);
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 	
@@ -18,23 +26,21 @@ Texture::Texture(const std::string& path)
 
 	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-
-	if (m_LocalBuffer)
-		stbi_image_free(m_LocalBuffer);
 }
 
 Texture::~Texture() {
+	delete[] m_LocalBuffer;
 	GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
 void Texture::Bind(unsigned int slot) {
-	m_Slot = slot;
-	GLCall(glActiveTexture(GL_TEXTURE0 + m_Slot));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+	if (m_ShaderController.BindTexture(slot, m_RendererID))
+		m_Slot = slot;
 }
 
 void Texture::Unbind() {
-	GLCall(glActiveTexture(GL_TEXTURE0 + m_Slot));
-	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-	m_Slot = 0;
+	if (m_Slot != -1) {
+		m_ShaderController.UnbindTexture((unsigned int)m_Slot);
+		m_Slot = -1;
+	}
 }
