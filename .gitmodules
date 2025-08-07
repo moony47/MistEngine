@@ -1,0 +1,9 @@
+[submodule "GameEngine/src/vendor/spdlog"]
+	path = GameEngine/src/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "Mist/vendor/GLFW"]
+	path = Mist/vendor/GLFW
+	url = https://github.com/glfw/glfw.git
+[submodule "Mist/vendor/ImGui"]
+	path = Mist/vendor/ImGui
+	url = https://github.com/ocornut/imgui.git

@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Mist">
+      <UniqueIdentifier>{193622CF-0503-7DDA-2E1C-6B821A48B268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Mist\Events">
+      <UniqueIdentifier>{DDEBACF5-4977-1ABA-5288-9DAEBE9276BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Mist\Tests">
+      <UniqueIdentifier>{9B7FAEE1-874D-A2E7-70E1-120E5C4E7E4C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform">
+      <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\OpenGL">
+      <UniqueIdentifier>{35A49437-A105-7245-2A73-B8F796D3A804}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\OpenGL\geometry">
+      <UniqueIdentifier>{50F92674-3CB4-1620-E56B-8F6AD10561B0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\OpenGL\shading">
+      <UniqueIdentifier>{A2D6E74F-0EE4-1536-97CA-112103D7E1EC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vendor">
+      <UniqueIdentifier>{EA4CE07F-D604-22CD-3F0C-FB282BE3BCBD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vendor\glm">
+      <UniqueIdentifier>{393CCCDF-250A-C0E5-0E9E-300CFA0A9C4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vendor\glm\detail">
+      <UniqueIdentifier>{DB1973BD-4786-2EB8-107A-C6157CA55020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vendor\glm\simd">
+      <UniqueIdentifier>{35245B1D-A185-382B-2AF3-7EDD96536FEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vendor\stb_image">
+      <UniqueIdentifier>{04AA27C1-F038-B18A-9957-C58585C5C130}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Mist.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Application.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\EntryPoint.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Events\ApplicationEvent.h">
+      <Filter>src\Mist\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Events\Event.h">
+      <Filter>src\Mist\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Events\KeyEvent.h">
+      <Filter>src\Mist\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Events\MouseEvent.h">
+      <Filter>src\Mist\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Logger.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Tests\Test.h">
+      <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Tests\TestClearColour.h">
+      <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Tests\TestMenu.h">
+      <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Tests\TestSprites.h">
+      <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h">
+      <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\ImGuiGLFWRenderer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\Renderer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\TestLayer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\geometry\IndexBuffer.h">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\geometry\VertexArray.h">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\geometry\VertexBuffer.h">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\geometry\VertexBufferLayout.h">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\shading\Shader.h">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\shading\ShaderController.h">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\shading\Texture.h">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\common.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\exponential.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\geometric.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\integer.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\matrix.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\neon.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\packing.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\platform.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\trigonometric.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\glm\simd\vector_relational.h">
+      <Filter>src\vendor\glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vendor\stb_image\stb_image.h">
+      <Filter>src\vendor\stb_image</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Mist\Application.cpp">
+      <Filter>src\Mist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Logger.cpp">
+      <Filter>src\Mist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Tests\TestClearColour.cpp">
+      <Filter>src\Mist\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Tests\TestMenu.cpp">
+      <Filter>src\Mist\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Tests\TestSprites.cpp">
+      <Filter>src\Mist\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp">
+      <Filter>src\Mist\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\ImGuiGLFWRenderer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\Renderer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\geometry\IndexBuffer.cpp">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\geometry\VertexArray.cpp">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\geometry\VertexBuffer.cpp">
+      <Filter>src\Platform\OpenGL\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\shading\Shader.cpp">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\shading\ShaderController.cpp">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp">
+      <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vendor\glm\detail\glm.cpp">
+      <Filter>src\vendor\glm\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vendor\stb_image\stb_image.cpp">
+      <Filter>src\vendor\stb_image</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\premake5.lua" />
+  </ItemGroup>
+</Project>

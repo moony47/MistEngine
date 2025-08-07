@@ -1,11 +1,13 @@
-#include <Engine.h>
+#include <Mist.h>
 
-class Sandbox : public GameEngine::Application {
+class Sandbox : public Mist::Application {
 public:
-	Sandbox() {}
-	~Sandbox() {}
+    Sandbox() {
+    }
+    ~Sandbox() {
+    }
 };
 
-GameEngine::Application* GameEngine::CreateApplication() {
-	return new Sandbox();
+Mist::Application* Mist::CreateApplication() {
+    return new Sandbox();
 }
