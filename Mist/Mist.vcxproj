@@ -76,7 +76,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -98,7 +99,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -124,7 +126,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -163,6 +166,7 @@
     <ClInclude Include="src\Mist\Tests\TestMenu.h" />
     <ClInclude Include="src\Mist\Tests\TestSprites.h" />
     <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h" />
+    <ClInclude Include="src\Mist\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiGLFWRenderer.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
@@ -174,6 +178,7 @@
     <ClInclude Include="src\Platform\OpenGL\shading\Shader.h" />
     <ClInclude Include="src\Platform\OpenGL\shading\ShaderController.h" />
     <ClInclude Include="src\Platform\OpenGL\shading\Texture.h" />
+    <ClInclude Include="src\mistpch.h" />
     <ClInclude Include="src\vendor\glm\simd\common.h" />
     <ClInclude Include="src\vendor\glm\simd\exponential.h" />
     <ClInclude Include="src\vendor\glm\simd\geometric.h" />
@@ -185,6 +190,7 @@
     <ClInclude Include="src\vendor\glm\simd\trigonometric.h" />
     <ClInclude Include="src\vendor\glm\simd\vector_relational.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp" />
@@ -203,8 +209,12 @@
     <ClCompile Include="src\Platform\OpenGL\shading\Shader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\shading\ShaderController.cpp" />
     <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp" />
+    <ClCompile Include="src\mistpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

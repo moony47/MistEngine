@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GLAD/glad.h>
-#include <vector>
 
 #include "Renderer.h"
 

@@ -31,6 +31,9 @@ project "Mist"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+    pchheader "mistpch.h"
+    pchsource "Mist/src/mistpch.cpp"
+
     files
     {
         "premake5.lua",
@@ -80,7 +83,11 @@ project "Mist"
         }
 
     filter "configurations:Debug"
-        defines "MIST_DEBUG"
+        defines 
+        {
+            "MIST_DEBUG",s
+            "MIST_ENABLE_ASSERTS"
+        }
         symbols "On"
 
     filter "configurations:Release"

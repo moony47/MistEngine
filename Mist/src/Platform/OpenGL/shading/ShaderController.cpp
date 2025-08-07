@@ -1,6 +1,6 @@
-#include "ShaderController.h"
+#include "mistpch.h"
 
-#include <iostream>
+#include "ShaderController.h"
 
 #include "Renderer.h"
 #include "Shader.h"
@@ -74,6 +74,17 @@ Shader* ShaderController::CreateShader(const std::string& vertShaderPath, const 
 
 Texture* ShaderController::CreateTexture(const std::string& texturePath) {
     return new Texture(*this, texturePath);
+}
+
+void ShaderController::DeregisterShader(unsigned int shaderID) {
+    if (m_CurrentShaderID == shaderID)
+        UnbindShader();
+}
+
+void ShaderController::DeregisterTexture(unsigned int textureID) {
+    for (unsigned int textureSlot = 0; textureSlot < m_MaxTextureSlots; textureSlot++)
+        if (m_CurrentTextureIDs[textureSlot] == textureID)
+            UnbindTexture(textureSlot);
 }
 
 } // namespace Mist

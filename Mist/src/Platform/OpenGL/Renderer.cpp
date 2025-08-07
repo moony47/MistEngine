@@ -1,11 +1,11 @@
+#include "mistpch.h"
+
 #include "Renderer.h"
 
 #include <GLAD/glad.h>
 
 #include "geometry/VertexArray.h"
 #include "shading/Shader.h"
-
-#include <iostream>
 
 namespace Mist {
 

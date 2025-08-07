@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -18,9 +16,9 @@ class ShaderControler;
 
 class TestLayer {
 private:
-    GLFWwindow* m_Window;
+    //GLFWwindow* m_Window;
     Renderer m_Renderer;
-    std::unique_ptr<ImGuiIO> m_IO;
+    //std::unique_ptr<ImGuiIO> m_IO;
 
     float m_LastTime = 0.0f;
 
@@ -33,8 +31,8 @@ public:
     TestLayer(unsigned int width, unsigned int height);
     ~TestLayer();
 
-    void Update();
-    bool WindowShouldClose();
+    void Update(std::unique_ptr<ImGuiIO>& io);
+    //bool WindowShouldClose();
 };
 
 } // namespace Mist

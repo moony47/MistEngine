@@ -2,9 +2,6 @@
 
 #include "Test.h"
 
-#include <memory>
-#include <vector>
-
 const static float batchQuadVertices[] = {
     -50.0f, -50.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.8f, 1.0f, 0.0f, 50.0f,  -50.0f, 1.0f, 0.0f, 0.3f, 0.3f, 0.8f, 1.0f, 0.0f,
     50.0f,  50.0f,  1.0f, 1.0f, 0.3f, 0.3f, 0.8f, 1.0f, 0.0f, -50.0f, 50.0f,  0.0f, 1.0f, 0.3f, 0.3f, 0.8f, 1.0f, 0.0f};

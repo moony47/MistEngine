@@ -1,3 +1,5 @@
+#include "mistpch.h"
+
 #include "TestClearColour.h"
 
 #include "shading/ShaderController.h"

@@ -1,9 +1,7 @@
 #pragma once
 
+#include "mistpch.h"
 #include "Mist/Core.h"
-
-#include <functional>
-#include <string>
 
 #include <spdlog/fmt/fmt.h>
 

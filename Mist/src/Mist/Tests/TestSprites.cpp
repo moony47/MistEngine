@@ -1,3 +1,5 @@
+#include "mistpch.h"
+
 #include "TestSprites.h"
 
 #include "shading/Shader.h"

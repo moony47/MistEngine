@@ -1,25 +1,38 @@
-#include "Application.h"
-#include "TestLayer.h"
+#include "mistpch.h"
 
-#include "Events/ApplicationEvent.h"
+#include "Application.h"
+
 #include "Logger.h"
 
 namespace Mist {
 
-TestLayer* layer;
+#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 Application::Application() {
-    layer = new TestLayer(1600, 900);
+    m_Window = std::unique_ptr<Window>(Window::Create());
+    m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 }
 
 Application::~Application() {
-    delete layer;
+}
+
+void Application::OnEvent(Event& e) {
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+
+    if (e.GetEventType() != EventType::MouseMoved)
+        MIST_CORE_TRACE(e);
 }
 
 void Application::Run() {
-    //  Loop until the user closes the window
-    while (!layer->WindowShouldClose())
-        layer->Update();
+    while (m_Running) {
+        m_Window->OnUpdate();
+    }
+}
+
+bool Application::OnWindowClose(WindowCloseEvent& e) {
+    m_Running = false;
+    return false;
 }
 
 } // namespace Mist

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 namespace Mist {
 
 class Shader;
@@ -25,6 +23,9 @@ public:
 
     Shader* CreateShader(const std::string& vertShaderPath, const std::string& fragShaderPath);
     Texture* CreateTexture(const std::string& texturePath);
+
+    void DeregisterShader(unsigned int shaderID);
+    void DeregisterTexture(unsigned int textureID);
 };
 
 } // namespace Mist

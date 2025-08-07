@@ -1,8 +1,6 @@
-#include "Shader.h"
+#include "mistpch.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "Shader.h"
 
 #include "Renderer.h"
 #include "ShaderController.h"
@@ -18,6 +16,7 @@ Shader::Shader(ShaderController& shaderController,
 }
 
 Shader::~Shader() {
+    m_ShaderController.DeregisterShader(m_RendererID);
     MS_GLCALL(glDeleteProgram(m_RendererID));
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.h"
-#include <sstream>
 
 namespace Mist {
 
@@ -19,7 +18,7 @@ public:
         return m_MouseY;
     }
 
-    std::string ToString() {
+    std::string ToString() const override {
         std::stringstream ss;
         ss << "MouseMovedEvent: (" << m_MouseX << ", " << m_MouseY << ")";
         return ss.str();
@@ -48,7 +47,7 @@ public:
 
     std::string ToString() {
         std::stringstream ss;
-        ss << "MouseScrolledEvent: (" << m_XOffset << ", " << m_YOffset << ")";
+        ss << "MouseScrolledEvent:  (" << m_XOffset << ", " << m_YOffset << ")";
         return ss.str();
     }
 
@@ -61,7 +60,7 @@ private:
 
 class MIST_API MouseButtonEvent : public Event {
 public:
-    inline int GetMouseButton(()) const {
+    inline int GetMouseButton() const {
         return m_Button;
     }
 
@@ -82,7 +81,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "MouseButtonPressedEvent: " << m_Button;
+        ss << "MouseButtonPressedEvent:     " << m_Button;
         return ss.str();
     }
 
@@ -97,7 +96,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "MouseButtonReleasedEvent: " << m_Button;
+        ss << "MouseButtonReleasedEvent:    " << m_Button;
         return ss.str();
     }
 

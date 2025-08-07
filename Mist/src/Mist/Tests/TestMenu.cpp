@@ -1,13 +1,12 @@
+#include "mistpch.h"
+
 #include "TestMenu.h"
 
 #include <imgui.h>
 
 namespace Mist::Testing {
 
-TestMenu::TestMenu(ShaderController& shaderController,
-                         Test*& currentTestPointer,
-                         float winWidth,
-                         float winHeight) :
+TestMenu::TestMenu(ShaderController& shaderController, Test*& currentTestPointer, float winWidth, float winHeight) :
     m_ShaderController(shaderController),
     m_CurrentTest(currentTestPointer),
     m_Width(winWidth),

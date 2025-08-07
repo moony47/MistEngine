@@ -1,3 +1,5 @@
+#include "mistpch.h"
+
 #include "VertexBuffer.h"
 
 #include <GLAD/glad.h>

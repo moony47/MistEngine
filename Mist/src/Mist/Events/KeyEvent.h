@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace Mist {
 
 class MIST_API KeyEvent : public Event {
@@ -34,7 +32,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "KeyPressedEvent: " << m_KeyCode << "(" << m_RepeatCount << " repeats)";
+        ss << "KeyPressedEvent:     '" << (char)m_KeyCode << "' (" << m_RepeatCount << " repeats)";
         return ss.str();
     }
 
@@ -51,7 +49,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "KeyReleasedEvent: " << m_KeyCode;
+        ss << "KeyReleasedEvent:    '" << (char)m_KeyCode << "'";
         return ss.str();
     }
 

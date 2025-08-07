@@ -2,8 +2,6 @@
 
 #include "Renderer.h"
 
-#include <string>
-
 namespace Mist {
 
 class ShaderController;

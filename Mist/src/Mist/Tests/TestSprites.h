@@ -2,9 +2,6 @@
 
 #include "Test.h"
 
-#include <memory>
-#include <vector>
-
 static const float singleQuadVertices[] = {-50.0f, -50.0f, 0.0f, 0.0f, 50.0f,  -50.0f, 1.0f, 0.0f,
                                            50.0f,  50.0f,  1.0f, 1.0f, -50.0f, 50.0f,  0.0f, 1.0f};
 

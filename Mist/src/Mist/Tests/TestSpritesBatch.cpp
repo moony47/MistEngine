@@ -1,3 +1,5 @@
+#include "mistpch.h"
+
 #include "TestSpritesBatch.h"
 
 #include "shading/Shader.h"
@@ -63,7 +65,7 @@ TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float win
     m_TexDiamond->Bind(0);
     m_TexStar->Bind(1);
 
-    // Attatch textures to shader
+    // Attach textures to shader
     int samplers[] = {0, 1};
     m_Shader->SetUniform1iv(m_uTexLoc, 2, samplers);
 
@@ -78,14 +80,10 @@ TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float win
 }
 
 void TestSpritesBatch::OnUpdate(float deltaTime) {
-    int i = 0;
-
     // Update location and colour of sprites.
-    // Push their vertices and indicies into buffers
-    for (auto& sprite : m_Sprites) {
-        sprite.Update(deltaTime, m_Width, m_Height, i);
-        i++;
-    }
+    // Push their vertices and indices into buffers
+    for (size_t i = 0; i < m_Sprites.size(); i++)
+        m_Sprites[i].Update(deltaTime, m_Width, m_Height, (unsigned int) i);
 
     // Create new VertexArray
     m_VA = std::make_unique<VertexArray>();

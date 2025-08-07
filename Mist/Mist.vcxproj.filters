@@ -117,6 +117,9 @@
     <ClInclude Include="src\Platform\OpenGL\shading\Texture.h">
       <Filter>src\Platform\OpenGL\shading</Filter>
     </ClInclude>
+    <ClInclude Include="src\mistpch.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\vendor\glm\simd\common.h">
       <Filter>src\vendor\glm\simd</Filter>
     </ClInclude>
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp">
       <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mistpch.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\vendor\glm\detail\glm.cpp">
       <Filter>src\vendor\glm\detail</Filter>

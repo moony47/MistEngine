@@ -2,10 +2,6 @@
 
 #include "Test.h"
 
-#include <functional>
-#include <iostream>
-#include <vector>
-
 
 namespace Mist {
 
@@ -21,7 +17,7 @@ public:
     void OnImGuiRender() override;
 
     template <typename T> void RegisterTest(const std::string& name) {
-        std::cout << "Registering Test " << name << std::endl;
+        MIST_CORE_INFO ("Registering Test " + name);
         m_Tests.push_back(std::make_pair(
             name, [](ShaderController& shaderController, float w, float h) { return new T(shaderController, w, h); }));
     }

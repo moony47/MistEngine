@@ -1,3 +1,5 @@
+#include "mistpch.h"
+
 #include "Texture.h"
 
 #include "stb_image/stb_image.h"
@@ -33,6 +35,7 @@ Texture::Texture(ShaderController& shaderController, const std::string& path) :
 
 Texture::~Texture() {
     delete[] m_LocalBuffer;
+    m_ShaderController.DeregisterTexture(m_RendererID);
     MS_GLCALL(glDeleteTextures(1, &m_RendererID));
 }
 

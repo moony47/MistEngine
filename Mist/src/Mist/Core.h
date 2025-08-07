@@ -10,4 +10,24 @@
 #error Only supports Windows
 #endif
 
+#ifdef MIST_ENABLE_ASSERTS
+#define MIST_ASSERT(x, ...)                                                                                            \
+    {                                                                                                                  \
+        if (!(x)) {                                                                                                    \
+            MIST_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                          \
+            __debugbreak();                                                                                            \
+        }                                                                                                              \
+    }
+#define MIST_CORE_ASSERT(x, ...)                                                                                       \
+    {                                                                                                                  \
+        if (!(x)) {                                                                                                    \
+            MIST_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                     \
+            __debugbreak();                                                                                            \
+        }                                                                                                              \
+    }
+#else
+#define MIST_ASSERT(x, ...)
+#define MIST_CORE_ASSERT(x, ...)
+#endif
+
 #define BIT(x) (1 << x)
