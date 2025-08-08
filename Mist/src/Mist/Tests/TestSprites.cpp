@@ -110,4 +110,14 @@ void TestSprites::OnRender(const Renderer& renderer) {
     }
 }
 
+void TestSprites::Resize(unsigned int width, unsigned int height) {
+    m_Width = width;
+    m_Height = height;
+
+    glm::mat4 proj = glm::ortho(0.0f, m_Width, 0.0f, m_Height);
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 mvp = proj * view;
+    m_Shader->SetUniformMat4f(m_uVPLoc, mvp);
+}
+
 } // namespace Testing

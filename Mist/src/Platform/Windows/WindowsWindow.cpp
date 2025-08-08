@@ -37,7 +37,7 @@ void WindowsWindow::Init(const WindowProps& props) {
     MIST_CORE_INFO("Creating Window: {0} ({1} {2})", props.Title, props.Width, props.Height);
 
     if (!s_GLFWInitialized) {
-        int sucess = glfwInit();
+        int success = glfwInit();
         MIST_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
         s_GLFWInitialized = true;
@@ -48,6 +48,74 @@ void WindowsWindow::Init(const WindowProps& props) {
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
 
+    InitEventCallbacks();
+
+    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    MIST_CORE_INFO("OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
+
+    MS_GLCALL(glEnable(GL_BLEND));
+    MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui::StyleColorsDark();
+
+    m_IO.reset(&ImGui::GetIO());
+    m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+
+    m_LastTime = (float)glfwGetTime();
+
+    TEMP_layer = new TestLayer(1600, 900);
+}
+
+void WindowsWindow::Shutdown() {
+    delete TEMP_layer;
+    glfwDestroyWindow(m_Window);
+    glfwTerminate();
+}
+
+void WindowsWindow::OnUpdate() {
+    float currentTime = (float)glfwGetTime();
+    float deltaTime = currentTime - m_LastTime;
+    m_LastTime = currentTime;
+
+    // Render here
+    MS_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    m_Renderer.Clear();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    TEMP_layer->Update(deltaTime, m_IO, m_Renderer);
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwPollEvents();
+    glfwSwapBuffers(m_Window);
+}
+
+void WindowsWindow::SetVSync(bool enabled) {
+    glfwSwapInterval(enabled ? 1 : 0);
+    m_Data.VSync = enabled;
+}
+
+bool WindowsWindow::IsVSync() const {
+    return m_Data.VSync;
+}
+
+void WindowsWindow::Resize(unsigned int width, unsigned int height) {
+    glfwSetWindowSize(m_Window, width, height);
+    glViewport(0, 0, width, height);
+    TEMP_layer->Resize(width, height);
+}
+
+void WindowsWindow::InitEventCallbacks() {
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
         data.Width = width;
@@ -116,46 +184,6 @@ void WindowsWindow::Init(const WindowProps& props) {
         MouseMovedEvent e((float)x, (float)y);
         data.EventCallback(e);
     });
-
-    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
-    MIST_CORE_INFO("OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
-
-    MS_GLCALL(glEnable(GL_BLEND));
-    MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-    ImGui_ImplOpenGL3_Init("#version 460");
-    ImGui::StyleColorsDark();
-
-    m_IO.reset(&ImGui::GetIO());
-    m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-    m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-
-    TEMP_layer = new TestLayer(1600, 900);
-}
-
-void WindowsWindow::Shutdown() {
-    delete TEMP_layer;
-    glfwDestroyWindow(m_Window);
-}
-
-void WindowsWindow::OnUpdate() {
-    TEMP_layer->Update(m_IO);
-
-    glfwPollEvents();
-    glfwSwapBuffers(m_Window);
-}
-
-void WindowsWindow::SetVSync(bool enabled) {
-    glfwSwapInterval(enabled ? 1 : 0);
-    m_Data.VSync = enabled;
-}
-
-bool WindowsWindow::IsVSync() const {
-    return m_Data.VSync;
 }
 
 } // namespace Mist

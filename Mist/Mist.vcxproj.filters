@@ -25,6 +25,9 @@
     <Filter Include="src\Platform\OpenGL\shading">
       <UniqueIdentifier>{A2D6E74F-0EE4-1536-97CA-112103D7E1EC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Platform\Windows">
+      <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\vendor">
       <UniqueIdentifier>{EA4CE07F-D604-22CD-3F0C-FB282BE3BCBD}</UniqueIdentifier>
     </Filter>
@@ -66,6 +69,12 @@
     <ClInclude Include="src\Mist\Events\MouseEvent.h">
       <Filter>src\Mist\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mist\Layer.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\LayerStack.h">
+      <Filter>src\Mist</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mist\Logger.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
@@ -83,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h">
       <Filter>src\Mist\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Window.h">
+      <Filter>src\Mist</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\ImGuiGLFWRenderer.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -116,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\shading\Texture.h">
       <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
+      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\mistpch.h">
       <Filter>src</Filter>
@@ -156,6 +171,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp">
+      <Filter>src\Mist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Layer.cpp">
+      <Filter>src\Mist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\LayerStack.cpp">
       <Filter>src\Mist</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Logger.cpp">
@@ -202,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp">
       <Filter>src\Platform\OpenGL\shading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
+      <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\mistpch.cpp">
       <Filter>src</Filter>

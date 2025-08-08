@@ -16,12 +16,6 @@ class ShaderControler;
 
 class TestLayer {
 private:
-    //GLFWwindow* m_Window;
-    Renderer m_Renderer;
-    //std::unique_ptr<ImGuiIO> m_IO;
-
-    float m_LastTime = 0.0f;
-
     Testing::Test* m_CurrentTest;
     Testing::TestMenu* m_TestMenu;
 
@@ -31,8 +25,9 @@ public:
     TestLayer(unsigned int width, unsigned int height);
     ~TestLayer();
 
-    void Update(std::unique_ptr<ImGuiIO>& io);
-    //bool WindowShouldClose();
+    void Resize(unsigned int width, unsigned int height);
+
+    void Update(float deltaTime, std::unique_ptr<ImGuiIO>& io, Renderer& renderer);
 };
 
 } // namespace Mist

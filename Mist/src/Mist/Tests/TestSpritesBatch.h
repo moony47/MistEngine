@@ -19,7 +19,6 @@ class Texture;
 
 namespace Testing {
 
-
 struct Quad {
     bool star;
     glm::vec4 ColourVelocity;
@@ -87,6 +86,7 @@ public:
 
     void OnUpdate(float deltaTime) override;
     void OnRender(const Renderer& renderer) override;
+    void Resize(unsigned int width, unsigned int height) override;
 
 private:
     float m_Width;

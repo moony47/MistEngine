@@ -19,6 +19,7 @@ public:
     }
     virtual void OnImGuiRender() {
     }
+    virtual void Resize(unsigned int width, unsigned int height){}
 };
 
 } // namespace Testing

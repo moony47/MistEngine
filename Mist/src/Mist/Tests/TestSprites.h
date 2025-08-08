@@ -53,6 +53,7 @@ public:
 
     void OnUpdate(float deltaTime) override;
     void OnRender(const Renderer& renderer) override;
+    void Resize(unsigned int width, unsigned int height) override;
 
 private:
     float m_Width;

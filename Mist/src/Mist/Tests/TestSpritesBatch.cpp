@@ -52,8 +52,7 @@ TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float win
     m_VBL->Push<float>(1);
 
     // Compile shader and push onto device
-    m_Shader.reset(m_ShaderController.CreateShader("../Mist/res/shaders/Batch.vert",
-                                                   "../Mist/res/shaders/Batch.frag"));
+    m_Shader.reset(m_ShaderController.CreateShader("../Mist/res/shaders/Batch.vert", "../Mist/res/shaders/Batch.frag"));
 
     // Cache uniform locations
     m_uMVPLoc = m_Shader->GetUniformLocation("u_MVP");
@@ -71,8 +70,8 @@ TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float win
 
     // Define a fixed MVP
     glm::mat4 proj = glm::ortho(0.0f, m_Width, 0.0f, m_Height);
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view(1.0f);
+    glm::mat4 model(1.0f);
     glm::mat4 mvp = proj * view * model;
     m_Shader->SetUniformMat4f(m_uMVPLoc, mvp);
 
@@ -83,7 +82,7 @@ void TestSpritesBatch::OnUpdate(float deltaTime) {
     // Update location and colour of sprites.
     // Push their vertices and indices into buffers
     for (size_t i = 0; i < m_Sprites.size(); i++)
-        m_Sprites[i].Update(deltaTime, m_Width, m_Height, (unsigned int) i);
+        m_Sprites[i].Update(deltaTime, m_Width, m_Height, (unsigned int)i);
 
     // Create new VertexArray
     m_VA = std::make_unique<VertexArray>();
@@ -101,10 +100,21 @@ void TestSpritesBatch::OnUpdate(float deltaTime) {
 
 void TestSpritesBatch::OnRender(const Renderer& renderer) {
     // Make single call to draw all sprites
-    renderer.Draw(*m_VA, *m_Shader, (unsigned int) m_Sprites.size() * 6);
+    renderer.Draw(*m_VA, *m_Shader, (unsigned int)m_Sprites.size() * 6);
 
     // Delete VertexArray ready for next frame
     m_VA.reset();
 }
 
-} // namespace Testing
+void TestSpritesBatch::Resize(unsigned int width, unsigned int height) {
+    m_Width = width;
+    m_Height = height;
+
+    glm::mat4 proj = glm::ortho(0.0f, m_Width, 0.0f, m_Height);
+    glm::mat4 view(1.0f);
+    glm::mat4 model(1.0f);
+    glm::mat4 mvp = proj * view * model;
+    m_Shader->SetUniformMat4f(m_uMVPLoc, mvp);
+}
+
+} // namespace Mist::Testing

@@ -67,7 +67,6 @@ project "Mist"
 
     filter "system:windows"
         cppdialect "C++23"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -79,23 +78,26 @@ project "Mist"
 
         postbuildcommands
         {
-            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
+            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/%{cfg.buildtarget.name}")
         }
 
     filter "configurations:Debug"
         defines 
         {
-            "MIST_DEBUG",s
+            "MIST_DEBUG",
             "MIST_ENABLE_ASSERTS"
         }
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "MIST_RELEASE"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
         defines "MIST_DIST"
+        runtime "Release"
         optimize "On"
 
 project "Sandbox"
@@ -125,7 +127,6 @@ project "Sandbox"
 
     filter "system:windows"
         cppdialect "C++23"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -135,15 +136,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "MIST_DEBUG"
-        buildoptions "/MDd"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "MIST_RELEASE"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
         defines "MIST_DIST"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
