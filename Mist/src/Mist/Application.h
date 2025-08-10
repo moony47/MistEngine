@@ -1,10 +1,10 @@
 #pragma once
 #include "Mist/Core.h"
 
-#include "Window.h"
-#include "LayerStack.h"
-#include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/Event.h"
+#include "LayerStack.h"
+#include "Window.h"
 
 namespace Mist {
 
@@ -20,6 +20,14 @@ public:
     void PushLayer(Layer* layer);
     void PushOverlay(Layer* overlay);
 
+    inline Window& GetWindow() {
+        return *m_Window;
+    }
+
+    inline static Application& Get() {
+        return *s_Instance;
+    }
+
 private:
     bool OnWindowClose(WindowCloseEvent& e);
     bool OnWindowResize(WindowResizeEvent& e);
@@ -28,6 +36,9 @@ private:
     bool m_Running = true;
 
     LayerStack m_LayerStack;
+
+private:
+    static Application* s_Instance;
 };
 
 Application* CreateApplication();

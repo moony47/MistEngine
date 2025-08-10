@@ -57,45 +57,38 @@ void WindowsWindow::Init(const WindowProps& props) {
     MS_GLCALL(glEnable(GL_BLEND));
     MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-    ImGui_ImplOpenGL3_Init("#version 460");
-    ImGui::StyleColorsDark();
+    //IMGUI_CHECKVERSION();
+    //ImGui::CreateContext();
+    //ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+    //ImGui_ImplOpenGL3_Init("#version 460");
+    //ImGui::StyleColorsDark();
 
-    m_IO.reset(&ImGui::GetIO());
-    m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-    m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+    //m_IO.reset(&ImGui::GetIO());
+    //m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    //m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
     m_LastTime = (float)glfwGetTime();
 
-    TEMP_layer = new TestLayer(1600, 900);
+    //TEMP_layer = new TestLayer(1600, 900);
 }
 
 void WindowsWindow::Shutdown() {
-    delete TEMP_layer;
+    //delete TEMP_layer;
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
 
-void WindowsWindow::OnUpdate() {
-    float currentTime = (float)glfwGetTime();
-    float deltaTime = currentTime - m_LastTime;
-    m_LastTime = currentTime;
+void WindowsWindow::OnUpdateStart() {
+    //float currentTime = (float)glfwGetTime();
+    //float deltaTime = currentTime - m_LastTime;
+    //m_LastTime = currentTime;
 
     // Render here
     MS_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     m_Renderer.Clear();
+}
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    TEMP_layer->Update(deltaTime, m_IO, m_Renderer);
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+void WindowsWindow::OnUpdateEnd() {
     glfwPollEvents();
     glfwSwapBuffers(m_Window);
 }
@@ -110,9 +103,9 @@ bool WindowsWindow::IsVSync() const {
 }
 
 void WindowsWindow::Resize(unsigned int width, unsigned int height) {
-    glfwSetWindowSize(m_Window, width, height);
+    //glfwSetWindowSize(m_Window, width, height);
     glViewport(0, 0, width, height);
-    TEMP_layer->Resize(width, height);
+    //TEMP_layer->Resize(width, height);
 }
 
 void WindowsWindow::InitEventCallbacks() {
@@ -182,6 +175,13 @@ void WindowsWindow::InitEventCallbacks() {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
         MouseMovedEvent e((float)x, (float)y);
+        data.EventCallback(e);
+    });
+
+    glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int c) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+        KeyTypedEvent e(c);
         data.EventCallback(e);
     });
 }

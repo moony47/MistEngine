@@ -19,9 +19,12 @@ IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
 IncludeDir["glm"] = "Mist/vendor/glm"
 
-include "Mist/vendor/GLFW"
-include "Mist/vendor/GLAD"
-include "Mist/vendor/ImGui"
+group "Dependencies"
+    include "Mist/vendor/GLFW"
+    include "Mist/vendor/GLAD"
+    include "Mist/vendor/ImGui"
+
+group ""
 
 project "Mist"
     location "Mist"
@@ -78,7 +81,7 @@ project "Mist"
 
         postbuildcommands
         {
-            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/%{cfg.buildtarget.name}")
+            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
         }
 
     filter "configurations:Debug"

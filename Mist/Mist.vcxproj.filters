@@ -10,6 +10,9 @@
     <Filter Include="src\Mist\Events">
       <UniqueIdentifier>{DDEBACF5-4977-1ABA-5288-9DAEBE9276BA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mist\ImGui">
+      <UniqueIdentifier>{031AEBE0-EFE7-DEE6-D87B-4F0DC4E8BA4B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mist\Tests">
       <UniqueIdentifier>{9B7FAEE1-874D-A2E7-70E1-120E5C4E7E4C}</UniqueIdentifier>
     </Filter>
@@ -68,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="src\Mist\Events\MouseEvent.h">
       <Filter>src\Mist\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h">
+      <Filter>src\Mist\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Layer.h">
       <Filter>src\Mist</Filter>
@@ -172,6 +178,9 @@
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp">
       <Filter>src\Mist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp">
+      <Filter>src\Mist\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Layer.cpp">
       <Filter>src\Mist</Filter>

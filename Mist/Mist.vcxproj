@@ -94,7 +94,7 @@
       <ImportLibrary>..\bin\Debug-windows-x86_64\Mist\Mist.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y ..\bin\Debug-windows-x86_64\Mist\Mist.dll ..\bin\Debug-windows-x86_64\Sandbox\$(TargetFileName)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Mist\Mist.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Mist\Mist.dll "..\bin\Debug-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Mist\Mist.dll "..\bin\Debug-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -121,7 +121,7 @@
       <ImportLibrary>..\bin\Release-windows-x86_64\Mist\Mist.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y ..\bin\Release-windows-x86_64\Mist\Mist.dll ..\bin\Release-windows-x86_64\Sandbox\$(TargetFileName)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Mist\Mist.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Mist\Mist.dll "..\bin\Release-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Mist\Mist.dll "..\bin\Release-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -148,10 +148,11 @@
       <ImportLibrary>..\bin\Dist-windows-x86_64\Mist\Mist.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y ..\bin\Dist-windows-x86_64\Mist\Mist.dll ..\bin\Dist-windows-x86_64\Sandbox\$(TargetFileName)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Mist\Mist.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Mist\Mist.dll "..\bin\Dist-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Mist\Mist.dll "..\bin\Dist-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mist\KeyCodes.h" />
     <ClInclude Include="src\Mist.h" />
     <ClInclude Include="src\Mist\Application.h" />
     <ClInclude Include="src\Mist\Core.h" />
@@ -160,9 +161,12 @@
     <ClInclude Include="src\Mist\Events\Event.h" />
     <ClInclude Include="src\Mist\Events\KeyEvent.h" />
     <ClInclude Include="src\Mist\Events\MouseEvent.h" />
+    <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Mist\Input.h" />
     <ClInclude Include="src\Mist\Layer.h" />
     <ClInclude Include="src\Mist\LayerStack.h" />
     <ClInclude Include="src\Mist\Logger.h" />
+    <ClInclude Include="src\Mist\MouseButtonCodes.h" />
     <ClInclude Include="src\Mist\Tests\Test.h" />
     <ClInclude Include="src\Mist\Tests\TestClearColour.h" />
     <ClInclude Include="src\Mist\Tests\TestMenu.h" />
@@ -196,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp" />
+    <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mist\Layer.cpp" />
     <ClCompile Include="src\Mist\LayerStack.cpp" />
     <ClCompile Include="src\Mist\Logger.cpp" />
@@ -219,6 +224,7 @@
     </ClCompile>
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

@@ -56,4 +56,19 @@ public:
     EVENT_CLASS_TYPE(KeyReleased)
 };
 
+class MIST_API KeyTypedEvent : public KeyEvent {
+public:
+    KeyTypedEvent(unsigned int keycode) :
+        KeyEvent(keycode) {
+    }
+
+    std::string ToString() const override {
+        std::stringstream ss;
+        ss << "KeyTypedEvent:    '" << (char)m_KeyCode << "'";
+        return ss.str();
+    }
+
+    EVENT_CLASS_TYPE(KeyTyped)
+};
+
 } // namespace Mist

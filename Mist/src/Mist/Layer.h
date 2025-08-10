@@ -14,7 +14,9 @@ public:
     }
     virtual void OnDetach() {
     }
-    virtual void OnUpdate() {
+    virtual void OnUpdateStart() {
+    }
+    virtual void OnUpdateEnd() {
     }
     virtual void OnEvent(Event& e) {
     }

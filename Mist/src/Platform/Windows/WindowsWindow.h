@@ -12,7 +12,8 @@ public:
     WindowsWindow(const WindowProps& props);
     virtual ~WindowsWindow();
 
-    void OnUpdate() override;
+    void OnUpdateStart() override;
+    void OnUpdateEnd() override;
 
     inline unsigned int GetWidth() const override {
         return m_Data.Width;
@@ -29,6 +30,10 @@ public:
     bool IsVSync() const override;
 
     void Resize(unsigned int width, unsigned int height) override;
+
+    inline void* GetNativeWindow() const override {
+        return m_Window;
+    }
 
 private:
     virtual void Init(const WindowProps& props);

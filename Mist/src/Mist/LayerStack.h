@@ -7,6 +7,8 @@
 namespace Mist {
 
 class MIST_API LayerStack {
+    using LayersIterator = std::vector<Layer*>::iterator;
+
 public:
     LayerStack();
     ~LayerStack();
@@ -16,16 +18,16 @@ public:
     void PopLayer(Layer* layer);
     void PopOverlay(Layer* overlay);
 
-    std::vector<Layer*>::iterator begin() {
+    LayersIterator begin() {
         return m_Layers.begin();
     }
-    std::vector<Layer*>::iterator end() {
+    LayersIterator end() {
         return m_Layers.end();
     }
 
 private:
     std::vector<Layer*> m_Layers;
-    std::vector<Layer*>::iterator m_LayersInsert;
+    LayersIterator m_LayersInsert;
 };
 
 } // namespace Mist
