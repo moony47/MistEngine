@@ -24,7 +24,10 @@ void Application::Run() {
         m_Window->OnUpdateStart();
 
         for (Layer* layer : m_LayerStack)
-            layer->OnUpdate();
+            layer->OnUpdateStart();
+
+        for (Layer* layer : m_LayerStack)
+            layer->OnUpdateEnd();
 
         //auto [x, y] = Input::GetMousePosition();
         //MIST_CORE_TRACE("{0}, {1}", x, y);

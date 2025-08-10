@@ -7,3 +7,6 @@
 [submodule "Mist/vendor/ImGui"]
 	path = Mist/vendor/ImGui
 	url = https://github.com/ocornut/imgui.git
+[submodule "Mist/vendor/glm"]
+	path = Mist/vendor/glm
+	url = https://github.com/moony47/glm.git

@@ -5,9 +5,7 @@
 #include "ImGuiOpenGLRenderer.h"
 #include <imgui.h>
 
-#include "Mist/Events/ApplicationEvent.h"
-#include "Mist/Events/KeyEvent.h"
-#include "Mist/Events/MouseEvent.h"
+#include "Mist/Events/EventSystem.h"
 
 namespace Mist {
 
@@ -57,31 +55,31 @@ void WindowsWindow::Init(const WindowProps& props) {
     MS_GLCALL(glEnable(GL_BLEND));
     MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    //IMGUI_CHECKVERSION();
-    //ImGui::CreateContext();
-    //ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-    //ImGui_ImplOpenGL3_Init("#version 460");
-    //ImGui::StyleColorsDark();
+    // IMGUI_CHECKVERSION();
+    // ImGui::CreateContext();
+    // ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+    // ImGui_ImplOpenGL3_Init("#version 460");
+    // ImGui::StyleColorsDark();
 
-    //m_IO.reset(&ImGui::GetIO());
-    //m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-    //m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+    // m_IO.reset(&ImGui::GetIO());
+    // m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    // m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
     m_LastTime = (float)glfwGetTime();
 
-    //TEMP_layer = new TestLayer(1600, 900);
+    // TEMP_layer = new TestLayer(1600, 900);
 }
 
 void WindowsWindow::Shutdown() {
-    //delete TEMP_layer;
+    // delete TEMP_layer;
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
 
 void WindowsWindow::OnUpdateStart() {
-    //float currentTime = (float)glfwGetTime();
-    //float deltaTime = currentTime - m_LastTime;
-    //m_LastTime = currentTime;
+    // float currentTime = (float)glfwGetTime();
+    // float deltaTime = currentTime - m_LastTime;
+    // m_LastTime = currentTime;
 
     // Render here
     MS_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -103,9 +101,9 @@ bool WindowsWindow::IsVSync() const {
 }
 
 void WindowsWindow::Resize(unsigned int width, unsigned int height) {
-    //glfwSetWindowSize(m_Window, width, height);
+    // glfwSetWindowSize(m_Window, width, height);
     glViewport(0, 0, width, height);
-    //TEMP_layer->Resize(width, height);
+    // TEMP_layer->Resize(width, height);
 }
 
 void WindowsWindow::InitEventCallbacks() {

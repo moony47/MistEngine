@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_DEBUG;MIST_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -103,7 +103,7 @@
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -130,7 +130,7 @@
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;GLFW_INCLUDE_NONE;MIST_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Mist;src\Mist\Tests;src\Platform;src\Platform\Windows;src\Platform\OpenGL;src\vendor;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -152,17 +152,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mist\KeyCodes.h" />
     <ClInclude Include="src\Mist.h" />
     <ClInclude Include="src\Mist\Application.h" />
     <ClInclude Include="src\Mist\Core.h" />
     <ClInclude Include="src\Mist\EntryPoint.h" />
     <ClInclude Include="src\Mist\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Mist\Events\Event.h" />
+    <ClInclude Include="src\Mist\Events\EventSystem.h" />
     <ClInclude Include="src\Mist\Events\KeyEvent.h" />
     <ClInclude Include="src\Mist\Events\MouseEvent.h" />
     <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Mist\Input.h" />
+    <ClInclude Include="src\Mist\KeyCodes.h" />
     <ClInclude Include="src\Mist\Layer.h" />
     <ClInclude Include="src\Mist\LayerStack.h" />
     <ClInclude Include="src\Mist\Logger.h" />
@@ -184,18 +185,9 @@
     <ClInclude Include="src\Platform\OpenGL\shading\Shader.h" />
     <ClInclude Include="src\Platform\OpenGL\shading\ShaderController.h" />
     <ClInclude Include="src\Platform\OpenGL\shading\Texture.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mistpch.h" />
-    <ClInclude Include="src\vendor\glm\simd\common.h" />
-    <ClInclude Include="src\vendor\glm\simd\exponential.h" />
-    <ClInclude Include="src\vendor\glm\simd\geometric.h" />
-    <ClInclude Include="src\vendor\glm\simd\integer.h" />
-    <ClInclude Include="src\vendor\glm\simd\matrix.h" />
-    <ClInclude Include="src\vendor\glm\simd\neon.h" />
-    <ClInclude Include="src\vendor\glm\simd\packing.h" />
-    <ClInclude Include="src\vendor\glm\simd\platform.h" />
-    <ClInclude Include="src\vendor\glm\simd\trigonometric.h" />
-    <ClInclude Include="src\vendor\glm\simd\vector_relational.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -218,13 +210,12 @@
     <ClCompile Include="src\Platform\OpenGL\shading\Shader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\shading\ShaderController.cpp" />
     <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mistpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

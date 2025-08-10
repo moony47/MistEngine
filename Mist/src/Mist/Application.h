@@ -1,8 +1,7 @@
 #pragma once
 #include "Mist/Core.h"
 
-#include "Events/ApplicationEvent.h"
-#include "Events/Event.h"
+#include "Events/EventSystem.h"
 #include "LayerStack.h"
 #include "Window.h"
 

@@ -5,9 +5,8 @@
 
 #include "imgui.h"
 #include "ImGuiOpenGLRenderer.h"
-#include "ImGuiGLFWRenderer.h"
 
-// TEMPORARY
+#include "ImGuiGLFWRenderer.h"
 #include <GLFW/glfw3.h>
 
 namespace Mist {
@@ -55,14 +54,11 @@ void ImGuiLayer::OnUpdateEnd() {
     static bool show = true;
     ImGui::ShowDemoWindow(&show);
 
-    ImGui::Text()
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void ImGuiLayer::OnEvent(Event& e) {
-
 }
 
 } // namespace Mist

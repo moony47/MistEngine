@@ -15,9 +15,9 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Mist/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Mist/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Mist/vendor/ImGui"
+IncludeDir["glm"] = "Mist/vendor/glm"
 
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
-IncludeDir["glm"] = "Mist/vendor/glm"
 
 group "Dependencies"
     include "Mist/vendor/GLFW"
@@ -53,11 +53,13 @@ project "Mist"
         "%{prj.name}/src/Platform/Windows",
         "%{prj.name}/src/Platform/OpenGL",
         "%{prj.name}/src/vendor",
+
         "%{prj.name}/vendor",
         "%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}",
     }
 
     links 
@@ -120,7 +122,9 @@ project "Sandbox"
     includedirs
     {
         "Mist/src",
-        "Mist/vendor/spdlog/include"
+        "Mist/vendor/spdlog/include",
+
+        "%{IncludeDir.glm}",
     }
 
     links

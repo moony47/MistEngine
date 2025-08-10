@@ -2,8 +2,8 @@
 
 #include "mistpch.h"
 
+#include "Mist/Events/EventSystem.h"
 #include "Mist/Core.h"
-#include "Mist/Events/Event.h"
 
 namespace Mist {
 
