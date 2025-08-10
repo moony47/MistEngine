@@ -57,6 +57,9 @@
     <ClInclude Include="src\Mist\Events\Event.h">
       <Filter>src\Mist\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mist\Events\EventSystem.h">
+      <Filter>src\Mist\Events</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mist\Events\KeyEvent.h">
       <Filter>src\Mist\Events</Filter>
     </ClInclude>
@@ -102,12 +105,6 @@
     <ClInclude Include="src\Mist\Window.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\ImGuiGLFWRenderer.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\Renderer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -152,6 +149,9 @@
     <ClCompile Include="src\Mist\Application.cpp">
       <Filter>src\Mist</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mist\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Mist\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp">
       <Filter>src\Mist\ImGui</Filter>
     </ClCompile>
@@ -175,12 +175,6 @@
     </ClCompile>
     <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp">
       <Filter>src\Mist\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\ImGuiGLFWRenderer.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp">
       <Filter>src\Platform\OpenGL</Filter>

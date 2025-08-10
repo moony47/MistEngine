@@ -2,6 +2,7 @@
 #include "Mist/Core.h"
 
 #include "Events/EventSystem.h"
+#include "ImGui/ImGuiLayer.h"
 #include "LayerStack.h"
 #include "Window.h"
 
@@ -32,6 +33,7 @@ private:
     bool OnWindowResize(WindowResizeEvent& e);
 
     std::unique_ptr<Window> m_Window;
+    ImGuiLayer* m_ImGuiLayer;
     bool m_Running = true;
 
     LayerStack m_LayerStack;

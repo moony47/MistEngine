@@ -14,10 +14,15 @@ public:
     }
     virtual void OnDetach() {
     }
+
     virtual void OnUpdateStart() {
     }
     virtual void OnUpdateEnd() {
     }
+
+    virtual void OnImGuiRender() {
+    }
+
     virtual void OnEvent(Event& e) {
     }
 

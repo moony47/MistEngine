@@ -8,8 +8,8 @@
 
 #include <GLAD/glad.h>
 
-#include "ImGuiGLFWRenderer.h"
-#include "ImGuiOpenGLRenderer.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 namespace Mist {
 

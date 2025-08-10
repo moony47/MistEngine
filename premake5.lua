@@ -123,7 +123,7 @@ project "Sandbox"
     {
         "Mist/src",
         "Mist/vendor/spdlog/include",
-
+        "Mist/vendor",
         "%{IncludeDir.glm}",
     }
 

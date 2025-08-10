@@ -1,5 +1,7 @@
 #include <Mist.h>
 
+#include "ImGui/imgui.h"
+
 class ExampleLayer : public Mist::Layer {
 public:
     ExampleLayer() :
@@ -10,6 +12,12 @@ public:
     }
 
     void OnUpdateEnd() override {
+    }
+
+    void OnImGuiRender() override {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello World");
+        ImGui::End();
     }
 
     void OnEvent(Mist::Event& e) override {
@@ -23,7 +31,6 @@ class Sandbox : public Mist::Application {
 public:
     Sandbox() {
         PushLayer(new ExampleLayer());
-        PushOverlay(new Mist::ImGuiLayer());
     }
     ~Sandbox() {
     }

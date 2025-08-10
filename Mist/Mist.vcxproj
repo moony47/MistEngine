@@ -174,8 +174,6 @@
     <ClInclude Include="src\Mist\Tests\TestSprites.h" />
     <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h" />
     <ClInclude Include="src\Mist\Window.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiGLFWRenderer.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\TestLayer.h" />
     <ClInclude Include="src\Platform\OpenGL\geometry\IndexBuffer.h" />
@@ -192,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp" />
+    <ClCompile Include="src\Mist\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mist\Layer.cpp" />
     <ClCompile Include="src\Mist\LayerStack.cpp" />
@@ -200,8 +199,6 @@
     <ClCompile Include="src\Mist\Tests\TestMenu.cpp" />
     <ClCompile Include="src\Mist\Tests\TestSprites.cpp" />
     <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiGLFWRenderer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\geometry\IndexBuffer.cpp" />
