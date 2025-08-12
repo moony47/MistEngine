@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Mist/Window.h"
-#include "TestLayer.h"
+#include "Mist/Renderer/GraphicsContext.h"
+
+#include "OpenGL/TestLayer.h"
 
 #include <GLFW/glfw3.h>
+
 
 namespace Mist {
 
@@ -41,18 +44,20 @@ private:
     virtual void Shutdown();
 
 private:
-    GLFWwindow* m_Window;
-    Renderer m_Renderer;
-
-    float m_LastTime = 0.0f;
-
     struct WindowData {
         std::string Title;
-        unsigned int Width, Height;
-        bool VSync;
+        unsigned int Width = 0, Height = 0;
+        bool VSync = false;
 
         EventCallbackFn EventCallback;
     };
+
+    GLFWwindow* m_Window;
+    GraphicsContext* m_Context;
+
+    Renderer m_Renderer;
+
+    float m_LastTime = 0.0f;
 
     WindowData m_Data;
 

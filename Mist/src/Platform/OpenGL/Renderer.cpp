@@ -4,8 +4,8 @@
 
 #include <GLAD/glad.h>
 
-#include "geometry/VertexArray.h"
-#include "shading/Shader.h"
+#include "VertexArray.h"
+#include "Shader.h"
 
 namespace Mist {
 
@@ -16,7 +16,7 @@ void ClearGLErrors() {
 bool LogGLCall(const char* function, const char* file, int line) {
     bool noError = true;
     while (GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
+        MIST_CORE_ERROR("[OpenGL Error] ({0}): {1} {2}:{3}", error, function, file, line);
         noError = false;
     }
     return noError;

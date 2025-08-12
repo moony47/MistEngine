@@ -2,7 +2,7 @@
 
 #include "IndexBuffer.h"
 
-#include "Renderer.h"
+#include "OpenGL/Renderer.h"
 #include <GLAD/glad.h>
 
 namespace Mist {

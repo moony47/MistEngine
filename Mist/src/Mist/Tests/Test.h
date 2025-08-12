@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer.h"
+#include "OpenGL/Renderer.h"
 
 namespace Mist::Testing {
 

@@ -1,8 +1,8 @@
 #include "mistpch.h"
 
-#include "Application.h"
-#include "Input.h"
-#include "Logger.h"
+#include "Mist/Application.h"
+#include "Mist/Input.h"
+#include "Mist/Logger.h"
 
 namespace Mist {
 

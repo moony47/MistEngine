@@ -2,9 +2,9 @@
 
 #include "ShaderController.h"
 
-#include "Renderer.h"
-#include "Shader.h"
-#include "Texture.h"
+#include "OpenGL/Renderer.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
 
 namespace Mist {
 
@@ -43,7 +43,7 @@ void ShaderController::UnbindShader() {
 
 bool ShaderController::BindTexture(unsigned int textureSlot, unsigned int textureID) {
     if (textureSlot >= (unsigned int)m_MaxTextureSlots) {
-        std::cout << "[BindTexture] Texture Slot " << textureSlot << " not supported." << std::endl;
+        MIST_CORE_ERROR("[BindTexture] Texture Slot {0} not supported.", textureSlot);
         return false;
     }
 
@@ -57,7 +57,7 @@ bool ShaderController::BindTexture(unsigned int textureSlot, unsigned int textur
 
 void ShaderController::UnbindTexture(unsigned int textureSlot) {
     if (textureSlot >= (unsigned int)m_MaxTextureSlots) {
-        std::cout << "[UnbindTexture] Texture Slot " << textureSlot << " not supported." << std::endl;
+        MIST_CORE_ERROR("[UnbindTexture] Texture Slot {0} not supported.", textureSlot);
         return;
     }
 
@@ -82,7 +82,7 @@ void ShaderController::DeregisterShader(unsigned int shaderID) {
 }
 
 void ShaderController::DeregisterTexture(unsigned int textureID) {
-    for (unsigned int textureSlot = 0; textureSlot < m_MaxTextureSlots; textureSlot++)
+    for (int textureSlot = 0; textureSlot < m_MaxTextureSlots; textureSlot++)
         if (m_CurrentTextureIDs[textureSlot] == textureID)
             UnbindTexture(textureSlot);
 }

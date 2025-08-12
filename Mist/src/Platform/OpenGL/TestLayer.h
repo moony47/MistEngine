@@ -3,12 +3,12 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "shading/ShaderController.h"
+#include "OpenGL/ShaderController.h"
 
 #include <imgui.h>
 
-#include "Renderer.h"
-#include "TestMenu.h"
+#include "OpenGL/Renderer.h"
+#include "Mist/Tests/TestMenu.h"
 
 namespace Mist {
 

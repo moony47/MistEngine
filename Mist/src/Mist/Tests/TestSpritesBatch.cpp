@@ -2,14 +2,14 @@
 
 #include "TestSpritesBatch.h"
 
-#include "shading/Shader.h"
-#include "shading/ShaderController.h"
-#include "shading/Texture.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/ShaderController.h"
+#include "OpenGL/Texture.h"
 
-#include "geometry/IndexBuffer.h"
-#include "geometry/VertexArray.h"
-#include "geometry/VertexBuffer.h"
-#include "geometry/VertexBufferLayout.h"
+#include "OpenGL/IndexBuffer.h"
+#include "OpenGL/VertexArray.h"
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/VertexBufferLayout.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/glm.hpp"
@@ -107,8 +107,8 @@ void TestSpritesBatch::OnRender(const Renderer& renderer) {
 }
 
 void TestSpritesBatch::Resize(unsigned int width, unsigned int height) {
-    m_Width = width;
-    m_Height = height;
+    m_Width = (float)width;
+    m_Height = (float)height;
 
     glm::mat4 proj = glm::ortho(0.0f, m_Width, 0.0f, m_Height);
     glm::mat4 view(1.0f);

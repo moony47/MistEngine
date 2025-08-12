@@ -1,7 +1,7 @@
 #include "mistpch.h"
 
 #include "VertexArray.h"
-#include "Renderer.h"
+#include "OpenGL/Renderer.h"
 #include "VertexBufferLayout.h"
 
 namespace Mist {
@@ -24,7 +24,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
         const auto& element = elements[i];
         MS_GLCALL(glEnableVertexAttribArray(i));
         MS_GLCALL(glVertexAttribPointer(i, element.count, element.type, element.normalised, layout.GetStride(),
-                                        (const void*)offset));
+                                        (const void*) (long long)offset));
         offset += element.count * VertexBufferLayoutElement::GetSizeOfType(element.type);
     }
 }

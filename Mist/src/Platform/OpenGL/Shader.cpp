@@ -2,7 +2,7 @@
 
 #include "Shader.h"
 
-#include "Renderer.h"
+#include "OpenGL/Renderer.h"
 #include "ShaderController.h"
 
 namespace Mist {
@@ -12,7 +12,11 @@ Shader::Shader(ShaderController& shaderController,
                const std::string& fragShaderPath) :
     m_ShaderController(shaderController) {
     ShaderProgramSource source = ParseShader(vertShaderPath, fragShaderPath);
-    m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+    auto result = CreateShader(source.VertexSource, source.FragmentSource);
+    if (result)
+        m_RendererID = *result;
+    else
+        MIST_CORE_ERROR(result.error());
 }
 
 Shader::~Shader() {
@@ -65,7 +69,7 @@ Shader::ShaderProgramSource Shader::ParseShader(const std::string& vertShaderPat
     return {ss[0].str(), ss[1].str()};
 }
 
-unsigned int Shader::CompileShader(unsigned int type, const std::string& source) const {
+std::expected<unsigned int, std::string> Shader::CompileShader(unsigned int type, const std::string& source) const {
     MS_GLCALL(unsigned int id = glCreateShader(type));
     const char* src = source.c_str();
     MS_GLCALL(glShaderSource(id, 1, &src, nullptr));
@@ -79,28 +83,34 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
         MS_GLCALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)alloca(length * sizeof(char));
         MS_GLCALL(glGetShaderInfoLog(id, length, &length, message));
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader"
-                  << std::endl;
-        std::cout << message << std::endl;
+        MIST_CORE_ERROR("Failed to compile ", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), " shader");
+        MIST_CORE_ERROR(message);
         MS_GLCALL(glDeleteShader(id));
-        return 0;
+        return std::unexpected(message);
     }
 
     return id;
 }
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const {
+std::expected<unsigned int, std::string> Shader::CreateShader(const std::string& vertexShader,
+                                                              const std::string& fragmentShader) const {
     unsigned int program = glCreateProgram();
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-    MS_GLCALL(glAttachShader(program, vs));
-    MS_GLCALL(glAttachShader(program, fs));
+    auto vertexResult = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    if (!vertexResult)
+        return vertexResult;
+
+    auto fragmentResult = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+    if (!fragmentResult)
+        return fragmentResult;
+
+    MS_GLCALL(glAttachShader(program, *vertexResult));
+    MS_GLCALL(glAttachShader(program, *fragmentResult));
     MS_GLCALL(glLinkProgram(program));
     MS_GLCALL(glValidateProgram(program));
 
-    MS_GLCALL(glDeleteShader(vs));
-    MS_GLCALL(glDeleteShader(fs));
+    MS_GLCALL(glDeleteShader(*vertexResult));
+    MS_GLCALL(glDeleteShader(*fragmentResult));
 
     return program;
 }
@@ -108,7 +118,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 int Shader::GetUniformLocation(const std::string& name) const {
     MS_GLCALL(int location = glGetUniformLocation(m_RendererID, name.c_str()));
     if (location == -1)
-        std::cout << "Warning: uniform '" << name << "' doesn't exist" << std::endl;
+        MIST_CORE_WARN("Uniform '", name, "' doesn't exist");
     return location;
 }
 

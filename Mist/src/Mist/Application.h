@@ -1,10 +1,10 @@
 #pragma once
 #include "Mist/Core.h"
 
-#include "Events/EventSystem.h"
-#include "ImGui/ImGuiLayer.h"
-#include "LayerStack.h"
-#include "Window.h"
+#include "Mist/Events/EventSystem.h"
+#include "Mist/ImGui/ImGuiLayer.h"
+#include "Mist/LayerStack.h"
+#include "Mist/Window.h"
 
 namespace Mist {
 

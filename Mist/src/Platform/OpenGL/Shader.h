@@ -36,8 +36,9 @@ private:
     };
 
     ShaderProgramSource ParseShader(const std::string& vertShaderPath, const std::string& fragShaderPath) const;
-    unsigned int CompileShader(unsigned int type, const std::string& source) const;
-    unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const;
+    std::expected<unsigned int, std::string> CompileShader(unsigned int type, const std::string& source) const;
+    std::expected<unsigned int, std::string> CreateShader(const std::string& vertexShader,
+                                                          const std::string& fragmentShader) const;
 };
 
 } // namespace Mist

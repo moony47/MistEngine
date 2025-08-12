@@ -1,10 +1,9 @@
 #include "mistpch.h"
 
-#include <TestLayer.h>
-
-#include "TestClearColour.h"
-#include "TestSprites.h"
-#include "TestSpritesBatch.h"
+#include "OpenGL/TestLayer.h"
+#include "Mist/Tests/TestClearColour.h"
+#include "Mist/Tests/TestSprites.h"
+#include "Mist/Tests/TestSpritesBatch.h"
 
 #include <GLAD/glad.h>
 

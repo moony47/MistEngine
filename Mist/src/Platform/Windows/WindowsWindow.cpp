@@ -1,11 +1,9 @@
 #include "mistpch.h"
 #include "WindowsWindow.h"
 
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include <imgui.h>
-
 #include "Mist/Events/EventSystem.h"
+
+#include "OpenGL/OpenGLContext.h"
 
 namespace Mist {
 
@@ -32,7 +30,7 @@ void WindowsWindow::Init(const WindowProps& props) {
     m_Data.Width = props.Width;
     m_Data.Height = props.Height;
 
-    MIST_CORE_INFO("Creating Window: {0} ({1} {2})", props.Title, props.Width, props.Height);
+    MIST_CORE_TRACE("Creating Window: {0} ({1} {2})", props.Title, props.Width, props.Height);
 
     if (!s_GLFWInitialized) {
         int success = glfwInit();
@@ -42,45 +40,29 @@ void WindowsWindow::Init(const WindowProps& props) {
     }
 
     m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
-    glfwMakeContextCurrent(m_Window);
+
+    m_Context = new OpenGLContext(m_Window);
+    m_Context->Init();
+
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
 
     InitEventCallbacks();
 
-    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
-    MIST_CORE_INFO("OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
-
     MS_GLCALL(glEnable(GL_BLEND));
     MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    // IMGUI_CHECKVERSION();
-    // ImGui::CreateContext();
-    // ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-    // ImGui_ImplOpenGL3_Init("#version 460");
-    // ImGui::StyleColorsDark();
-
-    // m_IO.reset(&ImGui::GetIO());
-    // m_IO->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-    // m_IO->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-
     m_LastTime = (float)glfwGetTime();
-
-    // TEMP_layer = new TestLayer(1600, 900);
 }
 
 void WindowsWindow::Shutdown() {
     // delete TEMP_layer;
+    delete m_Context;
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
 
 void WindowsWindow::OnUpdateStart() {
-    // float currentTime = (float)glfwGetTime();
-    // float deltaTime = currentTime - m_LastTime;
-    // m_LastTime = currentTime;
-
     // Render here
     MS_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     m_Renderer.Clear();
@@ -88,7 +70,7 @@ void WindowsWindow::OnUpdateStart() {
 
 void WindowsWindow::OnUpdateEnd() {
     glfwPollEvents();
-    glfwSwapBuffers(m_Window);
+    m_Context->SwapBuffers();
 }
 
 void WindowsWindow::SetVSync(bool enabled) {
@@ -101,9 +83,7 @@ bool WindowsWindow::IsVSync() const {
 }
 
 void WindowsWindow::Resize(unsigned int width, unsigned int height) {
-    // glfwSetWindowSize(m_Window, width, height);
     glViewport(0, 0, width, height);
-    // TEMP_layer->Resize(width, height);
 }
 
 void WindowsWindow::InitEventCallbacks() {

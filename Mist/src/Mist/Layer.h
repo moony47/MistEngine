@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include "Events/EventSystem.h"
+#include "Mist/Events/EventSystem.h"
 
 namespace Mist {
 

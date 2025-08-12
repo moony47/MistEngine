@@ -1,10 +1,14 @@
 #pragma once
 
 #ifdef MIST_PLATFORM_WINDOWS
-    #ifdef MIST_BUILD_DLL
-        #define MIST_API __declspec(dllexport)
+    #if MIST_DYNAMIC_LINK
+        #ifdef MIST_BUILD_DLL
+            #define MIST_API __declspec(dllexport)
+        #else
+            #define MIST_API __declspec(dllimport)
+        #endif
     #else
-        #define MIST_API __declspec(dllimport)
+        #define MIST_API
     #endif
 #else
     #error Only supports Windows

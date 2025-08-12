@@ -2,7 +2,7 @@
 
 #include <GLAD/glad.h>
 
-#include "Renderer.h"
+#include "OpenGL/Renderer.h"
 
 namespace Mist {
 

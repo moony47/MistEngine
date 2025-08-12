@@ -16,7 +16,6 @@ IncludeDir["GLFW"] = "Mist/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Mist/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["glm"] = "Mist/vendor/glm"
-
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
 
 group "Dependencies"
@@ -28,8 +27,10 @@ group ""
 
 project "Mist"
     location "Mist"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
+    cppdialect "C++23"
+    staticruntime "On"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -41,25 +42,33 @@ project "Mist"
     {
         "premake5.lua",
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
+    }
+
+
+    defines 
+    {
+        "_CRT_SECURE_NO_WARNINGS",
+        "GLFW_INCLUDE_NONE"
     }
 
     includedirs
     {
         "%{prj.name}/src",
-        "%{prj.name}/src/Mist",
-        "%{prj.name}/src/Mist/Tests",
         "%{prj.name}/src/Platform",
-        "%{prj.name}/src/Platform/Windows",
-        "%{prj.name}/src/Platform/OpenGL",
-        "%{prj.name}/src/vendor",
 
         "%{prj.name}/vendor",
         "%{prj.name}/vendor/spdlog/include",
+
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}",
     }
 
     links 
@@ -71,26 +80,18 @@ project "Mist"
     }
 
     filter "system:windows"
-        cppdialect "C++23"
         systemversion "latest"
 
         defines
         {
             "MIST_PLATFORM_WINDOWS",
             "MIST_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
-        }
-
-        postbuildcommands
-        {
-            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
         }
 
     filter "configurations:Debug"
         defines 
         {
-            "MIST_DEBUG",
-            "MIST_ENABLE_ASSERTS"
+            "MIST_DEBUG"
         }
         runtime "Debug"
         symbols "On"
@@ -109,6 +110,8 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++23"
+    staticruntime "On"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -133,7 +136,6 @@ project "Sandbox"
     }
 
     filter "system:windows"
-        cppdialect "C++23"
         systemversion "latest"
 
         defines
