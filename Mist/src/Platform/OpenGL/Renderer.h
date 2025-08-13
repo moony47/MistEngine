@@ -3,11 +3,11 @@
 #include <GLAD/glad.h>
 #include "glm/glm.hpp"
 
-#define MS_ASSERT(x) if (!(x)) __debugbreak()
-#define MS_GLCALL(x) \
+#define MIST_GLASSERT(x) if (!(x)) __debugbreak()
+#define MIST_GLCALL(x) \
     ClearGLErrors();\
     x;\
-    MS_ASSERT(LogGLCall(#x, __FILE__, __LINE__))
+    MIST_GLASSERT(LogGLCall(#x, __FILE__, __LINE__))
 
 namespace Mist {
 

@@ -6,9 +6,8 @@
 #include "OpenGL/ShaderController.h"
 #include "OpenGL/Texture.h"
 
-#include "OpenGL/IndexBuffer.h"
+#include "Mist/Renderer/Buffer.h"
 #include "OpenGL/VertexArray.h"
-#include "OpenGL/VertexBuffer.h"
 #include "OpenGL/VertexBufferLayout.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
@@ -88,14 +87,14 @@ void TestSpritesBatch::OnUpdate(float deltaTime) {
     m_VA = std::make_unique<VertexArray>();
 
     // Create and attach VertexBuffer and IndexBuffer
-    VertexBuffer vb(m_VertexBuffer.get(), numSprites * 4 * 9 * sizeof(float));
-    IndexBuffer ib(m_IndexBuffer.get(), numSprites * 6);
-    m_VA->AddBuffer(vb, *m_VBL);
+    VertexBuffer* vb = VertexBuffer::Create(m_VertexBuffer.get(), numSprites * 4 * 9 * sizeof(float));
+    IndexBuffer* ib = IndexBuffer::Create(m_IndexBuffer.get(), numSprites * 6);
+    m_VA->AddBuffer(*vb, *m_VBL);
 
     // Unbind everything before vb and ib are deleted
     m_VA->Unbind();
-    vb.Unbind();
-    ib.Unbind();
+    vb->Unbind();
+    ib->Unbind();
 }
 
 void TestSpritesBatch::OnRender(const Renderer& renderer) {

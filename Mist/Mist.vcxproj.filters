@@ -13,6 +13,9 @@
     <Filter Include="src\Mist\ImGui">
       <UniqueIdentifier>{031AEBE0-EFE7-DEE6-D87B-4F0DC4E8BA4B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mist\Renderer">
+      <UniqueIdentifier>{DF65920B-4B7C-90A1-94F3-1BC300496129}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mist\Tests">
       <UniqueIdentifier>{9B7FAEE1-874D-A2E7-70E1-120E5C4E7E4C}</UniqueIdentifier>
     </Filter>
@@ -21,12 +24,6 @@
     </Filter>
     <Filter Include="src\Platform\OpenGL">
       <UniqueIdentifier>{35A49437-A105-7245-2A73-B8F796D3A804}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Platform\OpenGL\geometry">
-      <UniqueIdentifier>{50F92674-3CB4-1620-E56B-8F6AD10561B0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Platform\OpenGL\shading">
-      <UniqueIdentifier>{A2D6E74F-0EE4-1536-97CA-112103D7E1EC}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
@@ -105,6 +102,18 @@
     <ClInclude Include="src\Mist\MouseButtonCodes.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Buffer.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\GraphicsContext.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Renderer.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Texture.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mist\Tests\Test.h">
       <Filter>src\Mist\Tests</Filter>
     </ClInclude>
@@ -123,32 +132,35 @@
     <ClInclude Include="src\Mist\Window.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLIndexBuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\Renderer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\Shader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\ShaderController.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\TestLayer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\geometry\IndexBuffer.h">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
+    <ClInclude Include="src\Platform\OpenGL\Texture.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\geometry\VertexArray.h">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
+    <ClInclude Include="src\Platform\OpenGL\VertexArray.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\geometry\VertexBuffer.h">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\geometry\VertexBufferLayout.h">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\shading\Shader.h">
-      <Filter>src\Platform\OpenGL\shading</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\shading\ShaderController.h">
-      <Filter>src\Platform\OpenGL\shading</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\shading\Texture.h">
-      <Filter>src\Platform\OpenGL\shading</Filter>
+    <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1436,6 +1448,12 @@
     <ClCompile Include="src\Mist\Logger.cpp">
       <Filter>src\Mist</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Buffer.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Renderer.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mist\Tests\TestClearColour.cpp">
       <Filter>src\Mist\Tests</Filter>
     </ClCompile>
@@ -1448,29 +1466,32 @@
     <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp">
       <Filter>src\Mist\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLIndexBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\Shader.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\ShaderController.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\geometry\IndexBuffer.cpp">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
+    <ClCompile Include="src\Platform\OpenGL\Texture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\geometry\VertexArray.cpp">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\geometry\VertexBuffer.cpp">
-      <Filter>src\Platform\OpenGL\geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\shading\Shader.cpp">
-      <Filter>src\Platform\OpenGL\shading</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\shading\ShaderController.cpp">
-      <Filter>src\Platform\OpenGL\shading</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\shading\Texture.cpp">
-      <Filter>src\Platform\OpenGL\shading</Filter>
+    <ClCompile Include="src\Platform\OpenGL\VertexArray.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>

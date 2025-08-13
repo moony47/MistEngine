@@ -13,8 +13,8 @@ TestClearColour::TestClearColour(ShaderController& shaderController, float width
 }
 
 void TestClearColour::OnRender(const Renderer& renderer) {
-    MS_GLCALL(glClearColor(m_ClearColour[0], m_ClearColour[1], m_ClearColour[2], m_ClearColour[3]));
-    MS_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+    MIST_GLCALL(glClearColor(m_ClearColour[0], m_ClearColour[1], m_ClearColour[2], m_ClearColour[3]));
+    MIST_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void TestClearColour::OnImGuiRender() {

@@ -6,9 +6,9 @@
 #include "OpenGL/ShaderController.h"
 #include "OpenGL/Texture.h"
 
-#include "OpenGL/IndexBuffer.h"
+#include "Mist/Renderer/Buffer.h"
+
 #include "OpenGL/VertexArray.h"
-#include "OpenGL/VertexBuffer.h"
 #include "OpenGL/VertexBufferLayout.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
@@ -43,14 +43,14 @@ TestSprites::TestSprites(ShaderController& shaderController, float winWidth, flo
 
     m_VA = std::make_unique<VertexArray>();
 
-    VertexBuffer vb(singleQuadVertices, 16 * sizeof(float));
+    VertexBuffer* vb = VertexBuffer::Create(singleQuadVertices, 16 * sizeof(float));
     VertexBufferLayout vbl;
     vbl.Push<float>(2);
     vbl.Push<float>(2);
 
-    m_VA->AddBuffer(vb, vbl);
+    m_VA->AddBuffer(*vb, vbl);
 
-    m_IB = std::make_unique<IndexBuffer>(singleQuadIndices, 6);
+    m_IB.reset(IndexBuffer::Create(singleQuadIndices, 6));
 
     m_Shader.reset(m_ShaderController.CreateShader("../Mist/res/shaders/Basic.vert",
                                                    "../Mist/res/shaders/Basic.frag"));
@@ -71,7 +71,7 @@ TestSprites::TestSprites(ShaderController& shaderController, float winWidth, flo
     glm::mat4 mvp = proj * view;
     m_Shader->SetUniformMat4f(m_uVPLoc, mvp);
 
-    vb.Unbind();
+    vb->Unbind();
     m_VA->Unbind();
     m_IB->Unbind();
     m_Shader->Unbind();

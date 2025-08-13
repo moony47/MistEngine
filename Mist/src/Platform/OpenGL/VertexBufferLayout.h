@@ -26,7 +26,7 @@ struct VertexBufferLayoutElement {
         case GL_UNSIGNED_BYTE:
             return sizeof(GLbyte);
         }
-        MS_ASSERT(false);
+        MIST_GLASSERT(false);
         return 0;
     }
 };

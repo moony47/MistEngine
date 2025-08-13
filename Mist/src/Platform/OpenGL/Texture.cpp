@@ -20,22 +20,22 @@ Texture::Texture(ShaderController& shaderController, const std::string& path) :
     stbi_set_flip_vertically_on_load(1);
     m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 
-    MS_GLCALL(glGenTextures(1, &m_RendererID));
-    MS_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+    MIST_GLCALL(glGenTextures(1, &m_RendererID));
+    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
-    MS_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    MS_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    MS_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    MS_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-    MS_GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
-    MS_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+    MIST_GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
+    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
 Texture::~Texture() {
     delete[] m_LocalBuffer;
     m_ShaderController.DeregisterTexture(m_RendererID);
-    MS_GLCALL(glDeleteTextures(1, &m_RendererID));
+    MIST_GLCALL(glDeleteTextures(1, &m_RendererID));
 }
 
 void Texture::Bind(unsigned int slot) {

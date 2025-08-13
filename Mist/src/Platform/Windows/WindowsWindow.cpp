@@ -49,8 +49,8 @@ void WindowsWindow::Init(const WindowProps& props) {
 
     InitEventCallbacks();
 
-    MS_GLCALL(glEnable(GL_BLEND));
-    MS_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    //MIST_GLCALL(glEnable(GL_BLEND));
+    //MIST_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     m_LastTime = (float)glfwGetTime();
 }
@@ -64,7 +64,7 @@ void WindowsWindow::Shutdown() {
 
 void WindowsWindow::OnUpdateStart() {
     // Render here
-    MS_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    MIST_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     m_Renderer.Clear();
 }
 

@@ -23,13 +23,13 @@ bool LogGLCall(const char* function, const char* file, int line) {
 }
 
 void Renderer::Clear() {
-    MS_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+    MIST_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void Renderer::Draw(const VertexArray& va, const Shader& shader, unsigned int count) const {
     shader.Bind();
     va.Bind();
-    MS_GLCALL(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));
+    MIST_GLCALL(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));
 }
 
 } // namespace Mist

@@ -29,14 +29,14 @@ ShaderController::~ShaderController() {
 
 void ShaderController::BindShader(unsigned int shaderID) {
     if (m_CurrentShaderID != shaderID) {
-        MS_GLCALL(glUseProgram(shaderID));
+        MIST_GLCALL(glUseProgram(shaderID));
         m_CurrentShaderID = shaderID;
     }
 }
 
 void ShaderController::UnbindShader() {
     if (m_CurrentShaderID != 0) {
-        MS_GLCALL(glUseProgram(0));
+        MIST_GLCALL(glUseProgram(0));
         m_CurrentShaderID = 0;
     }
 }
@@ -48,8 +48,8 @@ bool ShaderController::BindTexture(unsigned int textureSlot, unsigned int textur
     }
 
     if (m_CurrentTextureIDs[textureSlot] != textureID) {
-        MS_GLCALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
-        MS_GLCALL(glBindTexture(GL_TEXTURE_2D, textureID));
+        MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
+        MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, textureID));
         m_CurrentTextureIDs[textureSlot] = textureID;
     }
     return true;
@@ -62,8 +62,8 @@ void ShaderController::UnbindTexture(unsigned int textureSlot) {
     }
 
     if (m_CurrentTextureIDs[textureSlot] != 0) {
-        MS_GLCALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
-        MS_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+        MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
+        MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
         m_CurrentTextureIDs[textureSlot] = 0;
     }
 }
