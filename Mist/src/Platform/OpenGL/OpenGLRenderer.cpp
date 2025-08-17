@@ -1,11 +1,11 @@
 #include "mistpch.h"
 
-#include "Renderer.h"
+#include "OpenGLRenderer.h"
 
 #include <GLAD/glad.h>
 
-#include "VertexArray.h"
-#include "Shader.h"
+#include "OpenGLVertexArray.h"
+#include "OpenGLShader.h"
 
 namespace Mist {
 
@@ -22,11 +22,11 @@ bool LogGLCall(const char* function, const char* file, int line) {
     return noError;
 }
 
-void Renderer::Clear() {
+void OpenGLRenderer::Clear() {
     MIST_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Renderer::Draw(const VertexArray& va, const Shader& shader, unsigned int count) const {
+void OpenGLRenderer::Draw(const VertexArray& va, const Shader& shader, unsigned int count) const {
     shader.Bind();
     va.Bind();
     MIST_GLCALL(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));

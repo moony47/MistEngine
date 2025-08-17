@@ -3,6 +3,8 @@
 #include "Mist/Window.h"
 #include "Mist/Renderer/GraphicsContext.h"
 
+#include "OpenGL/OpenGLRenderer.h"
+
 #include "OpenGL/TestLayer.h"
 
 #include <GLFW/glfw3.h>
@@ -55,7 +57,7 @@ private:
     GLFWwindow* m_Window;
     GraphicsContext* m_Context;
 
-    Renderer m_Renderer;
+    OpenGLRenderer m_Renderer;
 
     float m_LastTime = 0.0f;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGL/Renderer.h"
+#include "OpenGL/OpenGLRenderer.h"
 
 namespace Mist::Testing {
 
@@ -15,7 +15,7 @@ public:
 
     virtual void OnUpdate(float deltaTime) {
     }
-    virtual void OnRender(const Renderer& renderer) {
+    virtual void OnRender(const OpenGLRenderer& renderer) {
     }
     virtual void OnImGuiRender() {
     }

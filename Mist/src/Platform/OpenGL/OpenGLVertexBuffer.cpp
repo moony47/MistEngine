@@ -3,11 +3,12 @@
 #include "OpenGLVertexBuffer.h"
 
 #include <GLAD/glad.h>
-#include "OpenGL/Renderer.h"
+#include "OpenGL/OpenGLRenderer.h"
 
 namespace Mist {
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(const float* data, size_t size) {
+OpenGLVertexBuffer::OpenGLVertexBuffer(const float* data, size_t size) :
+    m_Layout({}) {
     MIST_GLCALL(glCreateBuffers(1, &m_RendererID));
     MIST_GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
     MIST_GLCALL(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));

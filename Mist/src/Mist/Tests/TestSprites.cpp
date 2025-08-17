@@ -3,21 +3,19 @@
 #include "TestSprites.h"
 
 #include "OpenGL/Shader.h"
-#include "OpenGL/ShaderController.h"
+#include "Mist/Renderer/ShaderController.h"
 #include "OpenGL/Texture.h"
 
 #include "Mist/Renderer/Buffer.h"
 
 #include "OpenGL/VertexArray.h"
-#include "OpenGL/VertexBufferLayout.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/glm.hpp"
 
 namespace Mist::Testing {
 
-TestSprites::TestSprites(ShaderController& shaderController, float winWidth, float winHeight) :
-    m_ShaderController(shaderController),
+TestSprites::TestSprites(float winWidth, float winHeight) :
     m_Width(winWidth),
     m_Height(winHeight) {
     const int numSprites = 4096;
@@ -28,11 +26,11 @@ TestSprites::TestSprites(ShaderController& shaderController, float winWidth, flo
     float tex, Vx, Vy, Cr, Cg, Cb;
     for (int i = 0; i < numSprites; i++) {
         tex = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        Vx = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 500.0f - 250.0f;
-        Vy = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 500.0f - 250.0f;
-        Cr = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
-        Cg = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
-        Cb = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
+        Vx =  static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 500.0f - 250.0f;
+        Vy =  static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 500.0f - 250.0f;
+        Cr =  static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
+        Cg =  static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
+        Cb =  static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.5f + 0.5f;
         if (tex > 0.5f)
             m_StarSprites.emplace_back(true, glm::vec4(0.3f, 0.3f, 0.8f, 1.0f), glm::vec4(Cr, Cg, Cb, 0.0f),
                                        glm::vec3(500.0f, 500.0f, 0.0f), glm::vec3(Vx, Vy, 0.0f));
@@ -44,15 +42,16 @@ TestSprites::TestSprites(ShaderController& shaderController, float winWidth, flo
     m_VA = std::make_unique<VertexArray>();
 
     VertexBuffer* vb = VertexBuffer::Create(singleQuadVertices, 16 * sizeof(float));
-    VertexBufferLayout vbl;
-    vbl.Push<float>(2);
-    vbl.Push<float>(2);
+    BufferLayout vbl = {
+        {ShaderDataType::Float2, "a_Position"},
+        {ShaderDataType::Float2, "a_TexCoords"}
+    };
 
     m_VA->AddBuffer(*vb, vbl);
 
     m_IB.reset(IndexBuffer::Create(singleQuadIndices, 6));
 
-    m_Shader.reset(m_ShaderController.CreateShader("../Mist/res/shaders/Basic.vert",
+    m_Shader.reset(ShaderController::GetInstance()->CreateShader("../Mist/res/shaders/Basic.vert",
                                                    "../Mist/res/shaders/Basic.frag"));
 
     m_uVPLoc = m_Shader->GetUniformLocation("u_VP");
@@ -61,8 +60,8 @@ TestSprites::TestSprites(ShaderController& shaderController, float winWidth, flo
     m_uColourLoc = m_Shader->GetUniformLocation("u_Colour");
 
     // Add textures
-    m_TexDiamond.reset(m_ShaderController.CreateTexture("../Mist/res/textures/diamond.png"));
-    m_TexStar.reset(m_ShaderController.CreateTexture("../Mist/res/textures/star.png"));
+    m_TexDiamond.reset(ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/diamond.png"));
+    m_TexStar.reset(ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/star.png"));
     m_TexDiamond->Bind(0);
     m_TexStar->Bind(1);
 
@@ -84,7 +83,7 @@ void TestSprites::OnUpdate(float deltaTime) {
         sprite.Update(deltaTime, m_Width, m_Height);
 }
 
-void TestSprites::OnRender(const Renderer& renderer) {
+void TestSprites::OnRender(const OpenGLRenderer& renderer) {
     glm::mat4 model(1.0f);
 
     m_Shader->SetUniform1i(m_uTexLoc, 1);

@@ -2,7 +2,7 @@
 
 #include "OpenGLIndexBuffer.h"
 
-#include "OpenGL/Renderer.h"
+#include "OpenGL/OpenGLRenderer.h"
 #include <GLAD/glad.h>
 
 namespace Mist {

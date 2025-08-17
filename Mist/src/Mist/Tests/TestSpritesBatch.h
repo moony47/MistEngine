@@ -10,12 +10,11 @@ const unsigned int batchQuadIndices[] = {0, 1, 2, 2, 3, 0};
 
 namespace Mist {
 
-class ShaderController;
 class VertexArray;
 class VertexBufferLayout;
 class IndexBuffer;
 class Shader;
-class Texture;
+class Texture2D;
 
 namespace Testing {
 
@@ -82,10 +81,10 @@ private:
 
 class TestSpritesBatch : public Test {
 public:
-    TestSpritesBatch(ShaderController& shaderController, float winWidth, float winHeight);
+    TestSpritesBatch(float winWidth, float winHeight);
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(const Renderer& renderer) override;
+    void OnRender(const OpenGLRenderer& renderer) override;
     void Resize(unsigned int width, unsigned int height) override;
 
 private:
@@ -100,11 +99,9 @@ private:
     std::unique_ptr<VertexArray> m_VA;
     std::unique_ptr<VertexBufferLayout> m_VBL;
 
-    ShaderController& m_ShaderController;
-
     std::unique_ptr<Shader> m_Shader;
-    std::unique_ptr<Texture> m_TexDiamond;
-    std::unique_ptr<Texture> m_TexStar;
+    std::unique_ptr<Texture2D> m_TexDiamond;
+    std::unique_ptr<Texture2D> m_TexStar;
 
     int m_uMVPLoc;
     int m_uTexLoc;

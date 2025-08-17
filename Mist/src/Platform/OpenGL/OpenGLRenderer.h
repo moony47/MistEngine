@@ -17,7 +17,7 @@ bool LogGLCall(const char* function, const char* file, int line);
 class VertexArray;
 class Shader;
 
-class Renderer {
+class OpenGLRenderer {
 private:
 public:
     void Clear();

@@ -3,12 +3,12 @@
 #include "TestSpritesBatch.h"
 
 #include "OpenGL/Shader.h"
-#include "OpenGL/ShaderController.h"
+#include "Mist/Renderer/ShaderController.h"
 #include "OpenGL/Texture.h"
 
 #include "Mist/Renderer/Buffer.h"
 #include "OpenGL/VertexArray.h"
-#include "OpenGL/VertexBufferLayout.h"
+//#include "OpenGL/OpenGLVertexBufferLayout.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/glm.hpp"
@@ -17,8 +17,7 @@ namespace Mist::Testing {
 
 const size_t numSprites = 4096;
 
-TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float winWidth, float winHeight) :
-    m_ShaderController(shaderController),
+TestSpritesBatch::TestSpritesBatch(float winWidth, float winHeight) :
     m_Width(winWidth),
     m_Height(winHeight) {
 
@@ -44,22 +43,22 @@ TestSpritesBatch::TestSpritesBatch(ShaderController& shaderController, float win
     }
 
     // Define VertexBuffer layout
-    m_VBL = std::make_unique<VertexBufferLayout>();
-    m_VBL->Push<float>(2);
-    m_VBL->Push<float>(2);
-    m_VBL->Push<float>(4);
-    m_VBL->Push<float>(1);
+    //m_VBL = std::make_unique<VertexBufferLayout>();
+    //m_VBL->Push<float>(2);
+    //m_VBL->Push<float>(2);
+    //m_VBL->Push<float>(4);
+    //m_VBL->Push<float>(1);
 
     // Compile shader and push onto device
-    m_Shader.reset(m_ShaderController.CreateShader("../Mist/res/shaders/Batch.vert", "../Mist/res/shaders/Batch.frag"));
+    m_Shader.reset(ShaderController::GetInstance()->CreateShader("../Mist/res/shaders/Batch.vert", "../Mist/res/shaders/Batch.frag"));
 
     // Cache uniform locations
     m_uMVPLoc = m_Shader->GetUniformLocation("u_MVP");
     m_uTexLoc = m_Shader->GetUniformLocation("u_Texture");
 
     // Push textures onto device
-    m_TexDiamond.reset(m_ShaderController.CreateTexture("../Mist/res/textures/diamond.png"));
-    m_TexStar.reset(m_ShaderController.CreateTexture("../Mist/res/textures/star.png"));
+    m_TexDiamond.reset(ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/diamond.png"));
+    m_TexStar.reset(ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/star.png"));
     m_TexDiamond->Bind(0);
     m_TexStar->Bind(1);
 
@@ -97,7 +96,7 @@ void TestSpritesBatch::OnUpdate(float deltaTime) {
     ib->Unbind();
 }
 
-void TestSpritesBatch::OnRender(const Renderer& renderer) {
+void TestSpritesBatch::OnRender(const OpenGLRenderer& renderer) {
     // Make single call to draw all sprites
     renderer.Draw(*m_VA, *m_Shader, (unsigned int)m_Sprites.size() * 6);
 

@@ -6,42 +6,47 @@
 #include "Mist/LayerStack.h"
 #include "Mist/Window.h"
 
+
 namespace Mist {
 
-class MIST_API Application {
-public:
-    Application();
-    virtual ~Application();
+	class Shader;
+	class Texture2D;
+	class VertexArray;
+	class OrthographicCamera;
 
-    void Run();
+	class MIST_API Application {
+	public:
+		Application();
+		virtual ~Application();
 
-    void OnEvent(Event& e);
+		void Run();
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* overlay);
+		void OnEvent(Event& e);
 
-    inline Window& GetWindow() {
-        return *m_Window;
-    }
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 
-    inline static Application& Get() {
-        return *s_Instance;
-    }
+		inline Window& GetWindow() {
+			return *m_Window;
+		}
 
-private:
-    bool OnWindowClose(WindowCloseEvent& e);
-    bool OnWindowResize(WindowResizeEvent& e);
+		inline static Application& Get() {
+			return *s_Instance;
+		}
 
-    std::unique_ptr<Window> m_Window;
-    ImGuiLayer* m_ImGuiLayer;
-    bool m_Running = true;
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
-    LayerStack m_LayerStack;
+		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running = true;
 
-private:
-    static Application* s_Instance;
-};
+		LayerStack m_LayerStack;
+	private:
+		static Application* s_Instance;
+	};
 
-Application* CreateApplication();
+	Application* CreateApplication();
 
 } // namespace Mist

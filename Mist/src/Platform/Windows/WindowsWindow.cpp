@@ -49,14 +49,16 @@ void WindowsWindow::Init(const WindowProps& props) {
 
     InitEventCallbacks();
 
-    //MIST_GLCALL(glEnable(GL_BLEND));
-    //MIST_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	MIST_GLCALL(glEnable(GL_BLEND));
+	MIST_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     m_LastTime = (float)glfwGetTime();
+
+    //TEMP_layer = new TestLayer(m_Data.Width, m_Data.Height);
 }
 
 void WindowsWindow::Shutdown() {
-    // delete TEMP_layer;
+    //delete TEMP_layer;
     delete m_Context;
     glfwDestroyWindow(m_Window);
     glfwTerminate();
@@ -64,11 +66,15 @@ void WindowsWindow::Shutdown() {
 
 void WindowsWindow::OnUpdateStart() {
     // Render here
-    MIST_GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-    m_Renderer.Clear();
 }
 
 void WindowsWindow::OnUpdateEnd() {
+	float currentTime = (float)glfwGetTime();
+    float deltaTime = m_LastTime - currentTime;
+    m_LastTime = currentTime;
+
+    //TEMP_layer->Update(deltaTime, ImGui::GetIO(), m_Renderer);
+
     glfwPollEvents();
     m_Context->SwapBuffers();
 }
@@ -83,6 +89,7 @@ bool WindowsWindow::IsVSync() const {
 }
 
 void WindowsWindow::Resize(unsigned int width, unsigned int height) {
+    //TEMP_layer->Resize(width, height);
     glViewport(0, 0, width, height);
 }
 

@@ -8,13 +8,13 @@
 
 namespace Mist {
 
-IndexBuffer* IndexBuffer::Create(const uint32_t* indices, size_t size) {
+IndexBuffer* IndexBuffer::Create(const uint32_t* indices, size_t count) {
     switch (Renderer::GetAPI()) {
-        case RendererAPI::None:
+        case RendererAPI::API::None:
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
-        case RendererAPI::OpenGL:
-            return new OpenGLIndexBuffer(indices, size);
+        case RendererAPI::API::OpenGL:
+            return new OpenGLIndexBuffer(indices, count);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");
@@ -23,10 +23,10 @@ IndexBuffer* IndexBuffer::Create(const uint32_t* indices, size_t size) {
 
 VertexBuffer* VertexBuffer::Create(const float* vertices, size_t size) {
     switch (Renderer::GetAPI()) {
-        case RendererAPI::None:
+        case RendererAPI::API::None:
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
-        case RendererAPI::OpenGL:
+        case RendererAPI::API::OpenGL:
             return new OpenGLVertexBuffer(vertices, size);
     }
 

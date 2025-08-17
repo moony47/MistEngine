@@ -5,6 +5,15 @@
 #include "Mist/Layer.h"
 #include "Mist/Logger.h"
 
+#include "Mist/Renderer/Renderer.h"
+#include "Mist/Renderer/RenderCommand.h"
+#include "Mist/Renderer/Buffer.h"
+#include "Mist/Renderer/ShaderController.h"
+#include "Mist/Renderer/VertexArray.h"
+#include "Mist/Renderer/Shader.h"
+#include "Mist/Renderer/Texture.h"
+#include "Mist/Renderer/Camera.h"
+
 #include "Mist/Input.h"
 #include "Mist/KeyCodes.h"
 #include "Mist/MouseButtonCodes.h"

@@ -6,8 +6,7 @@
 
 namespace Mist::Testing {
 
-TestMenu::TestMenu(ShaderController& shaderController, Test*& currentTestPointer, float winWidth, float winHeight) :
-    m_ShaderController(shaderController),
+TestMenu::TestMenu(Test*& currentTestPointer, float winWidth, float winHeight) :
     m_CurrentTest(currentTestPointer),
     m_Width(winWidth),
     m_Height(winHeight) {

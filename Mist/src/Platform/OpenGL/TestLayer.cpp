@@ -1,6 +1,7 @@
 #include "mistpch.h"
 
 #include "OpenGL/TestLayer.h"
+
 #include "Mist/Tests/TestClearColour.h"
 #include "Mist/Tests/TestSprites.h"
 #include "Mist/Tests/TestSpritesBatch.h"
@@ -14,7 +15,7 @@ namespace Mist {
 
 TestLayer::TestLayer(unsigned int width, unsigned int height) :
     m_CurrentTest(nullptr),
-    m_TestMenu(new Testing::TestMenu(m_ShaderController, m_CurrentTest, (float)width, (float)height)) {
+    m_TestMenu(new Testing::TestMenu(m_CurrentTest, (float)width, (float)height)) {
 
     m_TestMenu->RegisterTest<Testing::TestClearColour>("Clear Colour");
     m_TestMenu->RegisterTest<Testing::TestSprites>("Sprites (Single)");
@@ -33,7 +34,7 @@ void TestLayer::Resize(unsigned int width, unsigned int height) {
     m_CurrentTest->Resize(width, height);
 }
 
-void TestLayer::Update(float deltaTime, std::unique_ptr<ImGuiIO>& io, Renderer& renderer) {
+void TestLayer::Update(float deltaTime, ImGuiIO& io, OpenGLRenderer& renderer) {
     if (m_CurrentTest) {
         m_CurrentTest->OnUpdate(deltaTime);
         m_CurrentTest->OnRender(renderer);
@@ -46,7 +47,7 @@ void TestLayer::Update(float deltaTime, std::unique_ptr<ImGuiIO>& io, Renderer& 
         }
         m_CurrentTest->OnImGuiRender();
 
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io->Framerate, io->Framerate);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
         ImGui::End();
     }
 }

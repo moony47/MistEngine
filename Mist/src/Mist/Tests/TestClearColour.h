@@ -3,15 +3,13 @@
 #include "Test.h"
 namespace Mist {
 
-class ShaderController;
-
 namespace Testing {
 
 class TestClearColour : public Test {
 public:
-    TestClearColour(ShaderController& shaderController, float width, float height);
+    TestClearColour(float width, float height);
 
-    void OnRender(const Renderer& renderer) override;
+    void OnRender(const OpenGLRenderer& renderer) override;
     void OnImGuiRender() override;
 
 private:

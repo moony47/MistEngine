@@ -1,20 +1,27 @@
 #pragma once
 
-namespace Mist {
+#include "RenderCommand.h"
+#include "Camera.h"
+#include "Shader.h"
 
-enum class RendererAPI {
-    None = 0,
-    OpenGL = 1
-};
+namespace Mist {
 
 class Renderer {
 public:
-    static inline RendererAPI GetAPI() {
-        return s_RendererAPI;
-    }
+    static void BeginScene(OrthographicCamera& camera);
+    static void EndScene();
 
+    static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
+
+    inline static inline RendererAPI::API GetAPI() {
+        return RendererAPI::GetAPI();
+    }
 private:
-    static RendererAPI s_RendererAPI;
+    struct SceneData {
+        glm::mat4 VP;
+    };
+
+    static SceneData* s_SceneData;
 };
 
 } // namespace Mist
