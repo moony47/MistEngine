@@ -11,8 +11,7 @@ const unsigned int batchQuadIndices[] = {0, 1, 2, 2, 3, 0};
 namespace Mist {
 
 class VertexArray;
-class VertexBufferLayout;
-class IndexBuffer;
+class BufferLayout;
 class Shader;
 class Texture2D;
 
@@ -84,24 +83,24 @@ public:
     TestSpritesBatch(float winWidth, float winHeight);
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(const OpenGLRenderer& renderer) override;
+    void OnRender() override;
     void Resize(unsigned int width, unsigned int height) override;
 
 private:
     float m_Width;
-    float m_Height;
+	float m_Height;
 
-    std::unique_ptr<float[]> m_VertexBuffer;
-    std::unique_ptr<unsigned int[]> m_IndexBuffer;
+	std::unique_ptr<float[]> m_VertexBuffer;
+	std::unique_ptr<unsigned int[]> m_IndexBuffer;
 
     std::vector<Quad> m_Sprites;
 
-    std::unique_ptr<VertexArray> m_VA;
-    std::unique_ptr<VertexBufferLayout> m_VBL;
+    std::shared_ptr<VertexArray> m_VA;
+    std::shared_ptr<BufferLayout> m_VBL;
 
-    std::unique_ptr<Shader> m_Shader;
-    std::unique_ptr<Texture2D> m_TexDiamond;
-    std::unique_ptr<Texture2D> m_TexStar;
+    std::shared_ptr<Shader> m_Shader;
+    std::shared_ptr<Texture2D> m_TexDiamond;
+    std::shared_ptr<Texture2D> m_TexStar;
 
     int m_uMVPLoc;
     int m_uTexLoc;

@@ -6,12 +6,9 @@
 #include <imgui.h>
 
 #include "Mist/Renderer/ShaderController.h"
-#include "OpenGL/OpenGLRenderer.h"
 #include "Mist/Tests/TestMenu.h"
 
 namespace Mist {
-
-class ShaderController;
 
 class TestLayer {
 private:
@@ -24,7 +21,7 @@ public:
 
     void Resize(unsigned int width, unsigned int height);
 
-    void Update(float deltaTime, ImGuiIO& io, OpenGLRenderer& renderer);
+    void Update(float deltaTime, ImGuiIO& io);
 };
 
 } // namespace Mist

@@ -4,6 +4,7 @@
 
 #include "Mist/Events/EventSystem.h"
 #include "Mist/Core.h"
+#include "Mist/Core/DeltaTime.h"
 
 namespace Mist {
 
@@ -26,8 +27,8 @@ public:
     virtual ~Window() {
     }
 
-    virtual void OnUpdateStart() = 0;
-    virtual void OnUpdateEnd() = 0;
+    virtual void OnUpdateStart(DeltaTime deltaTime) = 0;
+    virtual void OnUpdateEnd(DeltaTime deltaTime) = 0;
 
     virtual unsigned int GetWidth() const = 0;
     virtual unsigned int GetHeight() const = 0;

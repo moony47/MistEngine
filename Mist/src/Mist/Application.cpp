@@ -11,6 +11,9 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/glm.hpp"
 
+//TEMP
+#include <GLFW/glfw3.h>
+
 namespace Mist {
 
 	Application* Application::s_Instance = nullptr;
@@ -31,22 +34,26 @@ namespace Mist {
 
 	void Application::Run() {
 		while (m_Running) {
-			m_Window->OnUpdateStart();
+			float time = (float)glfwGetTime();
+			DeltaTime deltaTime = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+			m_Window->OnUpdateStart(deltaTime);
 
 			RenderCommand::SetClearColour(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f));
 			RenderCommand::Clear();
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdateStart();
+				layer->OnUpdateStart(deltaTime);
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdateEnd();
+				layer->OnUpdateEnd(deltaTime);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
+				layer->OnImGuiRender(deltaTime);
 			m_ImGuiLayer->End();
 
-			m_Window->OnUpdateEnd();
+			m_Window->OnUpdateEnd(deltaTime);
 		}
 	}
 

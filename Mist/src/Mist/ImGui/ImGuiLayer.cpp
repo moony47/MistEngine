@@ -66,9 +66,11 @@ void ImGuiLayer::OnDetach() {
 void ImGuiLayer::OnEvent(Event& e) {
 }
 
-void ImGuiLayer::OnImGuiRender() {
+void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime)
+{
     static bool show = true;
-    ImGui::ShowDemoWindow(&show);
+	ImGui::ShowDemoWindow(&show);
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(), 1.0f / deltaTime.GetSeconds());
 }
 
 void ImGuiLayer::Begin() {

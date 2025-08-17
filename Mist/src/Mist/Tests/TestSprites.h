@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Test.h"
+#include "Mist/Renderer/Camera.h"
 
 static const float singleQuadVertices[] = {-50.0f, -50.0f, 0.0f, 0.0f, 50.0f,  -50.0f, 1.0f, 0.0f,
                                            50.0f,  50.0f,  1.0f, 1.0f, -50.0f, 50.0f,  0.0f, 1.0f};
@@ -10,7 +11,6 @@ static const unsigned int singleQuadIndices[] = {0, 1, 2, 2, 3, 0};
 namespace Mist {
 
 class VertexArray;
-class IndexBuffer;
 class Shader;
 class Texture2D;
 
@@ -51,7 +51,7 @@ public:
     TestSprites(float winWidth, float winHeight);
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(const OpenGLRenderer& renderer) override;
+    void OnRender() override;
     void Resize(unsigned int width, unsigned int height) override;
 
 private:
@@ -61,12 +61,13 @@ private:
     std::vector<Sprite> m_StarSprites;
     std::vector<Sprite> m_DiamondSprites;
 
-    std::unique_ptr<VertexArray> m_VA;
-    std::unique_ptr<IndexBuffer> m_IB;
+    OrthographicCamera m_Camera;
 
-    std::unique_ptr<Shader> m_Shader;
-    std::unique_ptr<Texture2D> m_TexDiamond;
-    std::unique_ptr<Texture2D> m_TexStar;
+    std::shared_ptr<VertexArray> m_VA;
+
+    std::shared_ptr<Shader> m_Shader;
+    std::shared_ptr<Texture2D> m_TexDiamond;
+    std::shared_ptr<Texture2D> m_TexStar;
 
     int m_uVPLoc;
     int m_uTexLoc;

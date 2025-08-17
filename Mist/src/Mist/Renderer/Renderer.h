@@ -13,7 +13,7 @@ public:
 
     static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
 
-    inline static inline RendererAPI::API GetAPI() {
+    inline static RendererAPI::API GetAPI() {
         return RendererAPI::GetAPI();
     }
 private:

@@ -3,6 +3,7 @@
 
 #include "Mist/Events/EventSystem.h"
 
+#include "OpenGL/OpenGLRenderer.h"
 #include "OpenGL/OpenGLContext.h"
 
 namespace Mist {
@@ -45,16 +46,12 @@ void WindowsWindow::Init(const WindowProps& props) {
     m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
-    SetVSync(true);
+    SetVSync(false);
 
     InitEventCallbacks();
 
 	MIST_GLCALL(glEnable(GL_BLEND));
 	MIST_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-    m_LastTime = (float)glfwGetTime();
-
-    //TEMP_layer = new TestLayer(m_Data.Width, m_Data.Height);
 }
 
 void WindowsWindow::Shutdown() {
@@ -64,17 +61,13 @@ void WindowsWindow::Shutdown() {
     glfwTerminate();
 }
 
-void WindowsWindow::OnUpdateStart() {
+void WindowsWindow::OnUpdateStart(DeltaTime deltaTime)
+{
     // Render here
 }
 
-void WindowsWindow::OnUpdateEnd() {
-	float currentTime = (float)glfwGetTime();
-    float deltaTime = m_LastTime - currentTime;
-    m_LastTime = currentTime;
-
-    //TEMP_layer->Update(deltaTime, ImGui::GetIO(), m_Renderer);
-
+void WindowsWindow::OnUpdateEnd(DeltaTime deltaTime)
+{
     glfwPollEvents();
     m_Context->SwapBuffers();
 }

@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Mist/Events/EventSystem.h"
+#include "Mist/Core/DeltaTime.h"
 
 namespace Mist {
 
@@ -15,12 +16,12 @@ public:
     virtual void OnDetach() {
     }
 
-    virtual void OnUpdateStart() {
+    virtual void OnUpdateStart(DeltaTime deltaTime) {
     }
-    virtual void OnUpdateEnd() {
+    virtual void OnUpdateEnd(DeltaTime deltaTime) {
     }
 
-    virtual void OnImGuiRender() {
+    virtual void OnImGuiRender(DeltaTime deltaTime) {
     }
 
     virtual void OnEvent(Event& e) {

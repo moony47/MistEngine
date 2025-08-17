@@ -14,6 +14,8 @@
 #include "Mist/Renderer/Texture.h"
 #include "Mist/Renderer/Camera.h"
 
+#include "Mist/Core/DeltaTime.h"
+
 #include "Mist/Input.h"
 #include "Mist/KeyCodes.h"
 #include "Mist/MouseButtonCodes.h"

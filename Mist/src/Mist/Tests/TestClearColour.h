@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Test.h"
+
 namespace Mist {
 
 namespace Testing {
@@ -9,7 +10,7 @@ class TestClearColour : public Test {
 public:
     TestClearColour(float width, float height);
 
-    void OnRender(const OpenGLRenderer& renderer) override;
+    void OnRender() override;
     void OnImGuiRender() override;
 
 private:

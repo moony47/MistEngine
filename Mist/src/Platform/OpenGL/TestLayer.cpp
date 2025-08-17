@@ -34,10 +34,10 @@ void TestLayer::Resize(unsigned int width, unsigned int height) {
     m_CurrentTest->Resize(width, height);
 }
 
-void TestLayer::Update(float deltaTime, ImGuiIO& io, OpenGLRenderer& renderer) {
+void TestLayer::Update(float deltaTime, ImGuiIO& io) {
     if (m_CurrentTest) {
         m_CurrentTest->OnUpdate(deltaTime);
-        m_CurrentTest->OnRender(renderer);
+        m_CurrentTest->OnRender();
 
         ImGui::Begin("Test");
 

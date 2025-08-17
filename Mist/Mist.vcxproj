@@ -143,15 +143,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mist\Renderer\Camera.h" />
-    <ClInclude Include="src\Mist\Renderer\Shader.h" />
-    <ClInclude Include="src\Mist\Renderer\ShaderController.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
-    <ClInclude Include="src\Mist\Renderer\RenderCommand.h" />
-    <ClInclude Include="src\Mist\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Mist.h" />
     <ClInclude Include="src\Mist\Application.h" />
     <ClInclude Include="src\Mist\Core.h" />
+    <ClInclude Include="src\Mist\Core\DeltaTime.h" />
     <ClInclude Include="src\Mist\EntryPoint.h" />
     <ClInclude Include="src\Mist\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Mist\Events\Event.h" />
@@ -166,19 +161,31 @@
     <ClInclude Include="src\Mist\Logger.h" />
     <ClInclude Include="src\Mist\MouseButtonCodes.h" />
     <ClInclude Include="src\Mist\Renderer\Buffer.h" />
+    <ClInclude Include="src\Mist\Renderer\Camera.h" />
     <ClInclude Include="src\Mist\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Mist\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Mist\Renderer\Renderer.h" />
+    <ClInclude Include="src\Mist\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Mist\Renderer\Shader.h" />
+    <ClInclude Include="src\Mist\Renderer\ShaderController.h" />
     <ClInclude Include="src\Mist\Renderer\Texture.h" />
+    <ClInclude Include="src\Mist\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Mist\Tests\Test.h" />
+    <ClInclude Include="src\Mist\Tests\TestClearColour.h" />
+    <ClInclude Include="src\Mist\Tests\TestMenu.h" />
+    <ClInclude Include="src\Mist\Tests\TestSprites.h" />
+    <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h" />
     <ClInclude Include="src\Mist\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLIndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShaderController.h" />
-    <ClInclude Include="src\Platform\OpenGL\TestLayer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\TestLayer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mistpch.h" />
@@ -601,13 +608,8 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\Mist\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp" />
-    <ClCompile Include="src\Mist\Renderer\ShaderController.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
-    <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Mist\Application.cpp" />
     <ClCompile Include="src\Mist\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp" />
@@ -615,23 +617,31 @@
     <ClCompile Include="src\Mist\LayerStack.cpp" />
     <ClCompile Include="src\Mist\Logger.cpp" />
     <ClCompile Include="src\Mist\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Mist\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Mist\Renderer\ShaderController.cpp" />
+    <ClCompile Include="src\Mist\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Mist\Tests\TestClearColour.cpp" />
+    <ClCompile Include="src\Mist\Tests\TestMenu.cpp" />
+    <ClCompile Include="src\Mist\Tests\TestSprites.cpp" />
+    <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShaderController.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mistpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\Mist\Renderer\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

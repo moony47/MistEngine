@@ -2,7 +2,7 @@
 
 #include "TestClearColour.h"
 
-#include "OpenGL/ShaderController.h"
+#include "Mist/Renderer/ShaderController.h"
 
 #include <imgui.h>
 
@@ -12,7 +12,7 @@ TestClearColour::TestClearColour(float width, float height) :
     m_ClearColour{0.2f, 0.3f, 0.8f, 1.0f} {
 }
 
-void TestClearColour::OnRender(const OpenGLRenderer& renderer) {
+void TestClearColour::OnRender() {
     MIST_GLCALL(glClearColor(m_ClearColour[0], m_ClearColour[1], m_ClearColour[2], m_ClearColour[3]));
     MIST_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }

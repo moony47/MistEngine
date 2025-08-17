@@ -3,7 +3,7 @@
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoords;
 layout(location = 2) in vec4 colour;
-layout(location = 3) in float texIndex;
+layout(location = 3) in int texIndex;
 
 out vec2 v_TexCoords;
 out vec4 v_Colour;
@@ -15,5 +15,5 @@ void main() {
    gl_Position = u_MVP * position;
    v_TexCoords = texCoords;
    v_Colour = colour;
-	v_TexIndex = int(texIndex);
+	v_TexIndex = texIndex;
 }

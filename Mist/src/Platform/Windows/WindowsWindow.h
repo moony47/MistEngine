@@ -3,9 +3,9 @@
 #include "Mist/Window.h"
 #include "Mist/Renderer/GraphicsContext.h"
 
-#include "OpenGL/OpenGLRenderer.h"
+#include "Mist/Core/DeltaTime.h"
 
-#include "OpenGL/TestLayer.h"
+#include "ImGui/imgui.h"
 
 #include <GLFW/glfw3.h>
 
@@ -17,8 +17,8 @@ public:
     WindowsWindow(const WindowProps& props);
     virtual ~WindowsWindow();
 
-    void OnUpdateStart() override;
-    void OnUpdateEnd() override;
+    void OnUpdateStart(DeltaTime deltaTime) override;
+    void OnUpdateEnd(DeltaTime deltaTime) override;
 
     inline unsigned int GetWidth() const override {
         return m_Data.Width;
@@ -57,13 +57,9 @@ private:
     GLFWwindow* m_Window;
     GraphicsContext* m_Context;
 
-    OpenGLRenderer m_Renderer;
-
     float m_LastTime = 0.0f;
 
     WindowData m_Data;
-
-    TestLayer* TEMP_layer;
 
     std::unique_ptr<ImGuiIO> m_IO;
 };

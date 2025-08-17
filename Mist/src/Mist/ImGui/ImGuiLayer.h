@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Mist/Layer.h"
-
-// #include "Events/EventSystem.h"
+#include "Mist/Core/DeltaTime.h"
 
 namespace Mist {
 
@@ -15,7 +14,7 @@ public:
     void OnDetach() override;
     void OnEvent(Event& e) override;
 
-    void OnImGuiRender() override;
+    void OnImGuiRender(DeltaTime deltaTime) override;
 
     void Begin();
     void End();
