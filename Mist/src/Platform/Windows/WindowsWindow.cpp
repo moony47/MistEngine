@@ -2,6 +2,7 @@
 #include "WindowsWindow.h"
 
 #include "Mist/Events/EventSystem.h"
+#include "Mist/Renderer/Renderer.h"
 
 #include "OpenGL/OpenGLRenderer.h"
 #include "OpenGL/OpenGLContext.h"
@@ -63,7 +64,7 @@ void WindowsWindow::Shutdown() {
 
 void WindowsWindow::OnUpdateStart(DeltaTime deltaTime)
 {
-    // Render here
+    RenderCommand::Clear();
 }
 
 void WindowsWindow::OnUpdateEnd(DeltaTime deltaTime)

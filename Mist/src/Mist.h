@@ -23,5 +23,7 @@
 
 #include "Mist/ImGui/ImGuiLayer.h"
 
+#include "glm/glm.hpp"
+
 // Entry Point - Keep at bottom
 #include "Mist/EntryPoint.h"

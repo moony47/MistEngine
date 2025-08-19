@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Mist/Renderer/Shader.h"
-#include "glm/glm.hpp"
 
 namespace Mist {
 
@@ -22,6 +21,7 @@ namespace Mist {
 		void SetUniform1iv(int loc, unsigned int count, int* v0) const override;
 		void SetUniform1f(int loc, float v0) const override;
 		void SetUniform4f(int loc, float v0, float v1, float v2, float v3) const override;
+        //void SetUniform4fv(int loc, const glm::vec4& v) const override;
 
 		int GetUniformLocation(const std::string& name) const override;
 

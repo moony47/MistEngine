@@ -40,9 +40,6 @@ namespace Mist {
 
 			m_Window->OnUpdateStart(deltaTime);
 
-			RenderCommand::SetClearColour(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f));
-			RenderCommand::Clear();
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdateStart(deltaTime);
 			for (Layer* layer : m_LayerStack)

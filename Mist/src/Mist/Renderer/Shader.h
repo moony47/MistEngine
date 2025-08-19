@@ -16,7 +16,8 @@ namespace Mist {
 		virtual void SetUniform1i(int loc, int v0) const = 0;
 		virtual void SetUniform1iv(int loc, unsigned int count, int* v0) const = 0;
 		virtual void SetUniform1f(int loc, float v0) const = 0;
-		virtual void SetUniform4f(int loc, float v0, float v1, float v2, float v3) const = 0;
+        virtual void SetUniform4f(int loc, float v0, float v1, float v2, float v3) const = 0;
+        //virtual void SetUniform4fv(int loc, const glm::vec4& v) const;
 
 		virtual int GetUniformLocation(const std::string& name) const = 0;
 
