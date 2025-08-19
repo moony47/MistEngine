@@ -7,6 +7,9 @@
     <Filter Include="src\Mist">
       <UniqueIdentifier>{193622CF-0503-7DDA-2E1C-6B821A48B268}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mist\Core">
+      <UniqueIdentifier>{1112BEC8-7DD2-39FF-460D-837CB28C7EDB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mist\Events">
       <UniqueIdentifier>{DDEBACF5-4977-1ABA-5288-9DAEBE9276BA}</UniqueIdentifier>
     </Filter>
@@ -62,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="src\Mist\Core.h">
       <Filter>src\Mist</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\DeltaTime.h">
+      <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\EntryPoint.h">
       <Filter>src\Mist</Filter>
@@ -1446,7 +1452,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Core\DeltaTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Application.cpp">
