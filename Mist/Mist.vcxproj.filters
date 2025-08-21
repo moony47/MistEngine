@@ -138,21 +138,6 @@
     <ClInclude Include="src\Mist\Renderer\VertexArray.h">
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Tests\Test.h">
-      <Filter>src\Mist\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Tests\TestClearColour.h">
-      <Filter>src\Mist\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Tests\TestMenu.h">
-      <Filter>src\Mist\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Tests\TestSprites.h">
-      <Filter>src\Mist\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h">
-      <Filter>src\Mist\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mist\Window.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
@@ -181,9 +166,6 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\TestLayer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
@@ -1490,18 +1472,6 @@
     <ClCompile Include="src\Mist\Renderer\VertexArray.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\Tests\TestClearColour.cpp">
-      <Filter>src\Mist\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mist\Tests\TestMenu.cpp">
-      <Filter>src\Mist\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mist\Tests\TestSprites.cpp">
-      <Filter>src\Mist\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp">
-      <Filter>src\Mist\Tests</Filter>
-    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1529,9 +1499,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
@@ -1544,6 +1511,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

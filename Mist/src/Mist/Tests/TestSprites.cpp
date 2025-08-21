@@ -41,7 +41,7 @@ namespace Mist::Testing {
 
 		m_VA.reset(VertexArray::Create());
 
-		std::shared_ptr<VertexBuffer> vb;
+		Ref<VertexBuffer> vb;
 		vb.reset(VertexBuffer::Create(singleQuadVertices, 16 * sizeof(float)));
 		BufferLayout vbl = {
 			{ShaderDataType::Float2, "a_Position"},
@@ -50,7 +50,7 @@ namespace Mist::Testing {
 		vb->SetLayout(vbl);
 		m_VA->AddVertexBuffer(vb);
 
-		std::shared_ptr<IndexBuffer> ib;
+		Ref<IndexBuffer> ib;
 		ib.reset(IndexBuffer::Create(singleQuadIndices, 6));
 		m_VA->SetIndexBuffer(ib);
 

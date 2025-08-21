@@ -61,7 +61,7 @@ private:
 
     WindowData m_Data;
 
-    std::unique_ptr<ImGuiIO> m_IO;
+    Scope<ImGuiIO> m_IO;
 };
 
 } // namespace Mist

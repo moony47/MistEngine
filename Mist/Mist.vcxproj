@@ -170,11 +170,6 @@
     <ClInclude Include="src\Mist\Renderer\ShaderController.h" />
     <ClInclude Include="src\Mist\Renderer\Texture.h" />
     <ClInclude Include="src\Mist\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Mist\Tests\Test.h" />
-    <ClInclude Include="src\Mist\Tests\TestClearColour.h" />
-    <ClInclude Include="src\Mist\Tests\TestMenu.h" />
-    <ClInclude Include="src\Mist\Tests\TestSprites.h" />
-    <ClInclude Include="src\Mist\Tests\TestSpritesBatch.h" />
     <ClInclude Include="src\Mist\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLIndexBuffer.h" />
@@ -185,7 +180,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\TestLayer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mistpch.h" />
@@ -621,11 +615,8 @@
     <ClCompile Include="src\Mist\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Mist\Renderer\ShaderController.cpp" />
+    <ClCompile Include="src\Mist\Renderer\Texture.cpp" />
     <ClCompile Include="src\Mist\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Mist\Tests\TestClearColour.cpp" />
-    <ClCompile Include="src\Mist\Tests\TestMenu.cpp" />
-    <ClCompile Include="src\Mist\Tests\TestSprites.cpp" />
-    <ClCompile Include="src\Mist\Tests\TestSpritesBatch.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderer.cpp" />
@@ -635,7 +626,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\TestLayer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mistpch.cpp">

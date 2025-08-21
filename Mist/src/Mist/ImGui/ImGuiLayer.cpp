@@ -66,11 +66,13 @@ void ImGuiLayer::OnDetach() {
 void ImGuiLayer::OnEvent(Event& e) {
 }
 
-void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime)
-{
+void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
     static bool show = true;
-	ImGui::ShowDemoWindow(&show);
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(), 1.0f / deltaTime.GetSeconds());
+    ImGui::ShowDemoWindow(&show);
+    ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
+                1.0f / deltaTime.GetSeconds());
+    ImGui::Text("      ImGui FPS: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                ImGui::GetIO().Framerate);
 }
 
 void ImGuiLayer::Begin() {
@@ -82,7 +84,7 @@ void ImGuiLayer::Begin() {
 void ImGuiLayer::End() {
     ImGuiIO& io = ImGui::GetIO();
     Application& app = Application::Get();
-    io.DisplaySize = ImVec2((float) app.GetWindow().GetWidth(), (float) app.GetWindow().GetHeight());
+    io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

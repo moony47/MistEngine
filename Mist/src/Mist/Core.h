@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef MIST_PLATFORM_WINDOWS
     #if MIST_DYNAMIC_LINK
         #ifdef MIST_BUILD_DLL
@@ -41,3 +43,13 @@
 #define MIST_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 #define BIT(x) (1 << x)
+
+namespace Mist {
+
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+
+}

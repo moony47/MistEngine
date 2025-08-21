@@ -63,11 +63,11 @@ private:
 
     OrthographicCamera m_Camera;
 
-    std::shared_ptr<VertexArray> m_VA;
+    Ref<VertexArray> m_VA;
 
-    std::shared_ptr<Shader> m_Shader;
-    std::shared_ptr<Texture2D> m_TexDiamond;
-    std::shared_ptr<Texture2D> m_TexStar;
+    Ref<Shader> m_Shader;
+    Ref<Texture2D> m_TexDiamond;
+    Ref<Texture2D> m_TexStar;
 
     int m_uVPLoc;
     int m_uTexLoc;

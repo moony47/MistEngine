@@ -86,9 +86,9 @@ namespace Mist::Testing {
 		m_VA.reset(VertexArray::Create());
 
 		// Create and attach VertexBuffer and IndexBuffer
-		std::shared_ptr<VertexBuffer> vb;
+		Ref<VertexBuffer> vb;
 		vb.reset(VertexBuffer::Create(m_VertexBuffer.get(), numSprites * 4 * 9 * sizeof(float)));
-		std::shared_ptr<IndexBuffer> ib;
+		Ref<IndexBuffer> ib;
 		ib.reset(IndexBuffer::Create(m_IndexBuffer.get(), numSprites * 6));
 
 		vb->SetLayout(*m_VBL);

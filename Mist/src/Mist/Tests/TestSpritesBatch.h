@@ -90,17 +90,17 @@ private:
     float m_Width;
 	float m_Height;
 
-	std::unique_ptr<float[]> m_VertexBuffer;
-	std::unique_ptr<unsigned int[]> m_IndexBuffer;
+	Scope<float[]> m_VertexBuffer;
+	Scope<unsigned int[]> m_IndexBuffer;
 
     std::vector<Quad> m_Sprites;
 
-    std::shared_ptr<VertexArray> m_VA;
-    std::shared_ptr<BufferLayout> m_VBL;
+    Ref<VertexArray> m_VA;
+    Ref<BufferLayout> m_VBL;
 
-    std::shared_ptr<Shader> m_Shader;
-    std::shared_ptr<Texture2D> m_TexDiamond;
-    std::shared_ptr<Texture2D> m_TexStar;
+    Ref<Shader> m_Shader;
+    Ref<Texture2D> m_TexDiamond;
+    Ref<Texture2D> m_TexStar;
 
     int m_uMVPLoc;
     int m_uTexLoc;

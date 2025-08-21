@@ -8,26 +8,26 @@
 
 namespace Mist {
 
-IndexBuffer* IndexBuffer::Create(const uint32_t* indices, size_t count) {
+Ref<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, size_t count) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::None:
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return new OpenGLIndexBuffer(indices, count);
+            return std::make_shared<OpenGLIndexBuffer>(indices, count);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");
     return nullptr;
 }
 
-VertexBuffer* VertexBuffer::Create(const float* vertices, size_t size) {
+Ref<VertexBuffer> VertexBuffer::Create(const float* vertices, size_t size) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::None:
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return new OpenGLVertexBuffer(vertices, size);
+            return std::make_shared<OpenGLVertexBuffer>(vertices, size);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");

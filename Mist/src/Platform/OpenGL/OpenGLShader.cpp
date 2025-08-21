@@ -3,8 +3,8 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLShader.h"
 
-#include "Mist/Renderer/ShaderController.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Mist/Renderer/ShaderController.h"
 
 namespace Mist {
 
@@ -55,10 +55,10 @@ void OpenGLShader::SetUniform4f(int loc, float v0, float v1, float v2, float v3)
     MIST_GLCALL(glUniform4f(loc, v0, v1, v2, v3));
 }
 
-//void OpenGLShader::SetUniform4fv(int loc, const glm::vec4& v) const {
-//    Bind();
-//    MIST_GLCALL(glUniform4fv(loc, 1, glm::value_ptr(v)));
-//}
+// void OpenGLShader::SetUniform4fv(int loc, const glm::vec4& v) const {
+//     Bind();
+//     MIST_GLCALL(glUniform4fv(loc, 1, glm::value_ptr(v)));
+// }
 
 OpenGLShader::ShaderProgramSource OpenGLShader::ParseShader(const std::string& vertShaderPath,
                                                             const std::string& fragShaderPath) const {
@@ -72,9 +72,8 @@ OpenGLShader::ShaderProgramSource OpenGLShader::ParseShader(const std::string& v
     return {ss[0].str(), ss[1].str()};
 }
 
-std::expected<unsigned int, std::string> OpenGLShader::CompileShader(unsigned int type,
-                                                                     const std::string& source) const {
-    MIST_GLCALL(unsigned int id = glCreateShader(type));
+std::expected<uint32_t, std::string> OpenGLShader::CompileShader(uint32_t type, const std::string& source) const {
+    MIST_GLCALL(uint32_t id = glCreateShader(type));
     const char* src = source.c_str();
     MIST_GLCALL(glShaderSource(id, 1, &src, nullptr));
     MIST_GLCALL(glCompileShader(id));
@@ -96,9 +95,9 @@ std::expected<unsigned int, std::string> OpenGLShader::CompileShader(unsigned in
     return id;
 }
 
-std::expected<unsigned int, std::string> OpenGLShader::CreateShader(const std::string& vertexShader,
-                                                                    const std::string& fragmentShader) const {
-    unsigned int program = glCreateProgram();
+std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const std::string& vertexShader,
+                                                                const std::string& fragmentShader) const {
+    uint32_t program = glCreateProgram();
 
     auto vertexResult = CompileShader(GL_VERTEX_SHADER, vertexShader);
     if (!vertexResult)

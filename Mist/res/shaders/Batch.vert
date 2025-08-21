@@ -13,8 +13,8 @@ uniform mat4 u_VP;
 uniform mat4 u_Transform;
 
 void main() {
-   gl_Position = u_VP * u_Transform * position;
-   v_TexCoords = texCoords;
-   v_Colour = colour;
+	gl_Position = u_VP * u_Transform * position;
+	v_TexCoords = texCoords;
+	v_Colour = colour;
 	v_TexIndex = texIndex;
 }

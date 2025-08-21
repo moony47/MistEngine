@@ -19,8 +19,8 @@ public:
     bool BindTexture(uint32_t textureSlot, uint32_t textureID) override;
     void UnbindTexture(uint32_t textureSlot) override;
 
-    Shader* CreateShader(const std::string& vertShaderPath, const std::string& fragShaderPath) override;
-    Texture2D* CreateTexture(const std::string& texturePath) override;
+    Ref<Shader> CreateShader(const std::string& vertShaderPath, const std::string& fragShaderPath) override;
+    Ref<Texture2D> CreateTexture(const std::string& texturePath) override;
 
     void DeregisterShader(uint32_t shaderID) override;
     void DeregisterTexture(uint32_t textureID) override;

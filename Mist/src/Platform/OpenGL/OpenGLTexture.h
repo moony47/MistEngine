@@ -10,10 +10,10 @@ class OpenGLTexture2D : public Texture2D{
 private:
     std::string m_Filepath;
     unsigned char* m_LocalBuffer;
-    int m_Width, m_Height, m_BPP;
+    uint32_t m_Width, m_Height;
 
     uint32_t m_RendererID;
-    int m_Slot;
+    uint32_t m_Slot;
 
 public:
     OpenGLTexture2D(const std::string& path);
@@ -22,10 +22,10 @@ public:
     void Bind(uint32_t slot) override;
     void Unbind() override;
 
-    inline int GetWidth() const override {
+    inline uint32_t GetWidth() const override {
         return m_Width;
     }
-    inline int GetHeight() const override {
+    inline uint32_t GetHeight() const override {
         return m_Height;
     }
 };

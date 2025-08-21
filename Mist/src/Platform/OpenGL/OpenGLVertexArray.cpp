@@ -47,7 +47,7 @@ namespace Mist {
 		MIST_GLCALL(glBindVertexArray(0));
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vb)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vb)
 	{
 		MIST_CORE_ASSERT(vb->GetLayout().GetElements().size(), "Vertex buffer has no layout!");
 
@@ -66,7 +66,7 @@ namespace Mist {
 		vb->Unbind();
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& ib)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& ib)
 	{
 		m_IndexBuffer = ib;
 

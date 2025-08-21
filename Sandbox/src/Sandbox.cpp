@@ -7,8 +7,9 @@ using namespace Mist;
 class ExampleLayer : public Mist::Layer {
 public:
     ExampleLayer() :
-        Layer("Example") {
-        m_VertexArray.reset(VertexArray::Create());
+        Layer("Example"),
+        m_Camera(0.0f, 0.0f, 0.0f, -640.0f, 640.0f, -360.0f, 360.0f) {
+        m_VertexArray = VertexArray::Create();
 
         float vertices[4 * 4] = {
             -50.0f, -50.0f, 0.0f, 0.0f, // 0
@@ -19,27 +20,23 @@ public:
 
         uint32_t indices[] = {0, 1, 2, 1, 2, 3};
 
-        std::shared_ptr<VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        auto vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
         vertexBuffer->SetLayout({
             {ShaderDataType::Float2,  "a_Position"},
             {ShaderDataType::Float2, "a_TexCoords"}
         });
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-        std::shared_ptr<IndexBuffer> indexBuffer;
-        indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        auto indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
-        m_Shader.reset(ShaderController::GetInstance()->CreateShader("../Mist/res/shaders/Basic.vert",
-                                                                     "../Mist/res/shaders/Basic.frag"));
+        m_Shader = ShaderController::GetInstance()->CreateShader("../Mist/res/shaders/Basic.vert",
+                                                                 "../Mist/res/shaders/Basic.frag");
         m_Shader->Bind();
 
-        m_Texture.reset(ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/diamond.png"));
+        m_Texture = ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/diamond.png");
         m_Texture->Bind(0);
         m_Shader->SetUniform1i(m_Shader->GetUniformLocation("u_Texture"), 0);
-
-        m_Camera = std::make_shared<OrthographicCamera>(0.0f, 0.0f, 0.0f, -640.0f, 640.0f, -360.0f, 360.0f);
 
         RenderCommand::SetClearColour(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     }
@@ -54,24 +51,15 @@ public:
         if (Input::IsKeyPressed(MIST_KEY_S))
             m_CameraPosition.y -= deltaTime * m_CameraMoveSpeed;
 
-        //if (Input::IsKeyPressed(MIST_KEY_A))
-        //    m_SpritePosition.x -= deltaTime * m_SpriteMoveSpeed;
-        //if (Input::IsKeyPressed(MIST_KEY_D))
-        //    m_SpritePosition.x += deltaTime * m_SpriteMoveSpeed;
-        //if (Input::IsKeyPressed(MIST_KEY_W))
-        //    m_SpritePosition.y += deltaTime * m_SpriteMoveSpeed;
-        //if (Input::IsKeyPressed(MIST_KEY_S))
-        //    m_SpritePosition.y -= deltaTime * m_SpriteMoveSpeed;
-
         if (Input::IsKeyPressed(MIST_KEY_Q))
             m_SpriteRotation += deltaTime * 3.0f;
         if (Input::IsKeyPressed(MIST_KEY_E))
             m_SpriteRotation -= deltaTime * 3.0f;
 
-        m_Camera->SetRotation(m_CameraRotation);
-        m_Camera->SetPosition(m_CameraPosition);
+        m_Camera.SetRotation(m_CameraRotation);
+        m_Camera.SetPosition(m_CameraPosition);
 
-        Renderer::BeginScene(*m_Camera /*lights, environment*/);
+        Renderer::BeginScene(m_Camera /*lights, environment*/);
     }
 
     void OnUpdateEnd(DeltaTime deltaTime) override {
@@ -79,7 +67,7 @@ public:
             glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), m_SpritePosition), m_SpriteRotation, {0, 0, 1}),
                        {2.0f, 2.0f, 1.0f});
 
-        Material* material = new Material(m_Shader);
+        // Material* material = new Material(m_Shader);
 
         for (int i = 0; i < 5; i++) {
             glm::vec4 colour = (((4.0f - (float)i) * m_SpriteColourStart) + ((float)i * m_SpriteColourEnd)) / 4.0f;
@@ -108,28 +96,28 @@ public:
 
 private:
     bool OnKeyPressedEvent(KeyPressedEvent& e) {
-        //switch (e.GetKeyCode()) {
-        //    case MIST_KEY_1:
-        //        m_CameraRotation = 0.0f;
-        //        break;
-        //    case MIST_KEY_2:
-        //        m_CameraRotation = 90.0f;
-        //        break;
-        //    case MIST_KEY_3:
-        //        m_CameraRotation = 180.0f;
-        //        break;
-        //    case MIST_KEY_4:
-        //        m_CameraRotation = 270.0f;
-        //        break;
-        //}
+        // switch (e.GetKeyCode()) {
+        //     case MIST_KEY_1:
+        //         m_CameraRotation = 0.0f;
+        //         break;
+        //     case MIST_KEY_2:
+        //         m_CameraRotation = 90.0f;
+        //         break;
+        //     case MIST_KEY_3:
+        //         m_CameraRotation = 180.0f;
+        //         break;
+        //     case MIST_KEY_4:
+        //         m_CameraRotation = 270.0f;
+        //         break;
+        // }
         return false;
     }
 
 private:
-    std::shared_ptr<OrthographicCamera> m_Camera;
-    std::shared_ptr<Shader> m_Shader;
-    std::shared_ptr<Texture2D> m_Texture;
-    std::shared_ptr<VertexArray> m_VertexArray;
+    OrthographicCamera m_Camera;
+    Ref<Shader> m_Shader;
+    Ref<Texture2D> m_Texture;
+    Ref<VertexArray> m_VertexArray;
 
     float m_CameraMoveSpeed = 300.0f;
     float m_CameraRotation = 0.0f;

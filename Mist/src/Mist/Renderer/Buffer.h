@@ -154,7 +154,7 @@ public:
     virtual void SetLayout(const BufferLayout& layout) = 0;
     virtual const BufferLayout& GetLayout() const = 0;
 
-    static VertexBuffer* Create(const float* vertices, size_t size);
+    static Ref<VertexBuffer> Create(const float* vertices, size_t size);
 };
 
 class IndexBuffer {
@@ -167,7 +167,7 @@ public:
 
     virtual size_t GetCount() const = 0;
 
-    static IndexBuffer* Create(const uint32_t* indices, size_t count);
+    static Ref<IndexBuffer> Create(const uint32_t* indices, size_t count);
 };
 
 } // namespace Mist
