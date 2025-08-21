@@ -30,13 +30,12 @@ public:
         auto indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
-        m_Shader = ShaderController::GetInstance()->CreateShader("../Mist/res/shaders/Basic.vert",
-                                                                 "../Mist/res/shaders/Basic.frag");
-        m_Shader->Bind();
+        SHADERLIB->Create("BasicTexture", "../Mist/res/shaders/Basic.vert", "../Mist/res/shaders/Basic.frag");
+        SHADERLIB->Bind("BasicTexture");
 
-        m_Texture = ShaderController::GetInstance()->CreateTexture("../Mist/res/textures/diamond.png");
-        m_Texture->Bind(0);
-        m_Shader->SetUniform1i(m_Shader->GetUniformLocation("u_Texture"), 0);
+        TEXTURE2DLIB->Create("Diamond", "../Mist/res/textures/diamond.png");
+        TEXTURE2DLIB->Bind("Diamond", 0);
+        SHADERLIB->Get("BasicTexture")->SetUniformTexture2D("u_Texture", TEXTURE2DLIB->Get("Diamond"));
 
         RenderCommand::SetClearColour(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     }
@@ -69,13 +68,14 @@ public:
 
         // Material* material = new Material(m_Shader);
 
-        for (int i = 0; i < 5; i++) {
-            glm::vec4 colour = (((4.0f - (float)i) * m_SpriteColourStart) + ((float)i * m_SpriteColourEnd)) / 4.0f;
-            m_Shader->SetUniform4f(m_Shader->GetUniformLocation("u_Colour"), colour.r, colour.g, colour.b, colour.a);
-            for (int j = 0; j < 5; j++) {
-                Renderer::Submit(m_Shader, m_VertexArray,
+        for (int i = 0; i < 10; i++) {
+            glm::vec4 colour = (((9.0f - (float)i) * m_SpriteColourStart) + ((float)i * m_SpriteColourEnd)) / 4.0f;
+            SHADERLIB->Get("BasicTexture")->SetUniform4f("u_Colour", colour.r, colour.g, colour.b, colour.a);
+
+            for (int j = 0; j < 10; j++) {
+                Renderer::Submit(SHADERLIB->Get("BasicTexture"), m_VertexArray,
                                  glm::scale(glm::translate(spriteTransform, {90.0f * j, -90.0f * i, 0.0f}),
-                                            {glm::pow(0.95f, j + i * 5), glm::pow(0.95f, j + i * 5), 1.0f}));
+                                            {glm::pow(0.98f, j + i * 10), glm::pow(0.98f, j + i * 10), 1.0f}));
             }
         }
 
@@ -115,8 +115,6 @@ private:
 
 private:
     OrthographicCamera m_Camera;
-    Ref<Shader> m_Shader;
-    Ref<Texture2D> m_Texture;
     Ref<VertexArray> m_VertexArray;
 
     float m_CameraMoveSpeed = 300.0f;

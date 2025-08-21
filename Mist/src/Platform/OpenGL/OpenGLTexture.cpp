@@ -1,19 +1,15 @@
 #include "mistpch.h"
 
-#include "Mist/Renderer/ShaderController.h"
+#include "Mist/Renderer/Shader.h"
 #include "OpenGLTexture.h"
 
 #include "stb_image.h"
 
 namespace Mist {
 
-OpenGLTexture2D::OpenGLTexture2D(const std::string& path) :
-    m_RendererID(0),
-    m_Filepath(path),
-    m_LocalBuffer(nullptr),
-    m_Width(0),
-    m_Height(0),
-    m_Slot(0) {
+OpenGLTexture2D::OpenGLTexture2D(const std::string& name,  const std::string& path) :
+    m_Name(name),
+    m_Filepath(path) {
 
     stbi_set_flip_vertically_on_load(1);
 
@@ -53,20 +49,19 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) :
 
 OpenGLTexture2D::~OpenGLTexture2D() {
     stbi_image_free(m_LocalBuffer);
-    ShaderController::GetInstance()->DeregisterTexture(m_RendererID);
     MIST_GLCALL(glDeleteTextures(1, &m_RendererID));
 }
 
 void OpenGLTexture2D::Bind(uint32_t slot) {
-    if (ShaderController::GetInstance()->BindTexture(slot, m_RendererID))
-        m_Slot = slot;
+    m_Slot = slot;
+    MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + slot));
+    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
 void OpenGLTexture2D::Unbind() {
-    if (m_Slot != -1) {
-        ShaderController::GetInstance()->UnbindTexture(m_Slot);
-        m_Slot = -1;
-    }
+    MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + m_Slot));
+    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+    m_Slot = 0xFFFFFFFF;
 }
 
 } // namespace Mist

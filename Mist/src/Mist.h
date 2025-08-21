@@ -8,7 +8,6 @@
 #include "Mist/Renderer/Renderer.h"
 #include "Mist/Renderer/RenderCommand.h"
 #include "Mist/Renderer/Buffer.h"
-#include "Mist/Renderer/ShaderController.h"
 #include "Mist/Renderer/VertexArray.h"
 #include "Mist/Renderer/Shader.h"
 #include "Mist/Renderer/Texture.h"

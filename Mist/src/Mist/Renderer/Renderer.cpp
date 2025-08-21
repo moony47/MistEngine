@@ -21,8 +21,8 @@ void Renderer::Submit(const Ref<Shader>& shader,
                       const Ref<VertexArray>& vertexArray,
                       const glm::mat4& transform) {
     shader->Bind();
-    shader->SetUniformMat4f(shader->GetUniformLocation("u_VP"), s_SceneData->VP);
-    shader->SetUniformMat4f(shader->GetUniformLocation("u_Transform"), transform);
+    shader->SetUniformMat4f("u_VP", s_SceneData->VP);
+    shader->SetUniformMat4f("u_Transform", transform);
 
     vertexArray->Bind();
     RenderCommand::DrawIndexed(vertexArray);

@@ -4,73 +4,84 @@
 #include "OpenGLShader.h"
 
 #include "glm/gtc/type_ptr.hpp"
-#include "Mist/Renderer/ShaderController.h"
 
 namespace Mist {
 
-OpenGLShader::OpenGLShader(const std::string& vertShaderPath, const std::string& fragShaderPath) {
-    ShaderProgramSource source = ParseShader(vertShaderPath, fragShaderPath);
-    auto result = CreateShader(source.VertexSource, source.FragmentSource);
-    if (result)
+OpenGLShader::OpenGLShader(const std::string& name,
+                           const std::string& vertShaderPath,
+                           const std::string& fragShaderPath) :
+    m_Name(name) {
+    ShaderProgramSource source = {ReadFile(vertShaderPath), ReadFile(fragShaderPath)};
+    auto result = CreateShader(source);
+
+    if (result) {
         m_RendererID = *result;
-    else
-        MIST_CORE_ERROR(result.error());
+        FindUniforms(source.VertexSource);
+        FindUniforms(source.FragmentSource);
+    } else
+        MIST_CORE_ERROR("[OpenGLShader::OpenGLShader] {0}", result.error());
 }
 
 OpenGLShader::~OpenGLShader() {
-    ShaderController::GetInstance()->DeregisterShader(m_RendererID);
     MIST_GLCALL(glDeleteProgram(m_RendererID));
 }
 
+std::string OpenGLShader::ReadFile(const std::string& path) const {
+    std::string result;
+    std::ifstream in(path, std::ios::in | std::ios::binary);
+    if (in) {
+        in.seekg(0, std::ios::end);
+        result.resize(in.tellg());
+        in.seekg(0, std::ios::beg);
+        in.read(&result[0], result.size());
+        in.close();
+    } else
+        MIST_CORE_ERROR("[OpenGLShader::ReadFile] Could not open file {0}", path);
+    return result;
+}
+
 void OpenGLShader::Bind() const {
-    ShaderController::GetInstance()->BindShader(m_RendererID);
+    MIST_GLCALL(glUseProgram(m_RendererID));
 }
 
 void OpenGLShader::Unbind() const {
-    ShaderController::GetInstance()->UnbindShader();
+    MIST_GLCALL(glUseProgram(0));
 }
 
-void OpenGLShader::SetUniformMat4f(int loc, const glm::mat4& mat) const {
-    Bind();
+void OpenGLShader::SetUniformMat4f(const std::string& uniformName, const glm::mat4& mat) const {
+    int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat)));
 }
 
-void OpenGLShader::SetUniform1i(int loc, int v0) const {
-    Bind();
+void OpenGLShader::SetUniform1i(const std::string& uniformName, int v0) const {
+    int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1i(loc, v0));
 }
 
-void OpenGLShader::SetUniform1iv(int loc, unsigned int count, int* v) const {
-    Bind();
+void OpenGLShader::SetUniform1iv(const std::string& uniformName, uint32_t count, int* v) const {
+    int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1iv(loc, count, v));
 }
 
-void OpenGLShader::SetUniform1f(int loc, float v0) const {
-    Bind();
+void OpenGLShader::SetUniform1f(const std::string& uniformName, float v0) const {
+    int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1f(loc, v0));
 }
 
-void OpenGLShader::SetUniform4f(int loc, float v0, float v1, float v2, float v3) const {
-    Bind();
+void OpenGLShader::SetUniform4f(const std::string& uniformName, float v0, float v1, float v2, float v3) const {
+    int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform4f(loc, v0, v1, v2, v3));
+}
+
+void OpenGLShader::SetUniformTexture2D(const std::string& uniformName, Ref<Texture2D> texture) const {
+    MIST_CORE_ASSERT(texture->GetSlot() < 0xFFFFFFFF, "[OpenGLShader::SetUniformTexture2D] Texture is not bound");
+    SetUniform1i(uniformName, texture->GetSlot());
 }
 
 // void OpenGLShader::SetUniform4fv(int loc, const glm::vec4& v) const {
 //     Bind();
 //     MIST_GLCALL(glUniform4fv(loc, 1, glm::value_ptr(v)));
 // }
-
-OpenGLShader::ShaderProgramSource OpenGLShader::ParseShader(const std::string& vertShaderPath,
-                                                            const std::string& fragShaderPath) const {
-    std::stringstream ss[2];
-
-    std::ifstream vertStream(vertShaderPath);
-    ss[0] << vertStream.rdbuf();
-    std::ifstream fragStream(fragShaderPath);
-    ss[1] << fragStream.rdbuf();
-
-    return {ss[0].str(), ss[1].str()};
-}
 
 std::expected<uint32_t, std::string> OpenGLShader::CompileShader(uint32_t type, const std::string& source) const {
     MIST_GLCALL(uint32_t id = glCreateShader(type));
@@ -84,28 +95,35 @@ std::expected<uint32_t, std::string> OpenGLShader::CompileShader(uint32_t type, 
     if (!result) {
         int length;
         MIST_GLCALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+
         char* message = (char*)alloca(length * sizeof(char));
         MIST_GLCALL(glGetShaderInfoLog(id, length, &length, message));
-        MIST_CORE_ERROR("Failed to compile ", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), " shader");
-        MIST_CORE_ERROR(message);
+
+        MIST_CORE_ERROR("[OpenGLShader::CompileShader] Failed to compile '{0}' shader:",
+                        type == GL_VERTEX_SHADER ? "vertex" : "fragment");
         MIST_GLCALL(glDeleteShader(id));
+
         return std::unexpected(message);
     }
 
     return id;
 }
 
-std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const std::string& vertexShader,
-                                                                const std::string& fragmentShader) const {
+std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const ShaderProgramSource& source) const {
     uint32_t program = glCreateProgram();
 
-    auto vertexResult = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    if (!vertexResult)
+    auto vertexResult = CompileShader(GL_VERTEX_SHADER, source.VertexSource);
+    if (!vertexResult) {
+        MIST_GLCALL(glDeleteProgram(program));
         return vertexResult;
+    }
 
-    auto fragmentResult = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-    if (!fragmentResult)
+    auto fragmentResult = CompileShader(GL_FRAGMENT_SHADER, source.FragmentSource);
+    if (!fragmentResult) {
+        MIST_GLCALL(glDeleteShader(*vertexResult));
+        MIST_GLCALL(glDeleteProgram(program));
         return fragmentResult;
+    }
 
     MIST_GLCALL(glAttachShader(program, *vertexResult));
     MIST_GLCALL(glAttachShader(program, *fragmentResult));
@@ -118,11 +136,17 @@ std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const std::strin
     return program;
 }
 
-int OpenGLShader::GetUniformLocation(const std::string& name) const {
-    MIST_GLCALL(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-    if (location == -1)
-        MIST_CORE_WARN("Uniform '{0}' doesn't exist", name);
-    return location;
+void OpenGLShader::FindUniforms(const std::string& source) {
+    size_t offset = 0;
+    size_t start = source.find("uniform ", 0);
+    while (start != -1) {
+        start = source.find(' ', start + 8) + 1;
+        size_t end = source.find(';', start);
+        std::string sub = source.substr(start, end - start);
+        MIST_GLCALL(m_UniformLocations[sub] = glGetUniformLocation(m_RendererID, sub.c_str()));
+        offset = end;
+        start = source.find("uniform ", offset);
+    }
 }
 
 } // namespace Mist

@@ -5,7 +5,7 @@
 #include "Mist/Logger.h"
 
 #include "Mist/Renderer/Renderer.h"
-#include "Mist/Renderer/ShaderController.h"
+#include "Mist/Renderer/Shader.h"
 #include "Mist/Renderer/Camera.h"
 
 #include "glm/ext/matrix_clip_space.hpp"
