@@ -1,6 +1,6 @@
 #include "mistpch.h"
 
-#include "Mist/Logger.h"
+#include "Mist/Core/Logger.h"
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 

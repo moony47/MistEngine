@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mist/Core.h"
+#include "Mist/Core/Core.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"

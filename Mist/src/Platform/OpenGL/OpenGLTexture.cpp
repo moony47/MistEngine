@@ -1,7 +1,8 @@
 #include "mistpch.h"
 
-#include "Mist/Renderer/Shader.h"
 #include "OpenGLTexture.h"
+
+#include "Mist/Renderer/Shader.h"
 
 #include "stb_image.h"
 

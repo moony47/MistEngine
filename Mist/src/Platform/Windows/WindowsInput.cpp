@@ -1,7 +1,8 @@
 #include "mistpch.h"
+
 #include "WindowsInput.h"
 
-#include "Mist/Application.h"
+#include "Mist/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace Mist {

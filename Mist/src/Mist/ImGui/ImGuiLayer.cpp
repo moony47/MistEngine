@@ -1,7 +1,8 @@
 #include "mistpch.h"
+
 #include "ImGuiLayer.h"
 
-#include "Mist/Application.h"
+#include "Mist/Core/Application.h"
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -27,7 +28,7 @@ void ImGuiLayer::OnAttach() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;             // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
@@ -67,8 +68,8 @@ void ImGuiLayer::OnEvent(Event& e) {
 }
 
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
-    static bool show = true;
-    ImGui::ShowDemoWindow(&show);
+    //static bool show = false;
+    //ImGui::ShowDemoWindow(&show);
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
     ImGui::Text("      ImGui FPS: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,

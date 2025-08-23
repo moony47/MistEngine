@@ -47,6 +47,7 @@ private:
     std::unordered_map<std::string, Ref<Texture2D>> m_Textures;
 };
 
-#define TEXTURE2DLIB Texture2DLibrary::GetInstance()
+#define MIST_TEXTURE2DLIB Texture2DLibrary::GetInstance()
+#define MIST_TEXTURE2D(x) Texture2DLibrary::GetInstance()->Get(x)
 
 } // namespace Mist

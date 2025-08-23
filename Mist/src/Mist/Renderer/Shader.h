@@ -60,10 +60,11 @@ private:
 private:
     static ShaderLibrary* s_Instance;
 
-    std::string m_CurrentShader = "";
+    std::string m_CurrentShader;
     std::unordered_map<std::string, Ref<Shader>> m_Shaders;
 };
 
-#define SHADERLIB ShaderLibrary::GetInstance()
+#define MIST_SHADERLIB ShaderLibrary::GetInstance()
+#define MIST_SHADER(x) ShaderLibrary::GetInstance()->Get(x)
 
 } // namespace Mist

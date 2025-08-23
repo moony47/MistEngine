@@ -1,7 +1,8 @@
 #pragma once
 
-#include <unordered_map>
 #include "Mist/Renderer/Shader.h"
+
+#include <unordered_map>
 
 namespace Mist {
 

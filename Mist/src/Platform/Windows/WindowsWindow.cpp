@@ -59,14 +59,15 @@ void WindowsWindow::Shutdown() {
     glfwTerminate();
 }
 
-void WindowsWindow::OnUpdateStart(DeltaTime deltaTime)
-{
+void WindowsWindow::OnUpdate(DeltaTime deltaTime) {
+    glfwPollEvents();
+}
+
+void WindowsWindow::OnFrameStart(DeltaTime deltaTime) {
     RenderCommand::Clear();
 }
 
-void WindowsWindow::OnUpdateEnd(DeltaTime deltaTime)
-{
-    glfwPollEvents();
+void WindowsWindow::OnFrameEnd(DeltaTime deltaTime) {
     m_Context->SwapBuffers();
 }
 
@@ -77,11 +78,6 @@ void WindowsWindow::SetVSync(bool enabled) {
 
 bool WindowsWindow::IsVSync() const {
     return m_Data.VSync;
-}
-
-void WindowsWindow::Resize(unsigned int width, unsigned int height) {
-    //TEMP_layer->Resize(width, height);
-    glViewport(0, 0, width, height);
 }
 
 void WindowsWindow::InitEventCallbacks() {

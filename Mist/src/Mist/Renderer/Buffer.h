@@ -154,6 +154,8 @@ public:
     virtual void SetLayout(const BufferLayout& layout) = 0;
     virtual const BufferLayout& GetLayout() const = 0;
 
+    virtual void UpdateBuffer(const float* data, size_t size) = 0;
+
     static Ref<VertexBuffer> Create(const float* vertices, size_t size);
 };
 

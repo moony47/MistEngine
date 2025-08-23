@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Core.h"
+#include "Mist/Core/Core.h"
 #include "Mist/Events/EventSystem.h"
 #include "Mist/Core/DeltaTime.h"
 
 namespace Mist {
 
-class MIST_API Layer {
+class Layer {
 public:
     Layer(const std::string& name = "Layer");
     virtual ~Layer();
@@ -16,9 +16,12 @@ public:
     virtual void OnDetach() {
     }
 
-    virtual void OnUpdateStart(DeltaTime deltaTime) {
+    virtual void OnUpdate(DeltaTime deltaTime) {
     }
-    virtual void OnUpdateEnd(DeltaTime deltaTime) {
+
+    virtual void OnFrameStart(DeltaTime deltaTime) {
+    }
+    virtual void OnFrameEnd(DeltaTime deltaTime) {
     }
 
     virtual void OnImGuiRender(DeltaTime deltaTime) {

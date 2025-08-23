@@ -19,9 +19,6 @@
     <Filter Include="src\Mist\Renderer">
       <UniqueIdentifier>{DF65920B-4B7C-90A1-94F3-1BC300496129}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Mist\Tests">
-      <UniqueIdentifier>{9B7FAEE1-874D-A2E7-70E1-120E5C4E7E4C}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -60,17 +57,38 @@
     <ClInclude Include="src\Mist.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Application.h">
-      <Filter>src\Mist</Filter>
+    <ClInclude Include="src\Mist\Core\Application.h">
+      <Filter>src\Mist\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Core.h">
-      <Filter>src\Mist</Filter>
+    <ClInclude Include="src\Mist\Core\Core.h">
+      <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Core\DeltaTime.h">
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\EntryPoint.h">
-      <Filter>src\Mist</Filter>
+    <ClInclude Include="src\Mist\Core\EntryPoint.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\Input.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\KeyCodes.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\Layer.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\LayerStack.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\Logger.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\MouseButtonCodes.h">
+      <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Core\Window.h">
+      <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Events\ApplicationEvent.h">
       <Filter>src\Mist\Events</Filter>
@@ -90,22 +108,7 @@
     <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h">
       <Filter>src\Mist\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Input.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\KeyCodes.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Layer.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\LayerStack.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\Logger.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mist\MouseButtonCodes.h">
+    <ClInclude Include="src\Mist\OrthographicCameraController.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\Buffer.h">
@@ -135,8 +138,8 @@
     <ClInclude Include="src\Mist\Renderer\VertexArray.h">
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Window.h">
-      <Filter>src\Mist</Filter>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLAssets.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -151,9 +154,6 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLAssets.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
@@ -1433,8 +1433,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mist\Application.cpp">
-      <Filter>src\Mist</Filter>
+    <ClCompile Include="src\Mist\Core\Application.cpp">
+      <Filter>src\Mist\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Core\Layer.cpp">
+      <Filter>src\Mist\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Core\LayerStack.cpp">
+      <Filter>src\Mist\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Core\Logger.cpp">
+      <Filter>src\Mist\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\ImGui\ImGuiBuild.cpp">
       <Filter>src\Mist\ImGui</Filter>
@@ -1442,16 +1451,13 @@
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp">
       <Filter>src\Mist\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\Layer.cpp">
-      <Filter>src\Mist</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mist\LayerStack.cpp">
-      <Filter>src\Mist</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mist\Logger.cpp">
+    <ClCompile Include="src\Mist\OrthographicCameraController.cpp">
       <Filter>src\Mist</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\Buffer.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Camera.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp">
@@ -1463,8 +1469,17 @@
     <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Shader.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Texture.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mist\Renderer\VertexArray.cpp">
       <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLAssets.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1479,9 +1494,6 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLAssets.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
@@ -1505,8 +1517,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Mist\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

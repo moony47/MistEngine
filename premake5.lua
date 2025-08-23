@@ -125,8 +125,11 @@ project "Sandbox"
     includedirs
     {
         "Mist/src",
-        "Mist/vendor/spdlog/include",
+
         "Mist/vendor",
+        "Mist/vendor/spdlog/include",
+
+        "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
     }
 

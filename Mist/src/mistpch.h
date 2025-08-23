@@ -14,7 +14,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Mist/Logger.h"
+#include "Mist/Core/Logger.h"
 
 #ifdef MIST_PLATFORM_WINDOWS
     #include <Windows.h>

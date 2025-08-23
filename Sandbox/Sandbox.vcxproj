@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor\spdlog\include;..\Mist\vendor;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor;..\Mist\vendor\spdlog\include;..\Mist\vendor\ImGui;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor\spdlog\include;..\Mist\vendor;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor;..\Mist\vendor\spdlog\include;..\Mist\vendor\ImGui;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -117,7 +117,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>MIST_PLATFORM_WINDOWS;MIST_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor\spdlog\include;..\Mist\vendor;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Mist\src;..\Mist\vendor;..\Mist\vendor\spdlog\include;..\Mist\vendor\ImGui;..\Mist\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -134,7 +134,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Tests\TestClearColour.h" />
+    <ClInclude Include="src\Tests\TestMenu.h" />
+    <ClInclude Include="src\Tests\TestSprites.h" />
+    <ClInclude Include="src\Tests\TestSpritesBatch.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Sandbox.cpp" />
+    <ClCompile Include="src\Tests\TestClearColour.cpp" />
+    <ClCompile Include="src\Tests\TestMenu.cpp" />
+    <ClCompile Include="src\Tests\TestSprites.cpp" />
+    <ClCompile Include="src\Tests\TestSpritesBatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mist\Mist.vcxproj">

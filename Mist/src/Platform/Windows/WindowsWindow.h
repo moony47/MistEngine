@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mist/Window.h"
+#include "Mist/Core/Window.h"
 #include "Mist/Renderer/GraphicsContext.h"
 
 #include "Mist/Core/DeltaTime.h"
@@ -17,8 +17,10 @@ public:
     WindowsWindow(const WindowProps& props);
     virtual ~WindowsWindow();
 
-    void OnUpdateStart(DeltaTime deltaTime) override;
-    void OnUpdateEnd(DeltaTime deltaTime) override;
+    void OnUpdate(DeltaTime deltaTime) override;
+
+    void OnFrameStart(DeltaTime deltaTime) override;
+    void OnFrameEnd(DeltaTime deltaTime) override;
 
     inline unsigned int GetWidth() const override {
         return m_Data.Width;
@@ -33,8 +35,6 @@ public:
     }
     void SetVSync(bool enabled) override;
     bool IsVSync() const override;
-
-    void Resize(unsigned int width, unsigned int height) override;
 
     inline void* GetNativeWindow() const override {
         return m_Window;

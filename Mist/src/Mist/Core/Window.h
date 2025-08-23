@@ -2,9 +2,9 @@
 
 #include "mistpch.h"
 
-#include "Mist/Events/EventSystem.h"
-#include "Mist/Core.h"
+#include "Mist/Core/Core.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Events/EventSystem.h"
 
 namespace Mist {
 
@@ -27,13 +27,14 @@ public:
     virtual ~Window() {
     }
 
-    virtual void OnUpdateStart(DeltaTime deltaTime) = 0;
-    virtual void OnUpdateEnd(DeltaTime deltaTime) = 0;
+    virtual void OnUpdate(DeltaTime deltaTime) = 0;
+
+    virtual void OnFrameStart(DeltaTime deltaTime) = 0;
+    virtual void OnFrameEnd(DeltaTime deltaTime) = 0;
 
     virtual unsigned int GetWidth() const = 0;
     virtual unsigned int GetHeight() const = 0;
 
-    virtual void Resize(unsigned int width, unsigned int height) = 0;
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
     virtual void SetVSync(bool enabled) = 0;
     virtual bool IsVSync() const = 0;

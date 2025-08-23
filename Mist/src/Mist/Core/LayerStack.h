@@ -1,6 +1,6 @@
 #pragma once
-#include "Mist/Layer.h"
-#include "Mist/Core.h"
+#include "Mist/Core/Core.h"
+#include "Mist/Core/Layer.h"
 
 #include <vector>
 

@@ -2,6 +2,7 @@
 
 #include "OpenGL/OpenGLRenderer.h"
 #include "Mist/Renderer/Texture.h"
+
 #include <string>
 
 namespace Mist {

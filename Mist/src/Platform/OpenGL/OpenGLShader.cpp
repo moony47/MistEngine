@@ -139,9 +139,18 @@ std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const ShaderProg
 void OpenGLShader::FindUniforms(const std::string& source) {
     size_t offset = 0;
     size_t start = source.find("uniform ", 0);
+    size_t end;
     while (start != -1) {
         start = source.find(' ', start + 8) + 1;
-        size_t end = source.find(';', start);
+
+        size_t bracket = source.find('[', start);
+        size_t semicolon = source.find(';', start);
+        if (bracket < semicolon && bracket != 0) {
+            end = bracket;
+        } else {
+            end = semicolon;
+        }
+
         std::string sub = source.substr(start, end - start);
         MIST_GLCALL(m_UniformLocations[sub] = glGetUniformLocation(m_RendererID, sub.c_str()));
         offset = end;

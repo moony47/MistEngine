@@ -1,0 +1,66 @@
+#include "mistpch.h"
+
+#include "OrthographicCameraController.h"
+
+#include "Mist/Core/Input.h"
+#include "Mist/Core/KeyCodes.h"
+
+namespace Mist {
+
+OrthographicCameraController::OrthographicCameraController(const glm::vec3& position, float ratio, bool rotation) :
+    m_AspectRatio(ratio),
+    m_Camera(position, -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
+    m_RotationEnabled(rotation) {
+}
+
+OrthographicCameraController::OrthographicCameraController(float x, float y, float z, float ratio, bool rotation) :
+    m_AspectRatio(ratio),
+    m_Camera(x, y, z, -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
+    m_RotationEnabled(rotation) {
+}
+
+void OrthographicCameraController::OnUpdate(DeltaTime deltaTime) {
+    glm::vec3 position = m_Camera.GetPosition();
+
+    if (Input::IsKeyPressed(MIST_KEY_D))
+        position.x += deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
+    if (Input::IsKeyPressed(MIST_KEY_A))
+        position.x -= deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
+    if (Input::IsKeyPressed(MIST_KEY_W))
+        position.y += deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
+    if (Input::IsKeyPressed(MIST_KEY_S))
+        position.y -= deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
+
+    m_Camera.SetPosition(position);
+
+    if (m_RotationEnabled) {
+        float rotation = m_Camera.GetRotation();
+
+        if (Input::IsKeyPressed(MIST_KEY_Q))
+            rotation += deltaTime * m_CameraRotationSpeed;
+        if (Input::IsKeyPressed(MIST_KEY_E))
+            rotation -= deltaTime * m_CameraRotationSpeed;
+
+        m_Camera.SetRotation(rotation);
+    }
+}
+
+void OrthographicCameraController::OnEvent(Event& e) {
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<MouseScrolledEvent>(MIST_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+    dispatcher.Dispatch<WindowResizeEvent>(MIST_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+}
+
+bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e) {
+    m_ZoomLevel = glm::clamp(m_ZoomLevel - e.GetYOffset() * 0.5f, 0.25f, 10.0f);
+    m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    return false;
+}
+
+bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e) {
+    m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+    m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    return false;
+}
+
+} // namespace Mist
