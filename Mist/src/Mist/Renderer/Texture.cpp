@@ -8,13 +8,34 @@ namespace Mist {
 
 Texture2DLibrary* Texture2DLibrary::s_Instance = new OpenGLTexture2DLibrary;
 
-void Texture2DLibrary::Bind(const std::string& name, uint32_t slot) {
+// void Texture2DLibrary::Bind(const std::string& name, uint32_t slot) {
+//     MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Bind] Texture not found");
+//
+//     if (name == m_CurrentTextures[slot])
+//         return;
+//
+//     m_Textures[name]->Bind(slot);
+//     m_CurrentTextures[slot] = name;
+// }
+
+uint32_t Texture2DLibrary::Bind(const std::string& name) {
     MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Bind] Texture not found");
+
+    // Check if already bound
+    for (char i = 0; i < m_CurrentTextures.size(); i++)
+        if (name == m_CurrentTextures[i])
+            return i;
+
+    uint32_t slot = NextSlot();
 
     m_Textures[name]->Bind(slot);
     m_CurrentTextures[slot] = name;
 }
+
 void Texture2DLibrary::Unbind(uint32_t slot) {
+    if (m_CurrentTextures[slot].empty())
+        return;
+
     Unbind_Impl(slot);
     m_CurrentTextures[slot] = "";
 }
@@ -31,8 +52,17 @@ Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, const std::stri
     m_Textures[name] = texture;
     return texture;
 }
+
+Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, uint32_t width, uint32_t height) {
+    MIST_CORE_ASSERT(!Exists(name), "[Texture2DLibrary::Create] Texture already exists");
+
+    Ref<Texture2D> texture = Create_Impl(name, width, height);
+    m_Textures[name] = texture;
+    return texture;
+}
+
 void Texture2DLibrary::Remove(const std::string& name) {
-    MIST_CORE_ASSERT(!Exists(name), "[Texture2DLibrary::Remove] Texture not found");
+    MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Remove] Texture not found");
 
     for (char i = 0; i < m_CurrentTextures.size(); i++)
         if (name == m_CurrentTextures[i])

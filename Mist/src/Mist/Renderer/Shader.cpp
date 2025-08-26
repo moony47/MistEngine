@@ -10,12 +10,17 @@ ShaderLibrary* ShaderLibrary::s_Instance = new OpenGLShaderLibrary;
 
 void ShaderLibrary::Bind(const std::string& name) {
     MIST_CORE_ASSERT(Exists(name), "[ShaderLibrary::Bind] Shader not found");
+    if (name == m_CurrentShader)
+        return;
 
     m_Shaders[name]->Bind();
     m_CurrentShader = name;
 }
 
 void ShaderLibrary::Unbind() {
+    if (m_CurrentShader.empty())
+        return;
+
     Unbind_Impl();
     m_CurrentShader = "";
 }
@@ -37,7 +42,7 @@ Ref<Shader> ShaderLibrary::Create(const std::string& name,
 }
 
 void ShaderLibrary::Remove(const std::string& name) {
-    MIST_CORE_ASSERT(!Exists(name), "[ShaderLibrary::Remove] Shader not found");
+    MIST_CORE_ASSERT(Exists(name), "[ShaderLibrary::Remove] Shader not found");
 
     if (name == m_CurrentShader)
         m_Shaders[name]->Unbind();

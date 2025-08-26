@@ -10,6 +10,10 @@ public:
         s_RendererAPI->Init();
     }
 
+    inline static void Shutdown() {
+        throw std::logic_error("RenderCommand::Shutdown not implemented");
+    }
+
     inline static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
         s_RendererAPI->SetViewport(x, y, width, height);
     }

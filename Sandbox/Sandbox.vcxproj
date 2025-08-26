@@ -134,6 +134,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\ExampleLayer.h" />
+    <ClInclude Include="src\Sandbox2D.h" />
     <ClInclude Include="src\Tests\TestClearColour.h" />
     <ClInclude Include="src\Tests\TestMenu.h" />
     <ClInclude Include="src\Tests\TestSprites.h" />
@@ -141,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Sandbox.cpp" />
+    <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\Tests\TestClearColour.cpp" />
     <ClCompile Include="src\Tests\TestMenu.cpp" />
     <ClCompile Include="src\Tests\TestSprites.cpp" />

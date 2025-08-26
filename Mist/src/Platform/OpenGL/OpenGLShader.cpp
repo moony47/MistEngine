@@ -73,9 +73,14 @@ void OpenGLShader::SetUniform4f(const std::string& uniformName, float v0, float 
     MIST_GLCALL(glUniform4f(loc, v0, v1, v2, v3));
 }
 
-void OpenGLShader::SetUniformTexture2D(const std::string& uniformName, Ref<Texture2D> texture) const {
+void OpenGLShader::SetUniformTex2D(const std::string& uniformName, Ref<Texture2D> texture) const {
     MIST_CORE_ASSERT(texture->GetSlot() < 0xFFFFFFFF, "[OpenGLShader::SetUniformTexture2D] Texture is not bound");
     SetUniform1i(uniformName, texture->GetSlot());
+}
+
+void OpenGLShader::SetUniform1b(const std::string& uniformName, bool val) const {
+    int loc = m_UniformLocations.at(uniformName);
+    MIST_GLCALL(glUniform1i(loc, val));
 }
 
 // void OpenGLShader::SetUniform4fv(int loc, const glm::vec4& v) const {

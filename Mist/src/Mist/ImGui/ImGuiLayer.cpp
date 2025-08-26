@@ -50,8 +50,7 @@ void ImGuiLayer::OnAttach() {
 
     // SetDarkThemeColors();
 
-    Application& app = Application::Get();
-    GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+    GLFWwindow* window = static_cast<GLFWwindow*>(MIST_APP.GetWindow().GetNativeWindow());
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -84,8 +83,8 @@ void ImGuiLayer::Begin() {
 
 void ImGuiLayer::End() {
     ImGuiIO& io = ImGui::GetIO();
-    Application& app = Application::Get();
-    io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+    Window& window = MIST_APP.GetWindow();
+    io.DisplaySize = ImVec2((float)window.GetWidth(), (float)window.GetHeight());
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -13,7 +13,7 @@ struct WindowProps {
     unsigned int Width;
     unsigned int Height;
 
-    WindowProps(const std::string& title = "Mist Engine", unsigned int width = 1280, unsigned int height = 720) :
+    WindowProps(const std::string& title = "Mist Engine", unsigned int width = 1920, unsigned int height = 1080) :
         Title(title),
         Width(width),
         Height(height) {
@@ -27,7 +27,7 @@ public:
     virtual ~Window() {
     }
 
-    virtual void OnUpdate(DeltaTime deltaTime) = 0;
+    virtual DeltaTime OnUpdate() = 0;
 
     virtual void OnFrameStart(DeltaTime deltaTime) = 0;
     virtual void OnFrameEnd(DeltaTime deltaTime) = 0;

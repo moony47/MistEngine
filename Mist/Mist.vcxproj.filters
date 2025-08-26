@@ -66,7 +66,7 @@
     <ClInclude Include="src\Mist\Core\DeltaTime.h">
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Core\EntryPoint.h">
+    <ClInclude Include="src\EntryPoint.h">
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Core\Input.h">
@@ -1431,6 +1431,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Core\Application.cpp">
@@ -1517,6 +1518,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

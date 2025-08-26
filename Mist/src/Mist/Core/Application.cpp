@@ -1,25 +1,16 @@
 #include "mistpch.h"
 
-#include "Mist/Core/Application.h"
-#include "Mist/Core/Input.h"
+#include "Application.h"
+
 #include "Mist/Core/Logger.h"
-
-#include "Mist/Renderer/Camera.h"
 #include "Mist/Renderer/Renderer.h"
-#include "Mist/Renderer/Shader.h"
-
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/glm.hpp"
-
-// TEMP
-#include <GLFW/glfw3.h>
 
 namespace Mist {
 
 Application* Application::s_Instance = nullptr;
 
 Application::Application() :
-m_LayerStack(new LayerStack) {
+    m_LayerStack(new LayerStack) {
     MIST_CORE_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
@@ -28,7 +19,7 @@ m_LayerStack(new LayerStack) {
 
     Renderer::Init();
 
-    m_ImGuiLayer = new ImGuiLayer();
+    m_ImGuiLayer = std::make_shared<ImGuiLayer>();
     PushOverlay(m_ImGuiLayer);
 }
 
@@ -37,30 +28,26 @@ Application::~Application() {
 
 void Application::Run() {
     while (m_Running) {
-        float time = (float)glfwGetTime();
-        DeltaTime deltaTime = time - m_LastFrameTime;
-        m_LastFrameTime = time;
-
-        m_Window->OnUpdate(deltaTime);
+        DeltaTime deltaTime = m_Window->OnUpdate();
 
         // Logical Update
         if (m_RunInBackground || !m_Minimised) {
-            for (Layer* layer : *m_LayerStack)
+            for (Ref<Layer> layer : *m_LayerStack)
                 layer->OnUpdate(deltaTime);
         }
 
         // Graphical update
         if (!m_Minimised) {
             m_Window->OnFrameStart(deltaTime);
-            for (Layer* layer : *m_LayerStack)
+            for (Ref<Layer> layer : *m_LayerStack)
                 layer->OnFrameStart(deltaTime);
-            for (Layer* layer : *m_LayerStack)
+            for (Ref<Layer> layer : *m_LayerStack)
                 layer->OnFrameEnd(deltaTime);
         }
 
         // GUI update
         m_ImGuiLayer->Begin();
-        for (Layer* layer : *m_LayerStack)
+        for (Ref<Layer> layer : *m_LayerStack)
             layer->OnImGuiRender(deltaTime);
         m_ImGuiLayer->End();
 
@@ -92,25 +79,25 @@ void Application::OnEvent(Event& e) {
     // MIST_CORE_TRACE(e);
 }
 
-void Application::PushLayer(Layer* layer) {
+void Application::PushLayer(Ref<Layer> layer) {
     if (!m_NewLayerStack)
         m_NewLayerStack = new LayerStack(*m_LayerStack);
     m_NewLayerStack->PushLayer(layer);
 }
 
-void Application::PushOverlay(Layer* overlay) {
+void Application::PushOverlay(Ref<Layer> overlay) {
     if (!m_NewLayerStack)
         m_NewLayerStack = new LayerStack(*m_LayerStack);
     m_NewLayerStack->PushOverlay(overlay);
 }
 
-void Application::PopLayer(Layer* layer) {
+void Application::PopLayer(Ref<Layer> layer) {
     if (!m_NewLayerStack)
         m_NewLayerStack = new LayerStack(*m_LayerStack);
     m_NewLayerStack->PopLayer(layer);
 }
 
-void Application::PopOverlay(Layer* overlay) {
+void Application::PopOverlay(Ref<Layer> overlay) {
     if (!m_NewLayerStack)
         m_NewLayerStack = new LayerStack(*m_LayerStack);
     m_NewLayerStack->PopOverlay(overlay);

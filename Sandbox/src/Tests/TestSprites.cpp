@@ -2,6 +2,7 @@
 
 TestSprites::TestSprites() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
+    m_CameraController.SetZoomLevel(3.0f);
     const int numSprites = 2048;
 
     m_StarSprites.reserve(numSprites / 2);
@@ -50,6 +51,14 @@ TestSprites::TestSprites() :
     vb->Unbind();
     m_VA->Unbind();
     MIST_SHADERLIB->Unbind();
+
+    RenderCommand::SetClearColour(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+}
+
+void TestSprites::OnDetach() {
+    MIST_SHADERLIB->Remove("Basic");
+    MIST_TEXTURE2DLIB->Remove("Diamond");
+    MIST_TEXTURE2DLIB->Remove("Star");
 }
 
 void TestSprites::OnUpdate(DeltaTime deltaTime) {

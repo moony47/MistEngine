@@ -27,4 +27,9 @@ Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(const std::string& name, cons
     return std::make_shared<OpenGLTexture2D>(name, path);
 }
 
+Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(const std::string& name,
+                                                               uint32_t width, uint32_t height) {
+    return std::make_shared<OpenGLTexture2D>(name, width, height);
+}
+
 } // namespace Mist

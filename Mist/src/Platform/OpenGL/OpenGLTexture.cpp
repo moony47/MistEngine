@@ -8,7 +8,7 @@
 
 namespace Mist {
 
-OpenGLTexture2D::OpenGLTexture2D(const std::string& name,  const std::string& path) :
+OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const std::string& path) :
     m_Name(name),
     m_Filepath(path) {
 
@@ -23,29 +23,49 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name,  const std::string& pa
     m_Height = height;
 
     // Identify the pixel type flags from the number of channels
-    GLenum internalFormat, dataFormat;
     switch (channels) {
         case 3:
-            internalFormat = GL_RGB8;
-            dataFormat = GL_RGB;
+            m_InternalFormat = GL_RGB8;
+            m_DataFormat = GL_RGB;
             break;
         case 4:
-            internalFormat = GL_RGBA8;
-            dataFormat = GL_RGBA;
+            m_InternalFormat = GL_RGBA8;
+            m_DataFormat = GL_RGBA;
             break;
         default:
             MIST_ERROR("[Texture2D] Failed to identify pixel type from num. image channels.");
     }
 
     MIST_GLCALL(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
-    MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height));
+    MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height));
 
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
-    MIST_GLCALL(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, m_LocalBuffer));
+    MIST_GLCALL(
+        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, m_LocalBuffer));
+}
+
+OpenGLTexture2D::OpenGLTexture2D(const std::string& name, uint32_t width, uint32_t height) :
+    m_Name(name),
+    m_Filepath(""),
+    m_Width(width),
+    m_Height(height),
+    m_InternalFormat(GL_RGBA8),
+    m_DataFormat(GL_RGBA) {
+
+    MIST_GLCALL(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
+    MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height));
+
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+
+    // MIST_GLCALL(
+    //     glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, m_LocalBuffer));
 }
 
 OpenGLTexture2D::~OpenGLTexture2D() {
@@ -63,6 +83,15 @@ void OpenGLTexture2D::Unbind() {
     MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + m_Slot));
     MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
     m_Slot = 0xFFFFFFFF;
+}
+
+void OpenGLTexture2D::SetData(void* data, uint32_t size) {
+    uint32_t channels = m_DataFormat == GL_RGBA ? 4 : 3;
+    MIST_CORE_ASSERT(size == m_Width * m_Height * channels,
+                     "[OpenGLTexture2D::SetData] Data must be the entire texture");
+    m_LocalBuffer = data;
+    MIST_GLCALL(
+        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, m_LocalBuffer));
 }
 
 } // namespace Mist

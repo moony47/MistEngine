@@ -49,6 +49,8 @@ class TestSprites : public Layer {
 public:
     TestSprites();
 
+    void OnDetach() override;
+
     void OnUpdate(DeltaTime deltaTime) override;
     void OnFrameStart(DeltaTime deltaTime) override;
     void OnFrameEnd(DeltaTime deltaTime) override;

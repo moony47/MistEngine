@@ -18,9 +18,10 @@ public:
     virtual void SetUniform1iv(const std::string& uniformName, unsigned int count, int* v0) const = 0;
     virtual void SetUniform1f(const std::string& uniformName, float v0) const = 0;
     virtual void SetUniform4f(const std::string& uniformName, float v0, float v1, float v2, float v3) const = 0;
+    virtual void SetUniform1b(const std::string& uniformName, bool val) const = 0;
     // virtual void SetUniform4fv(int loc, const glm::vec4& v) const;
 
-    virtual void SetUniformTexture2D(const std::string& uniformName, Ref<Texture2D> texture) const = 0;
+    virtual void SetUniformTex2D(const std::string& uniformName, Ref<Texture2D> texture) const = 0;
 
     //virtual int GetUniformLocation(const std::string& name) const = 0;
 

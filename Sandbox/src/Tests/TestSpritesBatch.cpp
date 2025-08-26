@@ -4,6 +4,7 @@ const size_t numSprites = 2048;
 
 TestSpritesBatch::TestSpritesBatch() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
+    m_CameraController.SetZoomLevel(3.0f);
 
     m_VertexBuffer = std::make_unique<float[]>(numSprites * 4 * 9);
     m_IndexBuffer = std::make_unique<unsigned int[]>(numSprites * 6);
@@ -29,7 +30,7 @@ TestSpritesBatch::TestSpritesBatch() :
         {ShaderDataType::Float2,     "a_Position"},
         {ShaderDataType::Float2,    "a_TexCoords"},
         {ShaderDataType::Float4,       "a_Colour"},
-        {   ShaderDataType::Int, "a_SamplerIndex"},
+        { ShaderDataType::Float, "a_SamplerIndex"},
     }));
 
     // Compile shader and push onto device
@@ -47,6 +48,14 @@ TestSpritesBatch::TestSpritesBatch() :
     MIST_SHADER("Batch")->SetUniform1iv("u_Texture", 2, samplers);
 
     MIST_SHADERLIB->Unbind();
+
+    RenderCommand::SetClearColour(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+}
+
+void TestSpritesBatch::OnDetach() {
+    MIST_SHADERLIB->Remove("Batch");
+    MIST_TEXTURE2DLIB->Remove("Diamond");
+    MIST_TEXTURE2DLIB->Remove("Star");
 }
 
 void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {

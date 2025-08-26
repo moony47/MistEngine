@@ -7,6 +7,7 @@
 #include "Mist/Renderer/Camera.h"
 #include "Mist/Renderer/RenderCommand.h"
 #include "Mist/Renderer/Renderer.h"
+#include "Mist/Renderer/Renderer2D.h"
 #include "Mist/Renderer/Shader.h"
 #include "Mist/Renderer/Texture.h"
 #include "Mist/Renderer/VertexArray.h"

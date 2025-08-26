@@ -25,6 +25,7 @@ public:
     }
     void SetZoomLevel(float level) {
         m_ZoomLevel = level;
+        m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
     }
 
     inline float GetLeft() {

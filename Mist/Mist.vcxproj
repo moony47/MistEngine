@@ -143,11 +143,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mist\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Mist.h" />
     <ClInclude Include="src\Mist\Core\Application.h" />
     <ClInclude Include="src\Mist\Core\Core.h" />
     <ClInclude Include="src\Mist\Core\DeltaTime.h" />
-    <ClInclude Include="src\Mist\Core\EntryPoint.h" />
+    <ClInclude Include="src\EntryPoint.h" />
     <ClInclude Include="src\Mist\Core\Input.h" />
     <ClInclude Include="src\Mist\Core\KeyCodes.h" />
     <ClInclude Include="src\Mist\Core\Layer.h" />
@@ -604,6 +605,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Mist\Core\Application.cpp" />
     <ClCompile Include="src\Mist\Core\Layer.cpp" />
     <ClCompile Include="src\Mist\Core\LayerStack.cpp" />

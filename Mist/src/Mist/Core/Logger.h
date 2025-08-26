@@ -26,13 +26,13 @@ private:
 } // namespace Mist
 
 // Logging macros
-#define MIST_CORE_FATAL(...) ::Mist::Logger::GetCoreLogger()->fatal(__VA_ARGS__)
+#define MIST_CORE_CRITICAL(...) ::Mist::Logger::GetCoreLogger()->critical(__VA_ARGS__)
 #define MIST_CORE_ERROR(...) ::Mist::Logger::GetCoreLogger()->error(__VA_ARGS__)
 #define MIST_CORE_WARN(...) ::Mist::Logger::GetCoreLogger()->warn(__VA_ARGS__)
 #define MIST_CORE_INFO(...) ::Mist::Logger::GetCoreLogger()->info(__VA_ARGS__)
 #define MIST_CORE_TRACE(...) ::Mist::Logger::GetCoreLogger()->trace(__VA_ARGS__)
 
-#define MIST_FATAL(...) ::Mist::Logger::GetClientLogger()->fatal(__VA_ARGS__)
+#define MIST_CRITICAL(...) ::Mist::Logger::GetClientLogger()->critical(__VA_ARGS__)
 #define MIST_ERROR(...) ::Mist::Logger::GetClientLogger()->error(__VA_ARGS__)
 #define MIST_WARN(...) ::Mist::Logger::GetClientLogger()->warn(__VA_ARGS__)
 #define MIST_INFO(...) ::Mist::Logger::GetClientLogger()->info(__VA_ARGS__)

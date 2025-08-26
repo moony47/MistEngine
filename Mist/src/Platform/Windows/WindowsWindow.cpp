@@ -47,7 +47,7 @@ void WindowsWindow::Init(const WindowProps& props) {
     m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
-    SetVSync(false);
+    SetVSync(true);
 
     InitEventCallbacks();
 }
@@ -59,8 +59,13 @@ void WindowsWindow::Shutdown() {
     glfwTerminate();
 }
 
-void WindowsWindow::OnUpdate(DeltaTime deltaTime) {
+DeltaTime WindowsWindow::OnUpdate() {
+    float time = (float)glfwGetTime();
+    DeltaTime deltaTime = time - m_LastFrameTime;
+    m_LastFrameTime = time;
+
     glfwPollEvents();
+    return deltaTime;
 }
 
 void WindowsWindow::OnFrameStart(DeltaTime deltaTime) {

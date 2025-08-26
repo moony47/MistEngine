@@ -13,15 +13,16 @@ public:
 
     template <typename T>
     void RegisterTest(const std::string& name) {
-        MIST_INFO("Registering Test " + name);
-        m_Tests.push_back(std::make_pair(name, [](Layer*& current) {
-            Application::Get().PopLayer(current);
-            current = new T;
-            Application::Get().PushLayer(current);
+        MIST_TRACE("Registering Test " + name);
+        m_Tests.push_back(std::make_pair(name, [](Ref<Layer> currentLayer) {
+            MIST_APP.PopLayer(currentLayer);
+            Ref<Layer> newLayer = std::make_shared<T>();
+            MIST_APP.PushLayer(newLayer);
+            return newLayer;
         }));
     }
 
 private:
-    Layer* m_CurrentTest;
-    std::vector<std::pair<std::string, std::function<void(Layer*&)>>> m_Tests;
+    Ref<Layer> m_CurrentTest;
+    std::vector<std::pair<std::string, std::function<Ref<Layer>(Ref<Layer>)>>> m_Tests;
 };

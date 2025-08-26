@@ -17,7 +17,7 @@ public:
     WindowsWindow(const WindowProps& props);
     virtual ~WindowsWindow();
 
-    void OnUpdate(DeltaTime deltaTime) override;
+    DeltaTime OnUpdate() override;
 
     void OnFrameStart(DeltaTime deltaTime) override;
     void OnFrameEnd(DeltaTime deltaTime) override;
@@ -57,7 +57,7 @@ private:
     GLFWwindow* m_Window;
     GraphicsContext* m_Context;
 
-    float m_LastTime = 0.0f;
+    float m_LastFrameTime = 0.0f;
 
     WindowData m_Data;
 
