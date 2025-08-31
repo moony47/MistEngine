@@ -9,6 +9,8 @@ Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
 
 
 void Renderer::Init() {
+    PROFILE_FUNCTION();
+
     RenderCommand::Init();
     Renderer2D::Init();
 }

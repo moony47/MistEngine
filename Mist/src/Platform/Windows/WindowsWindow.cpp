@@ -20,14 +20,20 @@ Window* Window::Create(const WindowProps& props) {
 }
 
 WindowsWindow::WindowsWindow(const WindowProps& props) {
+    PROFILE_FUNCTION();
+
     Init(props);
 }
 
 WindowsWindow::~WindowsWindow() {
+    PROFILE_FUNCTION();
+
     Shutdown();
 }
 
 void WindowsWindow::Init(const WindowProps& props) {
+    PROFILE_FUNCTION();
+
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
     m_Data.Height = props.Height;
@@ -53,6 +59,8 @@ void WindowsWindow::Init(const WindowProps& props) {
 }
 
 void WindowsWindow::Shutdown() {
+    PROFILE_FUNCTION();
+
     //delete TEMP_layer;
     delete m_Context;
     glfwDestroyWindow(m_Window);
@@ -60,6 +68,8 @@ void WindowsWindow::Shutdown() {
 }
 
 DeltaTime WindowsWindow::OnUpdate() {
+    PROFILE_FUNCTION();
+
     float time = (float)glfwGetTime();
     DeltaTime deltaTime = time - m_LastFrameTime;
     m_LastFrameTime = time;
@@ -69,14 +79,20 @@ DeltaTime WindowsWindow::OnUpdate() {
 }
 
 void WindowsWindow::OnFrameStart(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     RenderCommand::Clear();
 }
 
 void WindowsWindow::OnFrameEnd(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     m_Context->SwapBuffers();
 }
 
 void WindowsWindow::SetVSync(bool enabled) {
+    PROFILE_FUNCTION();
+
     glfwSwapInterval(enabled ? 1 : 0);
     m_Data.VSync = enabled;
 }
@@ -86,6 +102,8 @@ bool WindowsWindow::IsVSync() const {
 }
 
 void WindowsWindow::InitEventCallbacks() {
+    PROFILE_FUNCTION();
+
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
         data.Width = width;

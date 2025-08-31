@@ -84,20 +84,23 @@ project "Mist"
 
         defines
         {
-            "MIST_PLATFORM_WINDOWS",
-            "MIST_BUILD_DLL",
+            "MIST_PLATFORM_WINDOWS"
         }
 
     filter "configurations:Debug"
         defines 
         {
-            "MIST_DEBUG"
+            "MIST_DEBUG",
+            "MIST_PROFILING"
         }
         runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
-        defines "MIST_RELEASE"
+        defines {
+            "MIST_RELEASE",
+            "MIST_PROFILING"
+        }
         runtime "Release"
         optimize "On"
 
@@ -147,12 +150,18 @@ project "Sandbox"
         }
 
     filter "configurations:Debug"
-        defines "MIST_DEBUG"
+        defines {
+            "MIST_DEBUG",
+            "MIST_PROFILING"
+        }
         runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
-        defines "MIST_RELEASE"
+        defines {
+            "MIST_RELEASE",
+            "MIST_PROFILING"
+        }
         runtime "Release"
         optimize "On"
 

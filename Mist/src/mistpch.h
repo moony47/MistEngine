@@ -16,6 +16,8 @@
 
 #include "Mist/Core/Logger.h"
 
+#include "Mist/Debug/Instrumentor.h"
+
 #ifdef MIST_PLATFORM_WINDOWS
     #include <Windows.h>
 #endif

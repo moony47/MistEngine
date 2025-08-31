@@ -20,6 +20,8 @@ ImGuiLayer::~ImGuiLayer() {
 }
 
 void ImGuiLayer::OnAttach() {
+    PROFILE_FUNCTION();
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -58,6 +60,8 @@ void ImGuiLayer::OnAttach() {
 }
 
 void ImGuiLayer::OnDetach() {
+    PROFILE_FUNCTION();
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -67,6 +71,8 @@ void ImGuiLayer::OnEvent(Event& e) {
 }
 
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     //static bool show = false;
     //ImGui::ShowDemoWindow(&show);
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
@@ -82,6 +88,8 @@ void ImGuiLayer::Begin() {
 }
 
 void ImGuiLayer::End() {
+    PROFILE_FUNCTION();
+
     ImGuiIO& io = ImGui::GetIO();
     Window& window = MIST_APP.GetWindow();
     io.DisplaySize = ImVec2((float)window.GetWidth(), (float)window.GetHeight());

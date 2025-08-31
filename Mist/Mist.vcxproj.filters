@@ -10,6 +10,9 @@
     <Filter Include="src\Mist\Core">
       <UniqueIdentifier>{1112BEC8-7DD2-39FF-460D-837CB28C7EDB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mist\Debug">
+      <UniqueIdentifier>{4FAF8CE0-3B7D-80E6-2411-F10C107E5C4B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mist\Events">
       <UniqueIdentifier>{DDEBACF5-4977-1ABA-5288-9DAEBE9276BA}</UniqueIdentifier>
     </Filter>
@@ -54,6 +57,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EntryPoint.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mist.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -64,9 +70,6 @@
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Core\DeltaTime.h">
-      <Filter>src\Mist\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EntryPoint.h">
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Core\Input.h">
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="src\Mist\Core\Window.h">
       <Filter>src\Mist\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Debug\Instrumentor.h">
+      <Filter>src\Mist\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Events\ApplicationEvent.h">
       <Filter>src\Mist\Events</Filter>
@@ -124,6 +130,9 @@
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\Renderer.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Renderer2D.h">
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\RendererAPI.h">
@@ -1431,7 +1440,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mist\Core\Application.cpp">
@@ -1465,6 +1473,9 @@
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\Renderer.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp">
@@ -1518,7 +1529,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />

@@ -6,6 +6,7 @@ using namespace Mist;
 class Sandbox2D : public Layer {
 public:
     Sandbox2D();
+    ~Sandbox2D() override;
 
     void OnAttach() override;
     void OnDetach() override;
@@ -27,11 +28,4 @@ private:
     Ref<VertexArray> m_VertexArray;
 
     glm::vec4 m_SpriteColour = {0.2f, 0.0f, 0.8f, 1.0f};
-
-    struct ProfileResult {
-        const char* Name;
-        float Time;
-    };
-
-    std::vector<ProfileResult> m_ProfileResults;
 };

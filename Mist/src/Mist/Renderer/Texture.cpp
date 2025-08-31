@@ -30,6 +30,7 @@ uint32_t Texture2DLibrary::Bind(const std::string& name) {
 
     m_Textures[name]->Bind(slot);
     m_CurrentTextures[slot] = name;
+    return slot;
 }
 
 void Texture2DLibrary::Unbind(uint32_t slot) {

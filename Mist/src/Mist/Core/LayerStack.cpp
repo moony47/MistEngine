@@ -14,18 +14,16 @@ LayerStack::~LayerStack() {
 void LayerStack::PushLayer(Ref<Layer> layer) {
     m_Layers.emplace(m_Layers.begin() + m_LayersInsertIndex, layer);
     m_LayersInsertIndex++;
-    layer->OnAttach();
 }
 
 void LayerStack::PushOverlay(Ref<Layer> overlay) {
     m_Layers.emplace_back(overlay);
-    overlay->OnAttach();
 }
 
 void LayerStack::PopLayer(Ref<Layer> layer) {
     auto iter = std::find(m_Layers.begin(), m_Layers.end(), layer);
-    if (iter != m_Layers.end()) {
-        layer->OnDetach();
+        if (iter != m_Layers.end()) {
+            layer->OnDetach();
         m_Layers.erase(iter);
         m_LayersInsertIndex--;
     }

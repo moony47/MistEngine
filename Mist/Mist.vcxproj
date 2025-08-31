@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;MIST_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_DEBUG;MIST_PROFILING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Platform;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -97,7 +97,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;MIST_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_RELEASE;MIST_PROFILING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Platform;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -122,7 +122,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>mistpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_BUILD_DLL;MIST_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;MIST_PLATFORM_WINDOWS;MIST_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;src\Platform;vendor;vendor\spdlog\include;vendor\GLFW\include;vendor\GLAD\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -143,12 +143,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mist\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\EntryPoint.h" />
     <ClInclude Include="src\Mist.h" />
     <ClInclude Include="src\Mist\Core\Application.h" />
     <ClInclude Include="src\Mist\Core\Core.h" />
     <ClInclude Include="src\Mist\Core\DeltaTime.h" />
-    <ClInclude Include="src\EntryPoint.h" />
     <ClInclude Include="src\Mist\Core\Input.h" />
     <ClInclude Include="src\Mist\Core\KeyCodes.h" />
     <ClInclude Include="src\Mist\Core\Layer.h" />
@@ -156,6 +155,7 @@
     <ClInclude Include="src\Mist\Core\Logger.h" />
     <ClInclude Include="src\Mist\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Mist\Core\Window.h" />
+    <ClInclude Include="src\Mist\Debug\Instrumentor.h" />
     <ClInclude Include="src\Mist\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Mist\Events\Event.h" />
     <ClInclude Include="src\Mist\Events\EventSystem.h" />
@@ -168,6 +168,7 @@
     <ClInclude Include="src\Mist\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Mist\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Mist\Renderer\Renderer.h" />
+    <ClInclude Include="src\Mist\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Mist\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Mist\Renderer\Shader.h" />
     <ClInclude Include="src\Mist\Renderer\Texture.h" />
@@ -605,7 +606,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Mist\Core\Application.cpp" />
     <ClCompile Include="src\Mist\Core\Layer.cpp" />
     <ClCompile Include="src\Mist\Core\LayerStack.cpp" />
@@ -617,6 +617,7 @@
     <ClCompile Include="src\Mist\Renderer\Camera.cpp" />
     <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Mist\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Mist\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Mist\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Mist\Renderer\Shader.cpp" />
     <ClCompile Include="src\Mist\Renderer\Texture.cpp" />

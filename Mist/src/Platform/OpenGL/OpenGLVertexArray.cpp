@@ -28,27 +28,37 @@ namespace Mist {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		PROFILE_FUNCTION();
+
 		MIST_GLCALL(glCreateVertexArrays(1, &m_RendererID));
 		Bind();
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		PROFILE_FUNCTION();
+
 		MIST_GLCALL(glDeleteVertexArrays(1, &m_RendererID));
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		PROFILE_FUNCTION();
+
 		MIST_GLCALL(glBindVertexArray(m_RendererID));
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		PROFILE_FUNCTION();
+
 		MIST_GLCALL(glBindVertexArray(0));
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vb)
 	{
+		PROFILE_FUNCTION();
+
 		MIST_CORE_ASSERT(vb->GetLayout().GetElements().size(), "Vertex buffer has no layout!");
 
 		m_VertexBuffers.push_back(vb);
@@ -68,6 +78,8 @@ namespace Mist {
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& ib)
 	{
+		PROFILE_FUNCTION();
+
 		m_IndexBuffer = ib;
 
 		MIST_GLCALL(glBindVertexArray(m_RendererID));

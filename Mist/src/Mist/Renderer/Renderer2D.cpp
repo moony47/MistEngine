@@ -17,6 +17,8 @@ struct Renderer2DData {
 static Renderer2DData* s_Data;
 
 void Renderer2D::Init() {
+    PROFILE_FUNCTION();
+
     s_Data = new Renderer2DData;
 
     s_Data->vertexArray = VertexArray::Create();
@@ -52,11 +54,15 @@ void Renderer2D::Init() {
 }
 
 void Renderer2D::Shutdown() {
+    PROFILE_FUNCTION();
+
     MIST_SHADERLIB->Remove(s_Data->shaderName);
     delete s_Data;
 }
 
 void Renderer2D::BeginScene(OrthographicCamera& camera) {
+    PROFILE_FUNCTION();
+
     MIST_SHADERLIB->Bind(s_Data->shaderName);
     MIST_SHADER(s_Data->shaderName)->SetUniformMat4f("u_VP", camera.GetVP());
 }
@@ -69,6 +75,8 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
                           const glm::vec2& size,
                           const glm::vec4& colour,
                           const std::string& textureName) {
+    PROFILE_FUNCTION();
+
     MIST_SHADERLIB->Bind(s_Data->shaderName);
 
     // Set TSR transform matrix

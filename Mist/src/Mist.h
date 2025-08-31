@@ -20,6 +20,8 @@
 #include "Mist/Core/Logger.h"
 #include "Mist/Core/MouseButtonCodes.h"
 
+#include "Mist/Debug/Instrumentor.h"
+
 #include "Mist/Events/EventSystem.h"
 
 #include "Mist/ImGui/ImGuiLayer.h"

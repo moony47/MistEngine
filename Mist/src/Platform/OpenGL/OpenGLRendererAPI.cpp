@@ -6,6 +6,8 @@
 namespace Mist {
 
 void OpenGLRendererAPI::Init() {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(glEnable(GL_BLEND));
     MIST_GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 }

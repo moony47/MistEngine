@@ -6,6 +6,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ExampleLayer.h" />
+    <ClInclude Include="src\Sandbox2D.h" />
     <ClInclude Include="src\Tests\TestClearColour.h">
       <Filter>Tests</Filter>
     </ClInclude>
@@ -18,11 +20,10 @@
     <ClInclude Include="src\Tests\TestSpritesBatch.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="src\ExampleLayer.h" />
-    <ClInclude Include="src\Sandbox2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Sandbox.cpp" />
+    <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\Tests\TestClearColour.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -35,6 +36,5 @@
     <ClCompile Include="src\Tests\TestSpritesBatch.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\Sandbox2D.cpp" />
   </ItemGroup>
 </Project>

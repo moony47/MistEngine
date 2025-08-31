@@ -11,6 +11,8 @@ OpenGLShader::OpenGLShader(const std::string& name,
                            const std::string& vertShaderPath,
                            const std::string& fragShaderPath) :
     m_Name(name) {
+    PROFILE_FUNCTION();
+
     ShaderProgramSource source = {ReadFile(vertShaderPath), ReadFile(fragShaderPath)};
     auto result = CreateShader(source);
 
@@ -23,10 +25,14 @@ OpenGLShader::OpenGLShader(const std::string& name,
 }
 
 OpenGLShader::~OpenGLShader() {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(glDeleteProgram(m_RendererID));
 }
 
 std::string OpenGLShader::ReadFile(const std::string& path) const {
+    PROFILE_FUNCTION();
+
     std::string result;
     std::ifstream in(path, std::ios::in | std::ios::binary);
     if (in) {
@@ -41,44 +47,62 @@ std::string OpenGLShader::ReadFile(const std::string& path) const {
 }
 
 void OpenGLShader::Bind() const {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(glUseProgram(m_RendererID));
 }
 
 void OpenGLShader::Unbind() const {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(glUseProgram(0));
 }
 
 void OpenGLShader::SetUniformMat4f(const std::string& uniformName, const glm::mat4& mat) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat)));
 }
 
 void OpenGLShader::SetUniform1i(const std::string& uniformName, int v0) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1i(loc, v0));
 }
 
 void OpenGLShader::SetUniform1iv(const std::string& uniformName, uint32_t count, int* v) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1iv(loc, count, v));
 }
 
 void OpenGLShader::SetUniform1f(const std::string& uniformName, float v0) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1f(loc, v0));
 }
 
 void OpenGLShader::SetUniform4f(const std::string& uniformName, float v0, float v1, float v2, float v3) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform4f(loc, v0, v1, v2, v3));
 }
 
 void OpenGLShader::SetUniformTex2D(const std::string& uniformName, Ref<Texture2D> texture) const {
+    PROFILE_FUNCTION();
+
     MIST_CORE_ASSERT(texture->GetSlot() < 0xFFFFFFFF, "[OpenGLShader::SetUniformTexture2D] Texture is not bound");
     SetUniform1i(uniformName, texture->GetSlot());
 }
 
 void OpenGLShader::SetUniform1b(const std::string& uniformName, bool val) const {
+    PROFILE_FUNCTION();
+
     int loc = m_UniformLocations.at(uniformName);
     MIST_GLCALL(glUniform1i(loc, val));
 }
@@ -89,6 +113,8 @@ void OpenGLShader::SetUniform1b(const std::string& uniformName, bool val) const 
 // }
 
 std::expected<uint32_t, std::string> OpenGLShader::CompileShader(uint32_t type, const std::string& source) const {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(uint32_t id = glCreateShader(type));
     const char* src = source.c_str();
     MIST_GLCALL(glShaderSource(id, 1, &src, nullptr));
@@ -115,6 +141,8 @@ std::expected<uint32_t, std::string> OpenGLShader::CompileShader(uint32_t type, 
 }
 
 std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const ShaderProgramSource& source) const {
+    PROFILE_FUNCTION();
+
     uint32_t program = glCreateProgram();
 
     auto vertexResult = CompileShader(GL_VERTEX_SHADER, source.VertexSource);
@@ -142,6 +170,8 @@ std::expected<uint32_t, std::string> OpenGLShader::CreateShader(const ShaderProg
 }
 
 void OpenGLShader::FindUniforms(const std::string& source) {
+    PROFILE_FUNCTION();
+
     size_t offset = 0;
     size_t start = source.find("uniform ", 0);
     size_t end;

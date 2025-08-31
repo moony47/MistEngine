@@ -11,11 +11,15 @@ namespace Mist {
 OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const std::string& path) :
     m_Name(name),
     m_Filepath(path) {
+    PROFILE_FUNCTION();
 
     stbi_set_flip_vertically_on_load(1);
 
     int width, height, channels;
-    m_LocalBuffer = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    {
+        PROFILE_SCOPE("stbi_load");
+        m_LocalBuffer = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    }
 
     MIST_CORE_ASSERT(m_LocalBuffer, "[Texture2D] Failed to load image.");
 
@@ -55,6 +59,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name, uint32_t width, uint32
     m_Height(height),
     m_InternalFormat(GL_RGBA8),
     m_DataFormat(GL_RGBA) {
+    PROFILE_FUNCTION();
 
     MIST_GLCALL(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
     MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height));
@@ -69,23 +74,31 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name, uint32_t width, uint32
 }
 
 OpenGLTexture2D::~OpenGLTexture2D() {
+    PROFILE_FUNCTION();
+
     stbi_image_free(m_LocalBuffer);
     MIST_GLCALL(glDeleteTextures(1, &m_RendererID));
 }
 
 void OpenGLTexture2D::Bind(uint32_t slot) {
+    PROFILE_FUNCTION();
+
     m_Slot = slot;
     MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + slot));
     MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
 void OpenGLTexture2D::Unbind() {
+    PROFILE_FUNCTION();
+
     MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + m_Slot));
     MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
     m_Slot = 0xFFFFFFFF;
 }
 
 void OpenGLTexture2D::SetData(void* data, uint32_t size) {
+    PROFILE_FUNCTION();
+
     uint32_t channels = m_DataFormat == GL_RGBA ? 4 : 3;
     MIST_CORE_ASSERT(size == m_Width * m_Height * channels,
                      "[OpenGLTexture2D::SetData] Data must be the entire texture");
