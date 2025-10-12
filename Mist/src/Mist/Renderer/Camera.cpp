@@ -50,6 +50,8 @@ void OrthographicCamera::SetRotation(float theta) {
 }
 
 const glm::mat4& OrthographicCamera::GetVP() {
+    PROFILE_FUNCTION();
+
     if (modified) {
         UpdateVP();
         modified = false;

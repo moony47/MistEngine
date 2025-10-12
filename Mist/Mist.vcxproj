@@ -640,6 +640,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\premake5.lua" />
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

@@ -8,8 +8,7 @@
 
 namespace Mist {
 
-OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const std::string& path) :
-    m_Name(name),
+OpenGLTexture2D::OpenGLTexture2D(const std::string& path) :
     m_Filepath(path) {
     PROFILE_FUNCTION();
 
@@ -44,7 +43,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const std::string& pat
     MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height));
 
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
@@ -52,8 +51,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const std::string& pat
         glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, m_LocalBuffer));
 }
 
-OpenGLTexture2D::OpenGLTexture2D(const std::string& name, uint32_t width, uint32_t height) :
-    m_Name(name),
+OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) :
     m_Filepath(""),
     m_Width(width),
     m_Height(height),
@@ -65,7 +63,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& name, uint32_t width, uint32
     MIST_GLCALL(glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height));
 
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     MIST_GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
@@ -83,17 +81,9 @@ OpenGLTexture2D::~OpenGLTexture2D() {
 void OpenGLTexture2D::Bind(uint32_t slot) {
     PROFILE_FUNCTION();
 
-    m_Slot = slot;
-    MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + slot));
-    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-}
-
-void OpenGLTexture2D::Unbind() {
-    PROFILE_FUNCTION();
-
-    MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + m_Slot));
-    MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
-    m_Slot = 0xFFFFFFFF;
+    MIST_GLCALL(glBindTextureUnit(slot, m_RendererID));
+    //MIST_GLCALL(glActiveTexture(GL_TEXTURE0 + slot));
+    //MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
 void OpenGLTexture2D::SetData(void* data, uint32_t size) {

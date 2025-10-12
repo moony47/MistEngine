@@ -21,7 +21,6 @@ public:
     virtual void SetUniform1b(const std::string& uniformName, bool val) const = 0;
     // virtual void SetUniform4fv(int loc, const glm::vec4& v) const;
 
-    virtual void SetUniformTex2D(const std::string& uniformName, Ref<Texture2D> texture) const = 0;
 
     //virtual int GetUniformLocation(const std::string& name) const = 0;
 

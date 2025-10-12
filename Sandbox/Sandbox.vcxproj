@@ -154,6 +154,9 @@
       <Project>{A216897C-8E4D-8A0D-373A-70102350060F}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

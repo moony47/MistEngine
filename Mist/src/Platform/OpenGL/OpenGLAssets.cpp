@@ -23,13 +23,12 @@ void OpenGLTexture2DLibrary::Unbind_Impl(uint32_t slot) {
     MIST_GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
-Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(const std::string& name, const std::string& path) {
-    return std::make_shared<OpenGLTexture2D>(name, path);
+Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(const std::string& path) {
+    return std::make_shared<OpenGLTexture2D>(path);
 }
 
-Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(const std::string& name,
-                                                               uint32_t width, uint32_t height) {
-    return std::make_shared<OpenGLTexture2D>(name, width, height);
+Ref<Texture2D> OpenGLTexture2DLibrary::Create_Impl(uint32_t width, uint32_t height) {
+    return std::make_shared<OpenGLTexture2D>(width, height);
 }
 
 } // namespace Mist

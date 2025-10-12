@@ -2,6 +2,8 @@
 
 TestSprites::TestSprites() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
+    PROFILE_FUNCTION();
+
     m_CameraController.SetZoomLevel(3.0f);
     const int numSprites = 2048;
 
@@ -62,6 +64,8 @@ void TestSprites::OnDetach() {
 }
 
 void TestSprites::OnUpdate(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     m_CameraController.OnUpdate(deltaTime);
 
     for (auto& sprite : m_StarSprites)
@@ -71,10 +75,14 @@ void TestSprites::OnUpdate(DeltaTime deltaTime) {
 }
 
 void TestSprites::OnFrameStart(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
 }
 
 void TestSprites::OnFrameEnd(DeltaTime deltaTime) {
+
+    PROFILE_FUNCTION();
     glm::mat4 model(1.0f);
 
     MIST_SHADERLIB->Bind("Basic");

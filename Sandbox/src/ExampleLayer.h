@@ -37,8 +37,8 @@ public:
         MIST_SHADERLIB->Bind("BasicTexture");
 
         MIST_TEXTURE2DLIB->Create("Diamond", "res/textures/diamond.png");
-        MIST_TEXTURE2DLIB->Bind("Diamond");
-        MIST_SHADER("BasicTexture")->SetUniformTex2D("u_Texture", MIST_TEXTURE2D("Diamond"));
+        MIST_TEXTURE2DLIB->Bind("Diamond", 1);
+        MIST_SHADER("BasicTexture")->SetUniform1i("u_Texture", 1);
 
         RenderCommand::SetClearColour(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
     }
@@ -65,6 +65,7 @@ public:
 
         for (int i = 0; i < 10; i++) {
             glm::vec4 colour = (((9.0f - (float)i) * m_SpriteColourStart) + ((float)i * m_SpriteColourEnd)) / 4.0f;
+            MIST_SHADERLIB->Bind("BasicTexture");
             MIST_SHADER("BasicTexture")->SetUniform4f("u_Colour", colour.r, colour.g, colour.b, colour.a);
 
             for (int j = 0; j < 10; j++) {

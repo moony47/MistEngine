@@ -6,6 +6,7 @@ namespace Mist {
 
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
+    OpenGLVertexBuffer(size_t size);
     OpenGLVertexBuffer(const float* data, size_t size);
     ~OpenGLVertexBuffer() override;
 
@@ -19,7 +20,7 @@ public:
         return m_Layout;
     }
 
-    void UpdateBuffer(const float* data, size_t size) override;
+    void UpdateBuffer(const void* data, size_t size) override;
 
 private:
     unsigned int m_RendererID;

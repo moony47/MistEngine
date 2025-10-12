@@ -69,7 +69,26 @@ namespace Mist {
 		uint32_t index = 0;
 		for (const auto& elem : vb->GetLayout()) {
 			MIST_GLCALL(glEnableVertexAttribArray(index));
-			MIST_GLCALL(glVertexAttribPointer(index, elem.GetComponentCount(), ShaderDataTypeToOpenGLType(elem.Type), elem.Normalised ? GL_TRUE : GL_FALSE, vb->GetLayout().GetStride(), (const void*)(uint64_t)elem.Offset));
+            switch (elem.Type) {
+                case ShaderDataType::Int:
+                case ShaderDataType::Int2:
+                case ShaderDataType::Int3:
+                case ShaderDataType::Int4:
+                    MIST_GLCALL(
+                        glVertexAttribIPointer(index, elem.GetComponentCount(),
+                                                      ShaderDataTypeToOpenGLType(elem.Type),
+                                                      vb->GetLayout().GetStride(),
+                                                      (const void*)(uint64_t)elem.Offset));
+                    break;
+                default:
+                    MIST_GLCALL(glVertexAttribPointer(index, elem.GetComponentCount(),
+                                                      ShaderDataTypeToOpenGLType(elem.Type),
+                                                      elem.Normalised ? GL_TRUE : GL_FALSE, vb->GetLayout().GetStride(),
+                                                      (const void*)(uint64_t)elem.Offset));
+                    break;
+			}
+			
+			
 			index++;
 		}
 
@@ -85,7 +104,7 @@ namespace Mist {
 		MIST_GLCALL(glBindVertexArray(m_RendererID));
 		ib->Bind();
 
-		ib->Unbind();
+		//ib->Unbind();
 	}
 
 } // namespace Mist

@@ -9,6 +9,8 @@ namespace Mist {
 ShaderLibrary* ShaderLibrary::s_Instance = new OpenGLShaderLibrary;
 
 void ShaderLibrary::Bind(const std::string& name) {
+    PROFILE_FUNCTION();
+
     MIST_CORE_ASSERT(Exists(name), "[ShaderLibrary::Bind] Shader not found");
     if (name == m_CurrentShader)
         return;
@@ -18,6 +20,8 @@ void ShaderLibrary::Bind(const std::string& name) {
 }
 
 void ShaderLibrary::Unbind() {
+    PROFILE_FUNCTION();
+
     if (m_CurrentShader.empty())
         return;
 
@@ -26,6 +30,8 @@ void ShaderLibrary::Unbind() {
 }
 
 Ref<Shader> ShaderLibrary::Get(const std::string& name) {
+    PROFILE_FUNCTION();
+
     MIST_CORE_ASSERT(Exists(name), "[ShaderLibrary::Get] Shader not found");
 
     return m_Shaders[name];
@@ -34,6 +40,8 @@ Ref<Shader> ShaderLibrary::Get(const std::string& name) {
 Ref<Shader> ShaderLibrary::Create(const std::string& name,
                                   const std::string& vertShaderPath,
                                   const std::string& fragShaderPath) {
+    PROFILE_FUNCTION();
+
     MIST_CORE_ASSERT(!Exists(name), "[ShaderLibrary::Create] Shader already exists");
 
     Ref<Shader> shader = Create_Impl(name, vertShaderPath, fragShaderPath);
@@ -42,6 +50,8 @@ Ref<Shader> ShaderLibrary::Create(const std::string& name,
 }
 
 void ShaderLibrary::Remove(const std::string& name) {
+    PROFILE_FUNCTION();
+
     MIST_CORE_ASSERT(Exists(name), "[ShaderLibrary::Remove] Shader not found");
 
     if (name == m_CurrentShader)

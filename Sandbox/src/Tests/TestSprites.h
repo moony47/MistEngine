@@ -24,6 +24,8 @@ struct Sprite {
     glm::vec3 Velocity;
 
     void Update(float deltaTime, float left, float bottom, float right, float top) {
+        PROFILE_FUNCTION();
+
         Colour =
             glm::clamp(Colour + (float)deltaTime * ColourVelocity, {0.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
 
@@ -39,6 +41,8 @@ struct Sprite {
 
 private:
     static inline float Bounce(float val, float increment, float min = 0.0f, float max = 1.0f) {
+        PROFILE_FUNCTION();
+
         if (val <= min || val >= max)
             return -increment;
         return increment;

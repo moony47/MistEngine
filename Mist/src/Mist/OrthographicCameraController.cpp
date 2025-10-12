@@ -20,6 +20,8 @@ OrthographicCameraController::OrthographicCameraController(float x, float y, flo
 }
 
 void OrthographicCameraController::OnUpdate(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     glm::vec3 position = m_Camera.GetPosition();
 
     if (Input::IsKeyPressed(MIST_KEY_D))

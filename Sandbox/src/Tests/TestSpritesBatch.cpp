@@ -1,9 +1,13 @@
 #include "TestSpritesBatch.h"
 
+#include <ppl.h>
+
 const size_t numSprites = 2048;
 
 TestSpritesBatch::TestSpritesBatch() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
+    PROFILE_FUNCTION();
+
     m_CameraController.SetZoomLevel(3.0f);
 
     m_VertexBuffer = std::make_unique<float[]>(numSprites * 4 * 9);
@@ -53,18 +57,25 @@ TestSpritesBatch::TestSpritesBatch() :
 }
 
 void TestSpritesBatch::OnDetach() {
+    PROFILE_FUNCTION();
+
     MIST_SHADERLIB->Remove("Batch");
     MIST_TEXTURE2DLIB->Remove("Diamond");
     MIST_TEXTURE2DLIB->Remove("Star");
 }
 
 void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     m_CameraController.OnUpdate(deltaTime);
 
     // Update location and colour of sprites.
     // Push their vertices and indices into buffers
-    for (size_t i = 0; i < m_Sprites.size(); i++)
-        m_Sprites[i].Update(deltaTime, -5.0f, -5.0f, 5.0f, 5.0f, (unsigned int)i);
+    //concurrency::parallel_for(size_t(0), m_Sprites.size(), [&](size_t i) {
+    //    m_Sprites[i].Update(deltaTime, -5.0f, -5.0f, 5.0f, 5.0f, (unsigned int)i);
+    //});
+     for (size_t i = 0; i < m_Sprites.size(); i++)
+         m_Sprites[i].Update(deltaTime, -5.0f, -5.0f, 5.0f, 5.0f, (unsigned int)i);
 
     // Create new VertexArray
     m_VA = VertexArray::Create();
@@ -86,10 +97,14 @@ void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {
 }
 
 void TestSpritesBatch::OnFrameStart(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
 }
 
-void TestSpritesBatch::OnFrameEnd(DeltaTime deltaTime) { // Make single call to draw all sprites
+void TestSpritesBatch::OnFrameEnd(DeltaTime deltaTime) {
+    PROFILE_FUNCTION();
+
     Renderer::Submit(MIST_SHADER("Batch"), m_VA, glm::mat4(1.0));
 
     // Delete VertexArray ready for next frame

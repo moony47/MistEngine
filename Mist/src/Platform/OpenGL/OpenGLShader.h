@@ -23,8 +23,6 @@ public:
     void SetUniform1b(const std::string& uniformName, bool val) const override;
     // void SetUniform4fv(int loc, const glm::vec4& v) const override;
 
-    void SetUniformTex2D(const std::string& uniformName, Ref<Texture2D> texture) const override;
-
     //int GetUniformLocation(const std::string& name) const override;
 
     const std::string& GetName() const override {

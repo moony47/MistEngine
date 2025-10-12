@@ -29,10 +29,10 @@ void ImGuiLayer::OnAttach() {
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;             // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Enable Docking
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
+    //  io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+    //  io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
     // float fontSize = 18.0f; // *2.0f;
     // io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", fontSize);
@@ -73,8 +73,10 @@ void ImGuiLayer::OnEvent(Event& e) {
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
     PROFILE_FUNCTION();
 
-    //static bool show = false;
-    //ImGui::ShowDemoWindow(&show);
+#ifdef MIST_PROFILING
+    ImGui::Checkbox("Profiling", &PROFILE_ENABLED);
+#endif
+
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
     ImGui::Text("      ImGui FPS: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
@@ -82,6 +84,8 @@ void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
 }
 
 void ImGuiLayer::Begin() {
+    PROFILE_FUNCTION();
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();

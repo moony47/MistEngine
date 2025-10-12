@@ -23,8 +23,8 @@ public:
 
 protected:
     void Unbind_Impl(uint32_t slot) override;
-    Ref<Texture2D> Create_Impl(const std::string& name, const std::string& path) override;
-    Ref<Texture2D> Create_Impl(const std::string& name, uint32_t width, uint32_t height) override;
+    Ref<Texture2D> Create_Impl(const std::string& path) override;
+    Ref<Texture2D> Create_Impl(uint32_t width, uint32_t height) override;
 };
 
 } // namespace Mist

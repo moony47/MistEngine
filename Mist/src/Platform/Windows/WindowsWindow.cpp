@@ -53,7 +53,7 @@ void WindowsWindow::Init(const WindowProps& props) {
     m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
-    SetVSync(true);
+    SetVSync(false);
 
     InitEventCallbacks();
 }
