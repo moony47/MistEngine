@@ -114,7 +114,7 @@
     <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h">
       <Filter>src\Mist\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\OrthographicCameraController.h">
+    <ClInclude Include="src\Mist\Cameras\OrthographicCameraController.h">
       <Filter>src\Mist</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\Buffer.h">
@@ -1460,7 +1460,7 @@
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp">
       <Filter>src\Mist\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\OrthographicCameraController.cpp">
+    <ClCompile Include="src\Mist\Cameras\OrthographicCameraController.cpp">
       <Filter>src\Mist</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\Buffer.cpp">

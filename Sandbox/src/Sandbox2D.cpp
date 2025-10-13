@@ -32,19 +32,18 @@ void Sandbox2D::OnUpdate(DeltaTime deltaTime) {
 void Sandbox2D::OnFrameStart(DeltaTime deltaTime) {
     PROFILE_FUNCTION();
 
+    Mist::Renderer2D::ResetStats();
     Renderer2D::BeginScene(m_CameraController.GetCamera());
 }
 
 void Sandbox2D::OnFrameEnd(DeltaTime deltaTime) {
     PROFILE_FUNCTION();
 
-    Renderer2D::DrawQuad({0.0f, 0.0f}, 0.0f, {1.0f, 1.0f}, glm::vec4{1.0f, 0.8f, 0.2f, 1.0f}, "Star");
-    Renderer2D::DrawQuad({2.0f, 0.0f}, 0.0f, {1.0f, 1.0f}, glm::vec4{0.2f, 0.4f, 0.8f, 1.0f}, "Star", 0.5f);
-    Renderer2D::DrawQuad({0.0f, 2.0f}, 0.0f, {1.0f, 1.0f}, glm::vec4{0.3f, 1.0f, 0.6f, 1.0f});
+    Renderer2D::DrawQuad({0.0f, 0.0f}, glm::radians(45.0f), {0.5f, 1.25f}, glm::vec4{1.0f, 0.8f, 0.2f, 1.0f});
+    Renderer2D::DrawQuad({2.0f, 0.0f}, glm::radians(0.0f), {1.0f, 1.0f}, glm::vec4{0.2f, 0.4f, 0.8f, 1.0f}, "Star", 0.5f);
+    Renderer2D::DrawQuad({0.0f, 2.0f}, glm::radians(90.0f), {1.0f, 1.0f}, glm::vec4{0.3f, 1.0f, 0.6f, 1.0f});
 
-    Renderer2D::DrawQuad({2.0f, 2.0f}, 0.0f, {1.0f, 1.0f}, m_SpriteColour, "Diamond", 2.0f);
-    //Renderer2D::DrawQuad({-0.5f, -0.5f}, 30.0f, {0.5f, 0.5f}, m_SpriteColour, "Diamond");
-    //Renderer2D::DrawQuad({0.5f, 0.5f}, 0.0f, {1.5f, 0.5f}, glm::vec4{1.0f, 1.0f, 1.0f, 2.0f} - m_SpriteColour);
+    Renderer2D::DrawQuad({2.0f, 2.0f}, glm::radians(0.0f), {1.0f, 1.0f}, m_SpriteColour, "Diamond", 2.0f);
 
     Renderer2D::EndScene();
 }

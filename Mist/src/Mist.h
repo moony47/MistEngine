@@ -1,7 +1,7 @@
 #pragma once
 
 // For use by external projects
-#include "Mist/OrthographicCameraController.h"
+#include "Mist/Cameras/OrthographicCameraController.h"
 
 #include "Mist/Renderer/Buffer.h"
 #include "Mist/Renderer/Camera.h"

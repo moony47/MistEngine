@@ -162,7 +162,7 @@
     <ClInclude Include="src\Mist\Events\KeyEvent.h" />
     <ClInclude Include="src\Mist\Events\MouseEvent.h" />
     <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Mist\OrthographicCameraController.h" />
+    <ClInclude Include="src\Mist\Cameras\OrthographicCameraController.h" />
     <ClInclude Include="src\Mist\Renderer\Buffer.h" />
     <ClInclude Include="src\Mist\Renderer\Camera.h" />
     <ClInclude Include="src\Mist\Renderer\GraphicsContext.h" />
@@ -612,7 +612,7 @@
     <ClCompile Include="src\Mist\Core\Logger.cpp" />
     <ClCompile Include="src\Mist\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Mist\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Mist\Cameras\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Mist\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Mist\Renderer\Camera.cpp" />
     <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp" />

@@ -9,6 +9,7 @@
 #include "imgui.h"
 
 #include <GLFW/glfw3.h>
+#include <Mist/Renderer/Renderer2D.h>
 
 namespace Mist {
 
@@ -76,11 +77,12 @@ void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
 #ifdef MIST_PROFILING
     ImGui::Checkbox("Profiling", &PROFILE_ENABLED);
 #endif
-
+    ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
+    ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
+    ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().GetIndexCount());
+    ImGui::Text("Draw Calls: %i", Mist::Renderer2D::GetStats().DrawCalls);
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
-    ImGui::Text("      ImGui FPS: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-                ImGui::GetIO().Framerate);
 }
 
 void ImGuiLayer::Begin() {
