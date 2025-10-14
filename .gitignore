@@ -368,3 +368,8 @@ bin-int/
 
 *bin/
 *bin-int/
+/Sandbox/res/textures/RPGBase/PNG
+/Sandbox/res/textures/RPGBase/Spritesheet/RPGpack_sheet.png
+/Sandbox/res/textures/RPGBase/Vector
+/Sandbox/res/textures/RPGBase/preview.png
+/Sandbox/res/textures/RPGBase/sample.png
