@@ -3,6 +3,7 @@
 #include "mistpch.h"
 
 namespace Mist::Instrumentation {
+
 struct ProfileResult {
     std::string Name;
     long long Start, End;
@@ -25,7 +26,7 @@ public:
     Instrumentor() :
         m_CurrentSession(nullptr),
         m_ProfileCount(0),
-        p_ProfilingEnabled (true) {
+        p_ProfilingEnabled(true) {
     }
 
     void BeginSession(const std::string& name, const std::string& filepath = "results.json") {
@@ -101,7 +102,7 @@ public:
         long long end =
             std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
 
-        uint32_t threadID = (uint32_t) std::hash<std::thread::id>{}(std::this_thread::get_id());
+        uint32_t threadID = (uint32_t)std::hash<std::thread::id>{}(std::this_thread::get_id());
         Instrumentor::Get().WriteProfile({m_Name, start, end, threadID});
 
         m_Stopped = true;
@@ -113,19 +114,18 @@ private:
     bool m_Stopped;
 };
 
-#define PROFILE_ENABLED Mist::Instrumentation::Instrumentor::Get().p_ProfilingEnabled
+#define MIST_PROFILE_ENABLED Mist::Instrumentation::Instrumentor::Get().p_ProfilingEnabled
 
 #ifdef MIST_PROFILING
-    #define PROFILE_SESSION_START(name, filepath)                                                                      \
-        Mist::Instrumentation::Instrumentor::Get().BeginSession(name, filepath)
-    #define PROFILE_SESSION_END() Mist::Instrumentation::Instrumentor::Get().EndSession()
-    #define PROFILE_SCOPE(name) Mist::Instrumentation::InstrumentationTimer timer##__LINE__(name)
-    #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCSIG__)
+    #define MIST_PROFILE_START(name, filepath) Mist::Instrumentation::Instrumentor::Get().BeginSession(name, filepath)
+    #define MIST_PROFILE_END() Mist::Instrumentation::Instrumentor::Get().EndSession()
+    #define MIST_PROFILE_SCOPE(name) Mist::Instrumentation::InstrumentationTimer timer##__LINE__(name)
+    #define MIST_PROFILE_FUNCTION() MIST_PROFILE_SCOPE(__FUNCSIG__)
 #else
-    #define PROFILE_SESSION_START(name, filepath)
-    #define PROFILE_SESSION_END()
-    #define PROFILE_SCOPE(name)
-    #define PROFILE_FUNCTION()
+    #define MIST_PROFILE_START(name, filepath)
+    #define MIST_PROFILE_END()
+    #define MIST_PROFILE_SCOPE(name)
+    #define MIST_PROFILE_FUNCTION()
 #endif
 
 } // namespace Mist::Instrumentation

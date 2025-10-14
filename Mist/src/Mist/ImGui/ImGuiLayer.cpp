@@ -21,7 +21,7 @@ ImGuiLayer::~ImGuiLayer() {
 }
 
 void ImGuiLayer::OnAttach() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -61,7 +61,7 @@ void ImGuiLayer::OnAttach() {
 }
 
 void ImGuiLayer::OnDetach() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -72,10 +72,10 @@ void ImGuiLayer::OnEvent(Event& e) {
 }
 
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
 #ifdef MIST_PROFILING
-    ImGui::Checkbox("Profiling", &PROFILE_ENABLED);
+    ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
 #endif
     ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
     ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
@@ -86,7 +86,7 @@ void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
 }
 
 void ImGuiLayer::Begin() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -94,7 +94,7 @@ void ImGuiLayer::Begin() {
 }
 
 void ImGuiLayer::End() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     ImGuiIO& io = ImGui::GetIO();
     Window& window = MIST_APP.GetWindow();

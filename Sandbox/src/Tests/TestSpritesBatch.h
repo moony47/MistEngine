@@ -27,7 +27,7 @@ struct Quad {
     glm::vec3 pos = {0.0f, 0.0f, 0.0f};
 
     void Update(float deltaTime, float left, float bottom, float right, float top, unsigned int spriteIndex) {
-        //PROFILE_FUNCTION();
+        //MIST_PROFILE_FUNCTION();
 
         Velocity.x = Bounce(pos.x, left, right) * Velocity.x;
         Velocity.y = Bounce(pos.y, bottom, top) * Velocity.y;
@@ -74,7 +74,7 @@ struct Quad {
 
 private:
     static inline char Bounce(float val, float min = 0.0f, float max = 1.0f) {
-        //PROFILE_FUNCTION();
+        //MIST_PROFILE_FUNCTION();
 
         if (val <= min || val >= max)
             return -1;

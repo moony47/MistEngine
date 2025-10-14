@@ -36,8 +36,8 @@ public:
         MIST_SHADERLIB->Create("BasicTexture", "res/shaders/Basic.vert", "res/shaders/Basic.frag");
         MIST_SHADERLIB->Bind("BasicTexture");
 
-        MIST_TEXTURE2DLIB->Create("Diamond", "res/textures/diamond.png");
-        MIST_TEXTURE2DLIB->Bind("Diamond", 1);
+        MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
+        MIST_TEXLIB->Bind("Diamond", 1);
         MIST_SHADER("BasicTexture")->SetUniform1i("u_Texture", 1);
 
         RenderCommand::SetClearColour(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
@@ -45,7 +45,7 @@ public:
 
     void OnDetach() {
         MIST_SHADERLIB->Remove("BasicTexture");
-        MIST_TEXTURE2DLIB->Remove("Diamond");
+        MIST_TEXLIB->Remove("Diamond");
     }
 
     void OnUpdate(DeltaTime deltaTime) override {

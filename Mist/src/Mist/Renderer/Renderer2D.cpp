@@ -50,7 +50,7 @@ struct Renderer2DData {
 static Renderer2DData s_Data;
 
 void Renderer2D::Init() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     s_Data.QuadVertexArray = VertexArray::Create();
 
@@ -87,20 +87,20 @@ void Renderer2D::Init() {
     MIST_SHADER(s_Data.ShaderName)->SetUniform1iv("u_Texture", s_Data.TextureSlots.size(), samplers);
 
     // Create the white pixel texture for solid colours
-    MIST_TEXTURE2DLIB->Create(s_Data.WhiteTexName, 1, 1)->SetData(new uint32_t(0xFFFFFFFF), sizeof(uint32_t));
+    MIST_TEXLIB->Create(s_Data.WhiteTexName, 1, 1)->SetData(new uint32_t(0xFFFFFFFF), sizeof(uint32_t));
 }
 
 void Renderer2D::Shutdown() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     MIST_SHADERLIB->Remove(s_Data.ShaderName);
-    MIST_TEXTURE2DLIB->Remove(s_Data.WhiteTexName);
+    MIST_TEXLIB->Remove(s_Data.WhiteTexName);
 
     delete[] s_Data.QuadVertexBufferBase;
 }
 
 void Renderer2D::BeginScene(OrthographicCamera& camera) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     // Set the camera transform for this scene
     MIST_SHADERLIB->Bind(s_Data.ShaderName);
@@ -110,7 +110,7 @@ void Renderer2D::BeginScene(OrthographicCamera& camera) {
 }
 
 void Renderer2D::EndScene() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     FlushBatch();
 }
@@ -134,7 +134,7 @@ void Renderer2D::FlushBatch() {
     // Bind 2D batch shader and all the required textures
     MIST_SHADERLIB->Bind(s_Data.ShaderName);
     for (uint32_t i = 0; i < s_Data.TextureIndex; i++)
-        MIST_TEXTURE2DLIB->Bind(s_Data.TextureSlots[i], i);
+        MIST_TEXLIB->Bind(s_Data.TextureSlots[i], i);
 
     // Draw call for entire batch
     RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
@@ -147,20 +147,13 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
                           const glm::vec4& colour,
                           const std::string& textureName,
                           float tilingFactor) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
-    static const glm::vec4 QuadGeoCorners[4] = {
+    constexpr glm::vec4 QuadGeoCorners[4] = {
         {-0.5f, -0.5f, 0.0f, 1.0f},
         { 0.5f, -0.5f, 0.0f, 1.0f},
         { 0.5f,  0.5f, 0.0f, 1.0f},
         {-0.5f,  0.5f, 0.0f, 1.0f}
-    };
-
-    static const glm::vec2 QuadTexCorners[4] = {
-        {0.0f, 0.0f},
-        {1.0f, 0.0f},
-        {1.0f, 1.0f},
-        {0.0f, 1.0f}
     };
 
     // If batch is already drawing maximum number of quads, flush and start new batch
@@ -169,10 +162,12 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
         BeginBatch();
     }
 
+    std::string sourceTextureName = MIST_TEXLIB->GetSourceTexture(textureName);
+
     // If texture is already bound to a slot, reference the same slot again
     int textureIndex = -1;
     for (size_t i = 0; i < s_Data.TextureIndex; i++)
-        if (s_Data.TextureSlots[i] == textureName) {
+        if (s_Data.TextureSlots[i] == sourceTextureName) {
             textureIndex = i;
             break;
         }
@@ -185,7 +180,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
             BeginBatch();
         }
         textureIndex = s_Data.TextureIndex;
-        s_Data.TextureSlots[s_Data.TextureIndex++] = textureName;
+        s_Data.TextureSlots[s_Data.TextureIndex++] = sourceTextureName;
     }
 
     // Compute transform for the quad geometry
@@ -193,11 +188,13 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
     transform = glm::rotate(transform, angleRad, {0, 0, 1});
     transform = glm::scale(transform, glm::vec3(size, 1.0f));
 
+    Ref<Texture2D> texture = MIST_TEX(textureName);
+
     // Populate the vertex data of the quad's 4 vertices
     for (size_t i = 0; i < 4; i++) {
         s_Data.QuadVertexBufferPtr->Position = transform * QuadGeoCorners[i];
         s_Data.QuadVertexBufferPtr->Colour = colour;
-        s_Data.QuadVertexBufferPtr->TexCoord = QuadTexCorners[i];
+        s_Data.QuadVertexBufferPtr->TexCoord = texture->GetTexCoords(i);
         s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
         s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
         s_Data.QuadVertexBufferPtr++;

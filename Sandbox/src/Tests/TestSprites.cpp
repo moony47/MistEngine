@@ -2,7 +2,7 @@
 
 TestSprites::TestSprites() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     m_CameraController.SetZoomLevel(3.0f);
     const int numSprites = 2048;
@@ -45,10 +45,10 @@ TestSprites::TestSprites() :
     MIST_SHADERLIB->Bind("Basic");
 
     // Add textures
-    MIST_TEXTURE2DLIB->Create("Diamond", "res/textures/diamond.png");
-    MIST_TEXTURE2DLIB->Create("Star", "res/textures/star.png");
-    MIST_TEXTURE2D("Diamond")->Bind(0);
-    MIST_TEXTURE2D("Star")->Bind(1);
+    MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
+    MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEX("Diamond")->Bind(0);
+    MIST_TEX("Star")->Bind(1);
 
     vb->Unbind();
     m_VA->Unbind();
@@ -59,12 +59,12 @@ TestSprites::TestSprites() :
 
 void TestSprites::OnDetach() {
     MIST_SHADERLIB->Remove("Basic");
-    MIST_TEXTURE2DLIB->Remove("Diamond");
-    MIST_TEXTURE2DLIB->Remove("Star");
+    MIST_TEXLIB->Remove("Diamond");
+    MIST_TEXLIB->Remove("Star");
 }
 
 void TestSprites::OnUpdate(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     m_CameraController.OnUpdate(deltaTime);
 
@@ -75,14 +75,14 @@ void TestSprites::OnUpdate(DeltaTime deltaTime) {
 }
 
 void TestSprites::OnFrameStart(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
 }
 
 void TestSprites::OnFrameEnd(DeltaTime deltaTime) {
 
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
     glm::mat4 model(1.0f);
 
     MIST_SHADERLIB->Bind("Basic");

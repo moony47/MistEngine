@@ -20,7 +20,7 @@ OrthographicCameraController::OrthographicCameraController(float x, float y, flo
 }
 
 void OrthographicCameraController::OnUpdate(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     glm::vec3 position = m_Camera.GetPosition();
 
@@ -55,13 +55,13 @@ void OrthographicCameraController::OnEvent(Event& e) {
 
 bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e) {
     m_ZoomLevel = glm::clamp(m_ZoomLevel - e.GetYOffset() * 0.5f, 0.25f, 10.0f);
-    m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    UpdateProjection();
     return false;
 }
 
 bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e) {
     m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-    m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    UpdateProjection();
     return false;
 }
 

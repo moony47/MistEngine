@@ -53,8 +53,8 @@ protected:
                                     const std::string& fragShaderPath) = 0;
 
 private:
-    inline bool Exists(const std::string& name) const {
-        return m_Shaders.find(name) != m_Shaders.end();
+    inline bool ShaderExists(const std::string& name) const {
+        return m_Shaders.contains(name);
     }
 
 private:

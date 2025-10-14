@@ -27,55 +27,52 @@ namespace Mist {
 	}
 
 	void Application::Run() {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 
 		while (m_Running) {
-			PROFILE_SCOPE("GameLoopIteration");
+			MIST_PROFILE_SCOPE("GameLoopIteration");
 
 			DeltaTime deltaTime = m_Window->OnUpdate();
 
 			// Logical Update
 			if (m_RunInBackground || !m_Minimised) {
-				PROFILE_SCOPE("Layerstack - OnUpdates");
+				MIST_PROFILE_SCOPE("OnUpdates");
 				for (Ref<Layer> layer : *m_LayerStack)
 					layer->OnUpdate(deltaTime);
 			}
-
 
 			// Graphical update
 			if (!m_Minimised) {
 				m_Window->OnFrameStart(deltaTime);
 				{
-					PROFILE_SCOPE("LayerStack - OnFrameStarts");
+					MIST_PROFILE_SCOPE("OnFrameStarts");
 					for (Ref<Layer> layer : *m_LayerStack)
 						layer->OnFrameStart(deltaTime);
 				}
 				{
-					PROFILE_SCOPE("LayerStack - OnFrameEnds");
+					MIST_PROFILE_SCOPE("OnFrameEnds");
 					for (Ref<Layer> layer : *m_LayerStack)
 						layer->OnFrameEnd(deltaTime);
 				}
 			}
 
+            // GUI update
 			{
-				PROFILE_SCOPE("LayerStack - OnImGuiRenders");
-				// GUI update
+				MIST_PROFILE_SCOPE("OnImGuiRenders");
 				m_ImGuiLayer->Begin();
 				for (Ref<Layer> layer : *m_LayerStack)
 					layer->OnImGuiRender(deltaTime);
 				m_ImGuiLayer->End();
 			}
 
-
 			// End of graphical update
 			if (!m_Minimised) {
 				m_Window->OnFrameEnd(deltaTime);
 			}
 
-
 			// Check if layer stack changed
 			if (m_NewLayerStack) {
-				PROFILE_SCOPE("SwapLayerStack");
+				MIST_PROFILE_SCOPE("SwapLayerStack");
 				delete m_LayerStack;
 				m_LayerStack = m_NewLayerStack;
 				m_NewLayerStack = nullptr;
@@ -84,7 +81,7 @@ namespace Mist {
 	}
 
 	void Application::OnEvent(Event& e) {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(MIST_BIND_EVENT_FN(Application::OnWindowClose));
@@ -100,7 +97,7 @@ namespace Mist {
 	}
 
 	void Application::PushLayer(Ref<Layer> layer) {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 		if (!m_NewLayerStack)
 			m_NewLayerStack = new LayerStack(*m_LayerStack);
 		m_NewLayerStack->PushLayer(layer);
@@ -108,7 +105,7 @@ namespace Mist {
 	}
 
 	void Application::PushOverlay(Ref<Layer> overlay) {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 		if (!m_NewLayerStack)
 			m_NewLayerStack = new LayerStack(*m_LayerStack);
 		m_NewLayerStack->PushOverlay(overlay);
@@ -116,14 +113,14 @@ namespace Mist {
 	}
 
 	void Application::PopLayer(Ref<Layer> layer) {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 		if (!m_NewLayerStack)
 			m_NewLayerStack = new LayerStack(*m_LayerStack);
 		m_NewLayerStack->PopLayer(layer);
 	}
 
 	void Application::PopOverlay(Ref<Layer> overlay) {
-		PROFILE_FUNCTION();
+		MIST_PROFILE_FUNCTION();
 		if (!m_NewLayerStack)
 			m_NewLayerStack = new LayerStack(*m_LayerStack);
 		m_NewLayerStack->PopOverlay(overlay);

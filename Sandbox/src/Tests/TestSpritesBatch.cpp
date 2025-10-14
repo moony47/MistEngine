@@ -6,7 +6,7 @@ const size_t numSprites = 2048;
 
 TestSpritesBatch::TestSpritesBatch() :
     m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     m_CameraController.SetZoomLevel(3.0f);
 
@@ -42,10 +42,10 @@ TestSpritesBatch::TestSpritesBatch() :
     MIST_SHADERLIB->Bind("Batch");
 
     // Push textures onto device
-    MIST_TEXTURE2DLIB->Create("Diamond", "res/textures/diamond.png");
-    MIST_TEXTURE2DLIB->Create("Star", "res/textures/star.png");
-    MIST_TEXTURE2D("Diamond")->Bind(0);
-    MIST_TEXTURE2D("Star")->Bind(1);
+    MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
+    MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEX("Diamond")->Bind(0);
+    MIST_TEX("Star")->Bind(1);
 
     // Attach textures to shader
     int samplers[] = {0, 1};
@@ -57,15 +57,15 @@ TestSpritesBatch::TestSpritesBatch() :
 }
 
 void TestSpritesBatch::OnDetach() {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     MIST_SHADERLIB->Remove("Batch");
-    MIST_TEXTURE2DLIB->Remove("Diamond");
-    MIST_TEXTURE2DLIB->Remove("Star");
+    MIST_TEXLIB->Remove("Diamond");
+    MIST_TEXLIB->Remove("Star");
 }
 
 void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     m_CameraController.OnUpdate(deltaTime);
 
@@ -97,13 +97,13 @@ void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {
 }
 
 void TestSpritesBatch::OnFrameStart(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
 }
 
 void TestSpritesBatch::OnFrameEnd(DeltaTime deltaTime) {
-    PROFILE_FUNCTION();
+    MIST_PROFILE_FUNCTION();
 
     Renderer::Submit(MIST_SHADER("Batch"), m_VA, glm::mat4(1.0));
 
