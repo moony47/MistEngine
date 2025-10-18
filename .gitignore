@@ -363,8 +363,12 @@ bin/
 bin-int/
 
 *.user
+*.vcxproj*
+*.sln
+*.filters
 
-.clang-format
+*.clang-format
+*imgui.ini
 
 *bin/
 *bin-int/
