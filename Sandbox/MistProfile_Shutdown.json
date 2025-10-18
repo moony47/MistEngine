@@ -1,1 +1,0 @@
-{"otherData": {},"traceEvents":[{"cat":"function","dur":20503,"name":"void __cdecl Mist::WindowsWindow::Shutdown(void)","ph":"X","pid":0,"tid":789393109,"ts":5047708186},{"cat":"function","dur":20609,"name":"__cdecl Mist::WindowsWindow::~WindowsWindow(void)","ph":"X","pid":0,"tid":789393109,"ts":5047708186}]}

@@ -4,7 +4,7 @@
 
 namespace Mist {
 
-class MIST_API KeyEvent : public Event {
+class KeyEvent : public Event {
 public:
     inline int GetKeyCode() const {
         return m_KeyCode;
@@ -19,7 +19,7 @@ protected:
     int m_KeyCode;
 };
 
-class MIST_API KeyPressedEvent : public KeyEvent {
+class KeyPressedEvent : public KeyEvent {
 public:
     KeyPressedEvent(int keycode, int repeatCount) :
         KeyEvent(keycode),
@@ -41,7 +41,7 @@ private:
     int m_RepeatCount;
 };
 
-class MIST_API KeyReleasedEvent : public KeyEvent {
+class KeyReleasedEvent : public KeyEvent {
 public:
     KeyReleasedEvent(int keycode, int repeatCount) :
         KeyEvent(keycode) {
@@ -56,9 +56,9 @@ public:
     EVENT_CLASS_TYPE(KeyReleased)
 };
 
-class MIST_API KeyTypedEvent : public KeyEvent {
+class KeyTypedEvent : public KeyEvent {
 public:
-    KeyTypedEvent(unsigned int keycode) :
+    KeyTypedEvent(uint32_t keycode) :
         KeyEvent(keycode) {
     }
 

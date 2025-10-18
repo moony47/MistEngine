@@ -1,9 +1,8 @@
 workspace "MistEngine"
     architecture "x64"
-    startproject "Sandbox"
+    startproject "Mistwraith"
 
-    configurations 
-    {
+    configurations {
         "Debug",
         "Release",
         "Dist"
@@ -24,148 +23,201 @@ group "Dependencies"
     include "Mist/vendor/ImGui"
 
 group ""
+    project "Mist"
+        location "Mist"
+        kind "StaticLib"
+        language "C++"
+        cppdialect "C++23"
+        staticruntime "On"
 
-project "Mist"
-    location "Mist"
-    kind "StaticLib"
-    language "C++"
-    cppdialect "C++23"
-    staticruntime "On"
+        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+        objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+        pchheader "mistpch.h"
+        pchsource "Mist/src/mistpch.cpp"
 
-    pchheader "mistpch.h"
-    pchsource "Mist/src/mistpch.cpp"
-
-    files
-    {
-        "premake5.lua",
-        "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
-    }
-
-
-    defines 
-    {
-        "_CRT_SECURE_NO_WARNINGS",
-        "GLFW_INCLUDE_NONE"
-    }
-
-    includedirs
-    {
-        "%{prj.name}/src",
-        "%{prj.name}/src/Platform",
-
-        "%{prj.name}/vendor",
-        "%{prj.name}/vendor/spdlog/include",
-
-        "%{IncludeDir.GLFW}",
-        "%{IncludeDir.GLAD}",
-        "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}",
-    }
-
-    links 
-    {
-        "GLFW",
-        "GLAD",
-        "ImGui",
-        "opengl32"
-    }
-
-    filter "system:windows"
-        systemversion "latest"
-
-        defines
-        {
-            "MIST_PLATFORM_WINDOWS"
+        files {
+            "premake5.lua",
+            "%{prj.name}/src/**.h",
+            "%{prj.name}/src/**.cpp",
+		    "%{prj.name}/vendor/glm/glm/**.hpp",
+		    "%{prj.name}/vendor/glm/glm/**.inl",
+		    "%{prj.name}/vendor/stb_image/**.h",
+		    "%{prj.name}/vendor/stb_image/**.cpp",
+            "%{prj.name}/.clang-format"
         }
 
-    filter "configurations:Debug"
-        defines 
-        {
-            "MIST_DEBUG",
-            "MIST_PROFILING"
-        }
-        runtime "Debug"
-        symbols "On"
 
-    filter "configurations:Release"
         defines {
-            "MIST_RELEASE",
-            "MIST_PROFILING"
-        }
-        runtime "Release"
-        optimize "On"
-
-    filter "configurations:Dist"
-        defines "MIST_DIST"
-        runtime "Release"
-        optimize "On"
-
-project "Sandbox"
-    location "Sandbox"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++23"
-    staticruntime "On"
-
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-    files
-    {
-        "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
-    }
-
-    includedirs
-    {
-        "Mist/src",
-
-        "Mist/vendor",
-        "Mist/vendor/spdlog/include",
-
-        "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}",
-    }
-
-    links
-    {
-        "Mist"
-    }
-
-    filter "system:windows"
-        systemversion "latest"
-
-        defines
-        {
-            "MIST_PLATFORM_WINDOWS"
+            "_CRT_SECURE_NO_WARNINGS",
+            "GLFW_INCLUDE_NONE"
         }
 
-    filter "configurations:Debug"
-        defines {
-            "MIST_DEBUG",
-            "MIST_PROFILING"
-        }
-        runtime "Debug"
-        symbols "On"
+        includedirs {
+            "%{prj.name}/src",
+            "%{prj.name}/src/Platform",
 
-    filter "configurations:Release"
-        defines {
-            "MIST_RELEASE",
-            "MIST_PROFILING"
-        }
-        runtime "Release"
-        optimize "On"
+            "%{prj.name}/vendor",
+            "%{prj.name}/vendor/spdlog/include",
 
-    filter "configurations:Dist"
-        defines "MIST_DIST"
-        runtime "Release"
-        optimize "On"
+            "%{IncludeDir.GLFW}",
+            "%{IncludeDir.GLAD}",
+            "%{IncludeDir.ImGui}",
+            "%{IncludeDir.glm}",
+            "%{IncludeDir.stb_image}",
+        }
+
+        links {
+            "GLFW",
+            "GLAD",
+            "ImGui",
+            "opengl32"
+        }
+
+        filter "system:windows"
+            systemversion "latest"
+
+            defines {
+                "MIST_PLATFORM_WINDOWS"
+            }
+
+        filter "configurations:Debug"
+            defines {
+                "MIST_DEBUG",
+                "MIST_PROFILING"
+            }
+            runtime "Debug"
+            symbols "On"
+
+        filter "configurations:Release"
+            defines {
+                "MIST_RELEASE",
+                "MIST_PROFILING"
+            }
+            runtime "Release"
+            optimize "On"
+
+        filter "configurations:Dist"
+            defines "MIST_DIST"
+            runtime "Release"
+            optimize "On"
+
+    project "Mistwraith"
+        location "Mistwraith"
+        kind "ConsoleApp"
+        language "C++"
+        cppdialect "C++23"
+        staticruntime "On"
+
+        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+        objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+        files {
+            "%{prj.name}/src/**.h",
+            "%{prj.name}/src/**.cpp",
+            "%{prj.name}/.clang-format"
+        }
+
+        includedirs {
+            "Mist/src",
+
+            "Mist/vendor",
+            "Mist/vendor/spdlog/include",
+
+            "%{IncludeDir.ImGui}",
+            "%{IncludeDir.glm}",
+        }
+
+        links {
+            "Mist"
+        }
+
+        filter "system:windows"
+            systemversion "latest"
+
+            defines {
+                "MIST_PLATFORM_WINDOWS"
+            }
+
+        filter "configurations:Debug"
+            defines {
+                "MIST_DEBUG",
+                "MIST_PROFILING"
+            }
+            runtime "Debug"
+            symbols "On"
+
+        filter "configurations:Release"
+            defines {
+                "MIST_RELEASE",
+                "MIST_PROFILING"
+            }
+            runtime "Release"
+            optimize "On"
+
+        filter "configurations:Dist"
+            defines {
+                "MIST_DIST"
+            }
+            runtime "Release"
+            optimize "On"
+
+    project "Sandbox"
+        location "Sandbox"
+        kind "ConsoleApp"
+        language "C++"
+        cppdialect "C++23"
+        staticruntime "On"
+
+        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+        objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+        files {
+            "%{prj.name}/src/**.h",
+            "%{prj.name}/src/**.cpp",
+            "%{prj.name}/.clang-format"
+        }
+
+        includedirs {
+            "Mist/src",
+
+            "Mist/vendor",
+            "Mist/vendor/spdlog/include",
+
+            "%{IncludeDir.ImGui}",
+            "%{IncludeDir.glm}",
+        }
+
+        links {
+            "Mist"
+        }
+
+        filter "system:windows"
+            systemversion "latest"
+
+            defines {
+                "MIST_PLATFORM_WINDOWS"
+            }
+
+        filter "configurations:Debug"
+            defines {
+                "MIST_DEBUG",
+                "MIST_PROFILING"
+            }
+            runtime "Debug"
+            symbols "On"
+
+        filter "configurations:Release"
+            defines {
+                "MIST_RELEASE",
+                "MIST_PROFILING"
+            }
+            runtime "Release"
+            optimize "On"
+
+        filter "configurations:Dist"
+            defines {
+                "MIST_DIST"
+            }
+            runtime "Release"
+            optimize "On"

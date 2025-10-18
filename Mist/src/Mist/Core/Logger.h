@@ -7,7 +7,7 @@
 
 namespace Mist {
 
-class MIST_API Logger {
+class Logger {
 public:
     static void Init();
 

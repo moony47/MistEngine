@@ -26,7 +26,7 @@ void OpenGLRenderer::Clear() {
     MIST_GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void OpenGLRenderer::Draw(const VertexArray& va, const Shader& shader, unsigned int count) const {
+void OpenGLRenderer::Draw(const VertexArray& va, const Shader& shader, uint32_t count) const {
     shader.Bind();
     va.Bind();
     MIST_GLCALL(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));

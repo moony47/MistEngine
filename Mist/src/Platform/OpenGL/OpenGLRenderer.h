@@ -21,7 +21,7 @@ class OpenGLRenderer {
 private:
 public:
     void Clear();
-    void Draw(const VertexArray& va, const Shader& shader, unsigned int count) const;
+    void Draw(const VertexArray& va, const Shader& shader, uint32_t count) const;
 };
 
 } // namespace Mist

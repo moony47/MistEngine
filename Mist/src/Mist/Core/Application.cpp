@@ -9,12 +9,12 @@ namespace Mist {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() :
+	Application::Application(const std::string& name) :
 		m_LayerStack(new LayerStack) {
 		MIST_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = Scope<Window>(Window::Create());
+		m_Window = Scope<Window>(Window::Create(WindowProps(name)));
 		m_Window->SetEventCallback(MIST_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -80,6 +80,10 @@ namespace Mist {
 		}
 	}
 
+	void Application::Close() {
+        m_Running = false;
+	}
+
 	void Application::OnEvent(Event& e) {
 		MIST_PROFILE_FUNCTION();
 
@@ -127,8 +131,8 @@ namespace Mist {
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e) {
-		m_Running = false;
-		return false;
+        Close();
+		return true;
 	}
 
 	bool Application::OnWindowResize(WindowResizeEvent& e) {

@@ -3,10 +3,10 @@
 #include <Mist.h>
 using namespace Mist;
 
-class Sandbox2D : public Layer {
+class EditorLayer : public Layer {
 public:
-    Sandbox2D();
-    ~Sandbox2D() override;
+    EditorLayer();
+    ~EditorLayer() override;
 
     void OnAttach() override;
     void OnDetach() override;
@@ -27,6 +27,7 @@ private:
     Ref<Shader> m_Shader;
 
     Ref<Framebuffer> m_Framebuffer;
+    glm::vec2 m_ViewportSize{0.0f, 0.0f};
 
-    glm::vec4 m_SpriteColour = {0.2f, 0.0f, 0.8f, 1.0f};
+    glm::vec4 m_SpriteColour{0.2f, 0.0f, 0.8f, 1.0f};
 };

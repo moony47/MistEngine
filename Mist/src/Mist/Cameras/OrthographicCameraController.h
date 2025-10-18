@@ -16,6 +16,8 @@ public:
     void OnUpdate(DeltaTime deltaTime);
     void OnEvent(Event& e);
 
+    void OnResize(float width, float height);
+
     inline OrthographicCamera& GetCamera() {
         return m_Camera;
     }

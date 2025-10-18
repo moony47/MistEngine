@@ -53,6 +53,11 @@ void OrthographicCameraController::OnEvent(Event& e) {
     dispatcher.Dispatch<WindowResizeEvent>(MIST_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 }
 
+void OrthographicCameraController::OnResize(float width, float height) {
+    m_AspectRatio = width / height;
+    UpdateProjection();
+}
+
 bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e) {
     m_ZoomLevel = glm::clamp(m_ZoomLevel - e.GetYOffset() * 0.5f, 0.25f, 10.0f);
     UpdateProjection();
@@ -60,8 +65,7 @@ bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e) {
 }
 
 bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e) {
-    m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-    UpdateProjection();
+    OnResize((float)e.GetWidth(), (float)e.GetHeight());
     return false;
 }
 

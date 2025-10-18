@@ -15,7 +15,7 @@ public:
     // Set Uniforms
     virtual void SetUniformMat4f(const std::string& uniformName, const glm::mat4& v0) const = 0;
     virtual void SetUniform1i(const std::string& uniformName, int v0) const = 0;
-    virtual void SetUniform1iv(const std::string& uniformName, unsigned int count, int* v0) const = 0;
+    virtual void SetUniform1iv(const std::string& uniformName, uint32_t count, int* v0) const = 0;
     virtual void SetUniform1f(const std::string& uniformName, float v0) const = 0;
     virtual void SetUniform4f(const std::string& uniformName, float v0, float v1, float v2, float v3) const = 0;
     virtual void SetUniform1b(const std::string& uniformName, bool val) const = 0;

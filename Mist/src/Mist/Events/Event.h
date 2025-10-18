@@ -56,7 +56,7 @@ enum EventCategory {
         return category;                                                                                               \
     }
 
-class MIST_API Event {
+class Event {
     friend class EventDispatcher;
 
 public:

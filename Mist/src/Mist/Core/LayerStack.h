@@ -6,7 +6,7 @@
 
 namespace Mist {
 
-class MIST_API LayerStack {
+class LayerStack {
 
 public:
     LayerStack();
@@ -26,7 +26,7 @@ public:
 
 private:
     std::vector<Ref<Layer>> m_Layers;
-    unsigned int m_LayersInsertIndex = 0;
+    uint32_t m_LayersInsertIndex = 0;
 };
 
 } // namespace Mist

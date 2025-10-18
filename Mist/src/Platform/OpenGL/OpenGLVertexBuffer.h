@@ -23,7 +23,7 @@ public:
     void UpdateBuffer(const void* data, size_t size) override;
 
 private:
-    unsigned int m_RendererID;
+    uint32_t m_RendererID;
     BufferLayout m_Layout;
 };
 

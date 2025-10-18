@@ -5,9 +5,9 @@
 #ifdef MIST_PLATFORM_WINDOWS
     #if MIST_DYNAMIC_LINK
         #ifdef MIST_BUILD_DLL
-            #define MIST_API __declspec(dllexport)
+            #define __declspec(dllexport)
         #else
-            #define MIST_API __declspec(dllimport)
+            #define __declspec(dllimport)
         #endif
     #else
         #define MIST_API

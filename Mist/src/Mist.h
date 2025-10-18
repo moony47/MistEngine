@@ -5,6 +5,7 @@
 
 #include "Mist/Renderer/Buffer.h"
 #include "Mist/Renderer/Camera.h"
+#include "Mist/Renderer/Framebuffer.h"
 #include "Mist/Renderer/RenderCommand.h"
 #include "Mist/Renderer/Renderer.h"
 #include "Mist/Renderer/Renderer2D.h"

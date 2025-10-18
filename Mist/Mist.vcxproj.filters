@@ -7,6 +7,9 @@
     <Filter Include="src\Mist">
       <UniqueIdentifier>{193622CF-0503-7DDA-2E1C-6B821A48B268}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mist\Cameras">
+      <UniqueIdentifier>{0463E5E0-F05B-0433-198E-E9B705E6E33E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mist\Core">
       <UniqueIdentifier>{1112BEC8-7DD2-39FF-460D-837CB28C7EDB}</UniqueIdentifier>
     </Filter>
@@ -63,6 +66,9 @@
     <ClInclude Include="src\Mist.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mist\Cameras\OrthographicCameraController.h">
+      <Filter>src\Mist\Cameras</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mist\Core\Application.h">
       <Filter>src\Mist\Core</Filter>
     </ClInclude>
@@ -114,13 +120,13 @@
     <ClInclude Include="src\Mist\ImGui\ImGuiLayer.h">
       <Filter>src\Mist\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mist\Cameras\OrthographicCameraController.h">
-      <Filter>src\Mist</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mist\Renderer\Buffer.h">
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\Camera.h">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mist\Renderer\Framebuffer.h">
       <Filter>src\Mist\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Mist\Renderer\GraphicsContext.h">
@@ -151,6 +157,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLIndexBuffer.h">
@@ -1442,6 +1451,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Mist\Cameras\OrthographicCameraController.cpp">
+      <Filter>src\Mist\Cameras</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mist\Core\Application.cpp">
       <Filter>src\Mist\Core</Filter>
     </ClCompile>
@@ -1460,13 +1472,13 @@
     <ClCompile Include="src\Mist\ImGui\ImGuiLayer.cpp">
       <Filter>src\Mist\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mist\Cameras\OrthographicCameraController.cpp">
-      <Filter>src\Mist</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mist\Renderer\Buffer.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\Camera.cpp">
+      <Filter>src\Mist\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mist\Renderer\Framebuffer.cpp">
       <Filter>src\Mist\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Mist\Renderer\RenderCommand.cpp">
@@ -1494,6 +1506,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLIndexBuffer.cpp">

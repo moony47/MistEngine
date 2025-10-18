@@ -14,7 +14,7 @@ Ref<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, size_t count) {
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return std::make_shared<OpenGLIndexBuffer>(indices, count);
+            return CreateRef<OpenGLIndexBuffer>(indices, count);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");
@@ -27,7 +27,7 @@ Ref<VertexBuffer> VertexBuffer::Create(size_t size) {
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return std::make_shared<OpenGLVertexBuffer>(size);
+            return CreateRef<OpenGLVertexBuffer>(size);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");
@@ -40,7 +40,7 @@ Ref<VertexBuffer> VertexBuffer::Create(const float* vertices, size_t size) {
             MIST_CORE_ASSERT(false, "RenderAPI::None is not supported");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+            return CreateRef<OpenGLVertexBuffer>(vertices, size);
     }
 
     MIST_CORE_ASSERT(false, "Unknown RendererAPI");

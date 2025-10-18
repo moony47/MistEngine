@@ -14,7 +14,7 @@ public:
     OpenGLTexture2D(uint32_t width, uint32_t height);
     ~OpenGLTexture2D() override;
 
-    const glm::vec2 GetTexCoords(size_t index) const override {
+    const glm::vec2& GetTexCoords(size_t index) const override {
         constexpr glm::vec2 standardCoords[4] = {
             {0.0f, 0.0f},
             {1.0f, 0.0f},
@@ -31,6 +31,10 @@ public:
     }
     inline uint32_t GetHeight() const override {
         return m_Height;
+    }
+
+    inline uint32_t GetRendererID() const override {
+        return m_RendererID;
     }
 
     void SetData(void* data, uint32_t size) override;

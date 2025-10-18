@@ -11,10 +11,15 @@ public:
     virtual void Bind(uint32_t slot) = 0;
     virtual void SetData(void* data, uint32_t size) = 0;
 
-    virtual const glm::vec2 GetTexCoords(size_t index) const = 0;
+    virtual const glm::vec2& GetTexCoords(size_t index) const = 0;
 
     virtual uint32_t GetWidth() const = 0;
     virtual uint32_t GetHeight() const = 0;
+    virtual uint32_t GetRendererID() const = 0;
+
+    float GetAspectRatio() const {
+        return (float)GetWidth() / (float)GetHeight();
+    }
 };
 
 class SubTexture2D : Texture2D {
@@ -32,7 +37,7 @@ public:
         MIST_ASSERT(false, "[SubTexture2D::SetData] Cannot set data of a SubTexture2D");
     }
 
-    inline const glm::vec2 GetTexCoords(size_t index) const override {
+    inline const glm::vec2& GetTexCoords(size_t index) const override {
         return m_TexCoords[index];
     }
 
@@ -41,6 +46,10 @@ public:
     }
     inline uint32_t GetHeight() const override {
         return m_SourceTexture->GetHeight() * (m_TexCoords[2].y - m_TexCoords[0].y);
+    }
+
+    inline uint32_t GetRendererID() const override {
+        return m_SourceTexture->GetRendererID();
     }
 
 private:

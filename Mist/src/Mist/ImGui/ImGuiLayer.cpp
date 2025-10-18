@@ -31,9 +31,9 @@ void ImGuiLayer::OnAttach() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;             // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
-    //  io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    //  io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
     // float fontSize = 18.0f; // *2.0f;
     // io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", fontSize);
@@ -73,16 +73,6 @@ void ImGuiLayer::OnEvent(Event& e) {
 
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
-
-#ifdef MIST_PROFILING
-    ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
-#endif
-    ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
-    ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
-    ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().GetIndexCount());
-    ImGui::Text("Draw Calls: %i", Mist::Renderer2D::GetStats().DrawCalls);
-    ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
-                1.0f / deltaTime.GetSeconds());
 }
 
 void ImGuiLayer::Begin() {

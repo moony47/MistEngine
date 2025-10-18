@@ -173,7 +173,7 @@ void WindowsWindow::InitEventCallbacks() {
         data.EventCallback(e);
     });
 
-    glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int c) {
+    glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t c) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
         KeyTypedEvent e(c);

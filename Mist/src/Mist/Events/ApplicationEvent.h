@@ -4,18 +4,18 @@
 
 namespace Mist {
 
-class MIST_API WindowResizeEvent : public Event {
+class WindowResizeEvent : public Event {
 public:
-    WindowResizeEvent(unsigned int width, unsigned int height) :
+    WindowResizeEvent(uint32_t width, uint32_t height) :
         m_Width(width),
         m_Height(height) {
     }
 
-    inline unsigned int GetWidth() const {
+    inline uint32_t GetWidth() const {
         return m_Width;
     }
 
-    inline unsigned int GetHeight() const {
+    inline uint32_t GetHeight() const {
         return m_Height;
     }
 
@@ -29,10 +29,10 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
 private:
-    unsigned int m_Width, m_Height;
+    uint32_t m_Width, m_Height;
 };
 
-class MIST_API WindowCloseEvent : public Event {
+class WindowCloseEvent : public Event {
 public:
     WindowCloseEvent() {
     }
@@ -41,7 +41,7 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class MIST_API WindowFocusEvent : public Event {
+class WindowFocusEvent : public Event {
 public:
     WindowFocusEvent() {
     }
@@ -50,7 +50,7 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class MIST_API WindowLostFocusEvent : public Event {
+class WindowLostFocusEvent : public Event {
 public:
     WindowLostFocusEvent() {
     }
@@ -59,9 +59,9 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class MIST_API WindowMovedEvent : public Event {
+class WindowMovedEvent : public Event {
 public:
-    WindowMovedEvent(unsigned int x, unsigned int y) :
+    WindowMovedEvent(uint32_t x, uint32_t y) :
         m_WindowX(x),
         m_WindowY(y) {
     }
@@ -76,10 +76,10 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
 private:
-    unsigned int m_WindowX, m_WindowY;
+    uint32_t m_WindowX, m_WindowY;
 };
 
-class MIST_API AppTickEvent : public Event {
+class AppTickEvent : public Event {
 public:
     AppTickEvent(){
     }
@@ -88,7 +88,7 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class MIST_API AppUpdateEvent : public Event {
+class AppUpdateEvent : public Event {
 public:
     AppUpdateEvent() {
     }
@@ -97,7 +97,7 @@ public:
     EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class MIST_API AppRenderEvent : public Event {
+class AppRenderEvent : public Event {
 public:
     AppRenderEvent() {
     }

@@ -22,11 +22,11 @@ public:
     void OnFrameStart(DeltaTime deltaTime) override;
     void OnFrameEnd(DeltaTime deltaTime) override;
 
-    inline unsigned int GetWidth() const override {
+    inline uint32_t GetWidth() const override {
         return m_Data.Width;
     }
 
-    inline unsigned int GetHeight() const override {
+    inline uint32_t GetHeight() const override {
         return m_Data.Height;
     }
 
@@ -48,7 +48,7 @@ private:
 private:
     struct WindowData {
         std::string Title;
-        unsigned int Width = 0, Height = 0;
+        uint32_t Width = 0, Height = 0;
         bool VSync = false;
 
         EventCallbackFn EventCallback;
