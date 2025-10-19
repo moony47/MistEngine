@@ -26,6 +26,10 @@ public:
     void PopLayer(Ref<Layer> layer);
     void PopOverlay(Ref<Layer> overlay);
 
+    inline Ref<ImGuiLayer> GetImGuiLayer() {
+        return m_ImGuiLayer;
+    }
+
     inline Window& GetWindow() {
         return *m_Window;
     }

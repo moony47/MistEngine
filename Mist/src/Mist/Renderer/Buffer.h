@@ -103,10 +103,10 @@ public:
     }
     BufferLayout(const std::initializer_list<BufferElement>& elements) :
         m_Elements(elements) {
-        CalculateOffsetsAndStride();
+        Update();
     }
 
-    inline std::vector<BufferElement> GetElements() const {
+    inline const std::vector<BufferElement> GetElements() const {
         return m_Elements;
     }
 
@@ -114,21 +114,21 @@ public:
         return m_Stride;
     }
 
-    std::vector<BufferElement>::iterator begin() {
+    inline std::vector<BufferElement>::iterator begin() {
         return m_Elements.begin();
     }
-    std::vector<BufferElement>::iterator end() {
+    inline std::vector<BufferElement>::iterator end() {
         return m_Elements.end();
     }
-    std::vector<BufferElement>::const_iterator begin() const {
+    inline std::vector<BufferElement>::const_iterator begin() const {
         return m_Elements.begin();
     }
-    std::vector<BufferElement>::const_iterator end() const {
+    inline std::vector<BufferElement>::const_iterator end() const {
         return m_Elements.end();
     }
 
 private:
-    void CalculateOffsetsAndStride() {
+    void Update() {
         uint32_t offset = 0;
         m_Stride = 0;
         for (auto& elem : m_Elements) {

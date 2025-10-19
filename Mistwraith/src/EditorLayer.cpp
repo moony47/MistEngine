@@ -107,8 +107,8 @@ void EditorLayer::OnDetach() {
 
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
-
-    m_CameraController.OnUpdate(deltaTime);
+    if (m_ViewportFocussed)
+        m_CameraController.OnUpdate(deltaTime);
 }
 
 void EditorLayer::OnFrameStart(DeltaTime deltaTime) {
@@ -181,7 +181,7 @@ static void BeginEditorDockspace() {
         if (ImGui::BeginMenu("Mistwraith")) {
             ImGui::Separator();
             if (ImGui::MenuItem("Exit"))
-                Application::Get().Close();
+                MIST_APP.Close();
             ImGui::EndMenu();
         }
 
@@ -224,6 +224,10 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin("Viewport");
+
+    m_ViewportFocussed = ImGui::IsWindowFocused();
+    m_ViewportHovered = ImGui::IsWindowHovered();
+    MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
 
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
     glm::vec2* viewportSizePtr = (glm::vec2*)&viewportSize;

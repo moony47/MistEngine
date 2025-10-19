@@ -2,8 +2,11 @@
 #include "OpenGLFramebuffer.h"
 
 #include <GLAD/glad.h>
+#include <glm/common.hpp>
 
 namespace Mist {
+
+static const uint32_t s_MaxFramebufferSize = 8192;
 
 OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) :
     m_Spec(spec) {
@@ -38,12 +41,17 @@ void OpenGLFramebuffer::Invalidate() {
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_Spec.Width, m_Spec.Height);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0);
 
-    MIST_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete");
+    MIST_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,  "[OpenGLFramebuffer::Invalidate] Framebuffer is incomplete");
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height) {
+    width = std::clamp<uint32_t>(width, 1, s_MaxFramebufferSize);
+    height = std::clamp<uint32_t>(height, 1, s_MaxFramebufferSize);
+
+    //MIST_CORE_INFO("[OpenGLFramebuffer::Resize] Framebuffer resized to {0}, {1}", width, height);
+
     m_Spec.Width = width;
     m_Spec.Height = height;
     Invalidate();

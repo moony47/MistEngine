@@ -19,7 +19,12 @@ public:
     void Begin();
     void End();
 
+    inline void SetPassEvents(bool block) {
+        m_PassEvents = block;
+    }
+
 private:
+    bool m_PassEvents = false;
     float m_Time = 0.0f;
 };
 

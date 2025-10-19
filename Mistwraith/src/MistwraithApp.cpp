@@ -16,6 +16,6 @@ public:
     }
 };
 
-Mist::Application* Mist::CreateApplication() {
+Application* Mist::CreateApplication() {
     return new Mistwraith();
 }

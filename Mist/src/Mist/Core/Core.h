@@ -3,21 +3,22 @@
 #include <memory>
 
 #ifdef MIST_PLATFORM_WINDOWS
-    #if MIST_DYNAMIC_LINK
-        #ifdef MIST_BUILD_DLL
-            #define __declspec(dllexport)
-        #else
-            #define __declspec(dllimport)
-        #endif
-    #else
-        #define MIST_API
-    #endif
+
 #else
     #error Only supports Windows
 #endif
 
 #ifdef MIST_DEBUG
     #define MIST_ENABLE_ASSERTS
+    #if defined(MIST_PLATFORM_WINDOWS)
+        #define MIST_DEBUGBREAK __debugbreak()
+    #elif defined(MIST_PLATFORM_LINUX)
+        #define MIST_DEBUGBREAK raise(SIGTRAP)
+    #else
+        #error "Platform does not support DEBUGBREAK"
+    #endif
+#else
+    #define MIST_DEBUGBREAK
 #endif
 
 #ifdef MIST_ENABLE_ASSERTS
@@ -25,14 +26,14 @@
         {                                                                                                              \
             if (!(x)) {                                                                                                \
                 MIST_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                      \
-                __debugbreak();                                                                                        \
+                MIST_DEBUGBREAK;                                                                                       \
             }                                                                                                          \
         }
     #define MIST_CORE_ASSERT(x, ...)                                                                                   \
         {                                                                                                              \
             if (!(x)) {                                                                                                \
                 MIST_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                 \
-                __debugbreak();                                                                                        \
+                MIST_DEBUGBREAK;                                                                                       \
             }                                                                                                          \
         }
 #else
