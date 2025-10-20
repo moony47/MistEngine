@@ -40,15 +40,18 @@ void EditorLayer::OnAttach() {
     MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
     MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
-    for (size_t y = 0; y < s_MapHeight; y++)
-        for (size_t x = 0; x < s_MapWidth; x++) {
-            std::string name = std::format("Tile({},{})", x, y);
-            Entity2D* tile = new Entity2D(
-                m_Scene.get(), glm::vec2{(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y});
-            std::string texName(1, s_MapTiles[x + y * s_MapWidth]);
-            tile->AddComponent(new Sprite(tile, texName));
-            m_Scene->AddNode(name, tile);
-        }
+    Node node(m_Scene.get());
+    m_Scene->AddNode("TestNode", node);
+
+    //for (size_t y = 0; y < s_MapHeight; y++)
+    //    for (size_t x = 0; x < s_MapWidth; x++) {
+    //        std::string name = std::format("Tile({},{})", x, y);
+    //        Entity2D* tile = new Entity2D(
+    //            m_Scene.get(), glm::vec2{(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y});
+    //        std::string texName(1, s_MapTiles[x + y * s_MapWidth]);
+    //        tile->AddComponent(new Sprite(tile, texName));
+    //        m_Scene->AddNode(name, tile);
+    //    }
 
     Mist::FramebufferSpecification fbSpec(1280, 720);
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
