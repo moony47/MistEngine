@@ -50,13 +50,8 @@ public:
 
     void OnUpdate(DeltaTime deltaTime) override {
         m_CameraController.OnUpdate(deltaTime);
-    }
 
-    void OnFrameStart(DeltaTime deltaTime) override {
         Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
-    }
-
-    void OnFrameEnd(DeltaTime deltaTime) override {
         glm::mat4 spriteTransform =
             glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), m_SpritePosition), m_SpriteRotation, {0, 0, 1}),
                        {2.0f, 2.0f, 1.0f});
@@ -76,8 +71,6 @@ public:
         }
 
         Renderer::EndScene();
-
-        // Renderer::Flush();
     }
 
     void OnImGuiRender(DeltaTime deltaTime) override {

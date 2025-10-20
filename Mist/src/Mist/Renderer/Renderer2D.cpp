@@ -115,6 +115,7 @@ void Renderer2D::EndScene() {
     FlushBatch();
 }
 
+
 void Renderer2D::BeginBatch() {
     // Reset indices count vertex data buffer
     s_Data.QuadIndexCount = 0;
@@ -140,6 +141,7 @@ void Renderer2D::FlushBatch() {
     RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
     s_Data.Stats.DrawCalls++;
 }
+
 
 void Renderer2D::DrawQuad(const glm::vec3& position,
                           const float angleRad,

@@ -94,17 +94,8 @@ void TestSpritesBatch::OnUpdate(DeltaTime deltaTime) {
     m_VA->Unbind();
     vb->Unbind();
     ib->Unbind();
-}
-
-void TestSpritesBatch::OnFrameStart(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
 
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
-}
-
-void TestSpritesBatch::OnFrameEnd(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
-
     Renderer::Submit(MIST_SHADER("Batch"), m_VA, glm::mat4(1.0));
 
     // Delete VertexArray ready for next frame

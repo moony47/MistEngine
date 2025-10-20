@@ -1,7 +1,7 @@
 #pragma once
 
 // For use by external projects
-#include "Mist/Cameras/OrthographicCameraController.h"
+#include "Mist/ECS/Cameras/OrthographicCameraController.h"
 
 #include "Mist/Renderer/Buffer.h"
 #include "Mist/Renderer/Camera.h"
@@ -20,6 +20,11 @@
 #include "Mist/Core/Layer.h"
 #include "Mist/Core/Logger.h"
 #include "Mist/Core/MouseButtonCodes.h"
+
+#include "Mist/ECS/Component.h"
+#include "Mist/ECS/Components/Sprite.h"
+#include "Mist/ECS/Node.h"
+#include "Mist/ECS/Scene.h"
 
 #include "Mist/Debug/Instrumentor.h"
 

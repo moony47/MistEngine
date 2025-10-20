@@ -56,8 +56,7 @@ public:
     void OnDetach() override;
 
     void OnUpdate(DeltaTime deltaTime) override;
-    void OnFrameStart(DeltaTime deltaTime) override;
-    void OnFrameEnd(DeltaTime deltaTime) override;
+
     void OnEvent(Event& e) override;
 
 private:

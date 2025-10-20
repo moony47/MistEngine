@@ -72,17 +72,9 @@ void TestSprites::OnUpdate(DeltaTime deltaTime) {
         sprite.Update(deltaTime, -5.0f, -5.0f, 5.0f, 5.0f);
     for (auto& sprite : m_DiamondSprites)
         sprite.Update(deltaTime, -5.0f, -5.0f, 5.0f, 5.0f);
-}
-
-void TestSprites::OnFrameStart(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
 
     Renderer::BeginScene(m_CameraController.GetCamera() /*lights, environment*/);
-}
 
-void TestSprites::OnFrameEnd(DeltaTime deltaTime) {
-
-    MIST_PROFILE_FUNCTION();
     glm::mat4 model(1.0f);
 
     MIST_SHADERLIB->Bind("Basic");

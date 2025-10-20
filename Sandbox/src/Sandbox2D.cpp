@@ -95,10 +95,6 @@ void Sandbox2D::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
 
     m_CameraController.OnUpdate(deltaTime);
-}
-
-void Sandbox2D::OnFrameStart(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
 
     Mist::Renderer2D::ResetStats();
 
@@ -106,10 +102,6 @@ void Sandbox2D::OnFrameStart(DeltaTime deltaTime) {
 
     RenderCommand::SetClearColour(glm::vec4{0.1f, 0.1f, 0.1f, 1.0f});
     Renderer2D::BeginScene(m_CameraController.GetCamera());
-}
-
-void Sandbox2D::OnFrameEnd(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
 
     for (size_t y = 0; y < s_MapHeight; y++)
         for (size_t x = 0; x < s_MapWidth; x++) {

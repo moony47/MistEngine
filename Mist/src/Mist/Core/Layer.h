@@ -18,12 +18,6 @@ public:
 
     virtual void OnUpdate(DeltaTime deltaTime) {
     }
-
-    virtual void OnFrameStart(DeltaTime deltaTime) {
-    }
-    virtual void OnFrameEnd(DeltaTime deltaTime) {
-    }
-
     virtual void OnImGuiRender(DeltaTime deltaTime) {
     }
 
