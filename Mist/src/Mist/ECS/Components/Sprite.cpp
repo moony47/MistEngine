@@ -4,13 +4,13 @@
 
 namespace Mist {
 
-Sprite::Sprite(Entity2D* node, std::string textureName) :
+Sprite::Sprite(Entity2D* node, const std::string& textureName) :
     Component(node),  
     m_TextureName(textureName),
     m_Transform(node->GetTransform()) {
 }
 
-void Sprite::SetTextureName(std::string textureName) {
+void Sprite::SetTextureName(const std::string& textureName) {
     m_TextureName = textureName;
 }
 

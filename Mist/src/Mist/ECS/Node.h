@@ -1,71 +1,28 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <algorithm>
+#include <glm/glm.hpp>
 #include <memory>
 #include <ranges>
 #include <stdexcept>
 #include <typeindex>
 
+#include "Component.h"
 #include "Mist/Core/DeltaTime.h"
 #include "Mist/Events/Event.h"
-#include "Mist/ECS/Cameras/OrthographicCameraController.h"
 
 namespace Mist {
 
-class Node;
-
-class Scene2D {
-public:
-    Scene2D() :
-        m_Nodes(),
-        m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
-    }
-    ~Scene2D();
-
-    void OnUpdate(DeltaTime deltaTime);
-    void OnRender();
-
-    void OnEvent(Event& e);
-    
-    void AddNode(const std::string& name, Node& node);
-
-private:
-    std::unordered_map<std::string, Node> m_Nodes;
-
-    OrthographicCameraController m_CameraController;
-};
-
-class Component {
-public:
-    Component(Node* node) :
-        m_Node(node) {
-    }
-    virtual ~Component() = default;
-
-    Node* GetNode() {
-        return m_Node;
-    }
-
-protected:
-    Node* m_Node;
-};
+class Scene2D;
 
 class Node {
 public:
-    Node(Scene2D* scene) :
-        m_Scene(scene) {
-    }
-    Node(Scene2D* scene, Node* parent) :
+    Node(Scene2D* scene, Node* parent = nullptr) :
         m_Scene(scene),
         m_Parent(parent) {
     }
 
-    virtual ~Node() {
-        // for (auto it1 = m_Components.begin(); it1 != m_Components.end(); it1++)
-        //     for (auto it2 = it1->second.begin(); it2 != it1->second.end(); it2++)
-        //         delete *it2;
-    }
+    virtual ~Node();
 
     inline const Node& GetParent() const {
         return *m_Parent;
@@ -74,34 +31,36 @@ public:
         m_Parent = parent;
     }
 
-    // template <typename T>
-    //     requires std::is_base_of<Component, T>::value
-    // void AddComponent(T* comp) {
-    //     static const std::type_index type(typeid(T));
-    //     m_Components[type].push_back(comp);
-    // }
+    virtual void OnUpdate(DeltaTime deltaTime) {
+    }
+    virtual void OnEvent(Event& e) {
+    }
 
-    // template <typename T>
-    //     requires std::is_base_of<Component, T>::value
-    // auto FindComponents() {
-    //     static const std::type_index type(typeid(T));
-    //     auto it = m_Components.find(type);
+    template <typename T>
+        requires std::is_base_of<Component, T>::value
+    void AddComponent(T* comp) {
+        static const std::type_index type(typeid(T));
+        m_Components[type].emplace_back(comp);
+    }
 
-    //    std::vector<Component*>* baseVector;
-    //    if (it == m_Components.end()) {
-    //        static std::vector<Component*> empty;
-    //        baseVector = &empty;
-    //    } else
-    //        baseVector = &it->second;
+    template <typename T>
+        requires std::is_base_of<Component, T>::value
+    auto FindComponents() {
+        static const std::type_index type(typeid(T));
+        auto it = m_Components.find(type);
 
-    //    return *baseVector |
-    //           std::views::transform([](const Component* base) { return (T*)base; });
-    //}
+        static std::vector<Component*> empty;
+        std::vector<Component*>& baseVector = empty;
+        if (it != m_Components.end())
+            baseVector = it->second;
+
+        return baseVector | std::views::transform([](const Component* base) { return (T*)base; });
+    }
 
 protected:
     Scene2D* m_Scene;
     Node* m_Parent = nullptr;
-    // std::unordered_map<std::type_index, std::vector<Component*>> m_Components;
+    std::unordered_map<std::type_index, std::vector<Component*>> m_Components;
 };
 
 struct Transform2D {
@@ -113,7 +72,7 @@ struct Transform2D {
 class Entity2D : public Node {
 public:
     Entity2D(Scene2D* scene,
-             Node* parent,
+             Node* parent = nullptr,
              glm::vec2 position = {0.0f, 0.0f},
              float rotation = 0.0f,
              glm::vec2 scale = {1.0f, 1.0f}) :
@@ -125,7 +84,7 @@ public:
         return m_Transform;
     }
 
-private:
+protected:
     Transform2D m_Transform;
 };
 

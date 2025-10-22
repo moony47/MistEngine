@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Mist.h>
+#include "Player.h"
 
 using namespace Mist;
 
@@ -19,7 +20,9 @@ public:
     void OnEvent(Event& e) override;
 
 private:
-    Ref<Scene2D> m_Scene; 
+    Scope<Scene2D> m_Scene; 
+
+    Scope<Player> m_Player;
 
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
