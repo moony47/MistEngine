@@ -1,14 +1,14 @@
 #pragma once
 
 #include "../Node.h"
-#include "../Component.h"
 #include "Mist/Renderer/Texture.h"
 
 namespace Mist {
 
-class Sprite final : public Component {
+class Sprite {
 public:
-    Sprite(Entity2D* node, const std::string& textureName);
+    Sprite(const Transform2D& transform, const std::string& textureName);
+    Sprite(const Sprite&) = default;
 
     void SetTextureName(const std::string& textureName);
 
@@ -21,7 +21,7 @@ public:
 
 private:
     std::string m_TextureName;
-    Transform2D& m_Transform;
+    const Transform2D& m_Transform;
 };
 
 } // namespace Mist

@@ -22,9 +22,10 @@ void Scene2D::OnRender() {
     RenderCommand::Clear();
     Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-    for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++) {
-        const Transform2D& transform = it->GetTransform();
-        Renderer2D::DrawQuad(transform.Position, transform.Rotation, transform.Scale, it->GetTextureName());
+    auto& sprites = GetComponents<Sprite>();
+    for (auto it = sprites.begin(); it != sprites.end(); it++) {
+        const Transform2D& transform = (*it).GetTransform();
+        Renderer2D::DrawQuad(transform.Position, transform.Rotation, transform.Scale, (*it).GetTextureName());
     }
 
     Renderer2D::EndScene();
@@ -41,13 +42,5 @@ void Scene2D::AddNode(const std::string& name, Node* node) {
     m_Nodes[name] = Scope<Node>(node);
 }
 
-void Scene2D::AddSpriteToEntity(Entity2D* node, const std::string& textureName) {
-    m_Sprites.emplace_back(node, textureName);
-    node->AddComponent(&m_Sprites.back());
-}
-
-void Scene2D::HintSpriteCount(size_t count) {
-    m_Sprites.reserve(m_Sprites.size() + count);
-}
 
 } // namespace Mist

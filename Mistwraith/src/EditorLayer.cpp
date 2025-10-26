@@ -42,7 +42,7 @@ void EditorLayer::OnAttach() {
     MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
     MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
-    m_Scene->HintSpriteCount(s_MapHeight * s_MapHeight + 1);
+    m_Scene->HintComponentCount<Sprite>(s_MapHeight * s_MapHeight + 1);
     for (size_t y = 0; y < s_MapHeight; y++)
         for (size_t x = 0; x < s_MapWidth; x++) {
             std::string name = std::format("Tile({},{})", x, y);
@@ -50,11 +50,13 @@ void EditorLayer::OnAttach() {
                 new Entity2D(m_Scene.get(), nullptr,
                              glm::vec2{(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y});
             std::string texName(1, s_MapTiles[x + y * s_MapWidth]);
-            m_Scene->AddSpriteToEntity(tile, texName);
+            m_Scene->AddComponent(tile, 1);
+            //m_Scene->AddComponent(tile, Sprite(tile->GetTransform(), texName));
             m_Scene->AddNode(name, tile);
         }
 
-    m_Scene->AddSpriteToEntity(m_Player.get(), "Diamond");
+    m_Scene->AddComponent(m_Player.get(), "Name");
+    //m_Scene->AddComponent(m_Player.get(), Sprite(m_Player->GetTransform(), "Diamond"));
     m_Scene->AddNode("Diamond", m_Player.get());
 
     Mist::FramebufferSpecification fbSpec(1280, 720);

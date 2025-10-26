@@ -37,14 +37,14 @@ public:
     }
 
     template <typename T>
-        requires std::is_base_of<Component, T>::value
+        //requires std::is_base_of<Component, T>::value
     void AddComponent(T* comp) {
         static const std::type_index type(typeid(T));
         m_Components[type].emplace_back(comp);
     }
 
     template <typename T>
-        requires std::is_base_of<Component, T>::value
+        //requires std::is_base_of<Component, T>::value
     auto FindComponents() {
         static const std::type_index type(typeid(T));
         auto it = m_Components.find(type);
