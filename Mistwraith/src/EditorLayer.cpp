@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+namespace Mist {
+
 static const size_t s_MapWidth = 24;
 static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWGGGGGGGGGGGGWWWWWW"
@@ -23,42 +25,6 @@ static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWWWWWWWWWWWWWWWWWWW";
 static const size_t s_MapHeight = strlen(s_MapTiles) / s_MapWidth;
-
-static const std::string* GetTileTexture(size_t x, size_t y) {
-    size_t pos = x + y * s_MapWidth;
-    char chr = s_MapTiles[pos];
-
-    std::string* str = new std::string(1, chr);
-
-    if (chr == 'G')
-        return str;
-
-    if (pos < strlen(s_MapTiles) - s_MapWidth && s_MapTiles[pos + s_MapWidth] != chr) // S
-        *str += 'S';
-    else if (pos >= s_MapWidth && s_MapTiles[pos - s_MapWidth] != chr) // N
-        *str += 'N';
-
-    if (pos != strlen(s_MapTiles) - 1 && s_MapTiles[pos + 1] != chr) // E
-        *str += 'E';
-    else if (pos != 0 && s_MapTiles[pos - 1] != chr) // W
-        *str += 'W';
-
-    if (str->length() == 1) {
-        // NE
-        if (pos >= s_MapWidth - 1 && s_MapTiles[pos - s_MapWidth + 1] != chr)
-            *str += '1';
-        // NW
-        else if (pos >= s_MapWidth + 1 && s_MapTiles[pos - s_MapWidth - 1] != chr)
-            *str += '2';
-        // SE
-        else if (pos < strlen(s_MapTiles) - s_MapWidth - 1 && s_MapTiles[pos + s_MapWidth + 1] != chr)
-            *str += '3';
-        // SW
-        else if (pos < strlen(s_MapTiles) - s_MapWidth + 1 && s_MapTiles[pos + s_MapWidth - 1] != chr)
-            *str += '4';
-    }
-    return str;
-}
 
 EditorLayer::EditorLayer() :
     Layer("EditorLayer"),
@@ -95,6 +61,11 @@ void EditorLayer::OnAttach() {
 
     Mist::FramebufferSpecification fbSpec(1280, 720);
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
+
+    m_ActiveScene = CreateRef<Scene>();
+
+    m_PlayerEntity = m_ActiveScene->CreateEntity("Player");
+    m_PlayerEntity.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
 }
 
 void EditorLayer::OnDetach() {
@@ -107,11 +78,14 @@ void EditorLayer::OnDetach() {
 
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
+
     if (m_ViewportFocussed)
         m_CameraController.OnUpdate(deltaTime);
+
+    m_ActiveScene->OnUpdate(deltaTime);
 }
 
-void EditorLayer::OnFrameStart(DeltaTime deltaTime) {
+void EditorLayer::OnRender(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
 
     Mist::Renderer2D::ResetStats();
@@ -120,21 +94,20 @@ void EditorLayer::OnFrameStart(DeltaTime deltaTime) {
 
     RenderCommand::SetClearColour(glm::vec4{0.1f, 0.1f, 0.1f, 1.0f});
     RenderCommand::Clear();
-    Renderer2D::BeginScene(m_CameraController.GetCamera());
-}
 
-void EditorLayer::OnFrameEnd(DeltaTime deltaTime) {
-    MIST_PROFILE_FUNCTION();
+    Renderer2D::BeginView(m_CameraController.GetCamera());
 
-    for (size_t y = 0; y < s_MapHeight; y++)
-        for (size_t x = 0; x < s_MapWidth; x++) {
-            const std::string* texStr = GetTileTexture(x, y);
-            Renderer2D::DrawQuad({(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y},
-                                 glm::radians(0.0f), {1.0f, 1.0f}, *texStr);
-            delete texStr;
-        }
+    m_ActiveScene->OnRender(deltaTime);
 
-    Renderer2D::EndScene();
+    //for (size_t y = 0; y < s_MapHeight; y++)
+    //    for (size_t x = 0; x < s_MapWidth; x++) {
+    //        const std::string* texStr = GetTileTexture(x, y);
+    //        Renderer2D::DrawQuad({(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y},
+    //                             glm::radians(0.0f), {1.0f, 1.0f}, *texStr);
+    //        delete texStr;
+    //    }
+
+    Renderer2D::EndView();
     m_Framebuffer->Unbind();
 }
 
@@ -210,7 +183,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     ImGui::Begin("EditorLayer");
 
-    ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_SpriteColour), ImGuiColorEditFlags_Float);
+    ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_PlayerEntity.GetComponent<SpriteComponent>().Colour),
+                      ImGuiColorEditFlags_Float);
 
     std::string texName = "Diamond";
     float height = 256;
@@ -249,3 +223,5 @@ void EditorLayer::OnEvent(Event& e) {
 
     m_CameraController.OnEvent(e);
 }
+
+} // namespace Mist

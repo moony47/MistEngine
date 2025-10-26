@@ -16,6 +16,7 @@ IncludeDir["GLAD"] = "Mist/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["glm"] = "Mist/vendor/glm"
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
+IncludeDir["entt"] = "Mist/vendor/entt/include"
 
 group "Dependencies"
     include "Mist/vendor/GLFW"
@@ -65,6 +66,7 @@ group ""
             "%{IncludeDir.ImGui}",
             "%{IncludeDir.glm}",
             "%{IncludeDir.stb_image}",
+            "%{IncludeDir.entt}",
         }
 
         links {
@@ -126,6 +128,8 @@ group ""
 
             "%{IncludeDir.ImGui}",
             "%{IncludeDir.glm}",
+            "%{IncludeDir.entt}",
+
         }
 
         links {
@@ -186,6 +190,7 @@ group ""
 
             "%{IncludeDir.ImGui}",
             "%{IncludeDir.glm}",
+            "%{IncludeDir.entt}",
         }
 
         links {

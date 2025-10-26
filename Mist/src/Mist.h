@@ -13,6 +13,10 @@
 #include "Mist/Renderer/Texture.h"
 #include "Mist/Renderer/VertexArray.h"
 
+#include "Mist/Scene/Components.h"
+#include "Mist/Scene/Entity.h"
+#include "Mist/Scene/Scene.h"
+
 #include "Mist/Core/Application.h"
 #include "Mist/Core/DeltaTime.h"
 #include "Mist/Core/Input.h"

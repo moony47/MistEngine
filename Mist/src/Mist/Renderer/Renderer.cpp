@@ -29,13 +29,13 @@ void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
     RenderCommand::SetViewport(0, 0, width, height);
 }
 
-void Renderer::BeginScene(OrthographicCamera& camera) {
+void Renderer::BeginView(OrthographicCamera& camera) {
     MIST_PROFILE_FUNCTION();
 
     s_SceneData->VP = camera.GetVP();
 }
 
-void Renderer::EndScene() {
+void Renderer::EndView() {
     MIST_PROFILE_FUNCTION();
 }
 

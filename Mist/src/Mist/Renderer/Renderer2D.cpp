@@ -99,7 +99,7 @@ void Renderer2D::Shutdown() {
     delete[] s_Data.QuadVertexBufferBase;
 }
 
-void Renderer2D::BeginScene(OrthographicCamera& camera) {
+void Renderer2D::BeginView(OrthographicCamera& camera) {
     MIST_PROFILE_FUNCTION();
 
     // Set the camera transform for this scene
@@ -109,7 +109,7 @@ void Renderer2D::BeginScene(OrthographicCamera& camera) {
     BeginBatch();
 }
 
-void Renderer2D::EndScene() {
+void Renderer2D::EndView() {
     MIST_PROFILE_FUNCTION();
 
     FlushBatch();
@@ -141,9 +141,7 @@ void Renderer2D::FlushBatch() {
     s_Data.Stats.DrawCalls++;
 }
 
-void Renderer2D::DrawQuad(const glm::vec3& position,
-                          const float angleRad,
-                          const glm::vec2& size,
+void Renderer2D::DrawQuad(const glm::mat4& transform,
                           const glm::vec4& colour,
                           const std::string& textureName,
                           float tilingFactor) {
@@ -182,11 +180,6 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
         textureIndex = s_Data.TextureIndex;
         s_Data.TextureSlots[s_Data.TextureIndex++] = sourceTextureName;
     }
-
-    // Compute transform for the quad geometry
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
-    transform = glm::rotate(transform, angleRad, {0, 0, 1});
-    transform = glm::scale(transform, glm::vec3(size, 1.0f));
 
     Ref<Texture2D> texture = MIST_TEX(textureName);
 

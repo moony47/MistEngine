@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Mist.h>
-using namespace Mist;
+
+namespace Mist {
 
 class EditorLayer : public Layer {
 public:
@@ -12,23 +13,20 @@ public:
     void OnDetach() override;
 
     void OnUpdate(DeltaTime deltaTime) override;
-
-    void OnFrameStart(DeltaTime deltaTime) override;
-    void OnFrameEnd(DeltaTime deltaTime) override;
-
+    void OnRender(DeltaTime deltaTime) override;
     void OnImGuiRender(DeltaTime deltaTime) override;
 
     void OnEvent(Event& e) override;
 
 private:
-    OrthographicCameraController m_CameraController;
+    Ref<Scene> m_ActiveScene;
+    Entity m_PlayerEntity;
 
-    Ref<VertexArray> m_VertexArray;
-    Ref<Shader> m_Shader;
+    OrthographicCameraController m_CameraController;
 
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
     bool m_ViewportFocussed = false, m_ViewportHovered = false;
-
-    glm::vec4 m_SpriteColour{0.2f, 0.0f, 0.8f, 1.0f};
 };
+
+} // namespace Mist
