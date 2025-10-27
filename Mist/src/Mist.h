@@ -4,7 +4,6 @@
 #include "Mist/Cameras/OrthographicCameraController.h"
 
 #include "Mist/Renderer/Buffer.h"
-#include "Mist/Renderer/Camera.h"
 #include "Mist/Renderer/Framebuffer.h"
 #include "Mist/Renderer/RenderCommand.h"
 #include "Mist/Renderer/Renderer.h"
@@ -12,6 +11,8 @@
 #include "Mist/Renderer/Shader.h"
 #include "Mist/Renderer/Texture.h"
 #include "Mist/Renderer/VertexArray.h"
+
+#include "Mist/Cameras/Camera.h"
 
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"

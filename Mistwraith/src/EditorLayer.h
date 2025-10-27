@@ -2,7 +2,7 @@
 
 #include <Mist.h>
 
-namespace Mist {
+using namespace Mist;
 
 class EditorLayer : public Layer {
 public:
@@ -20,7 +20,8 @@ public:
 
 private:
     Ref<Scene> m_ActiveScene;
-    Entity m_PlayerEntity;
+    Entity m_CameraEntity;
+    Entity m_SpriteEntity;
 
     OrthographicCameraController m_CameraController;
 
@@ -28,5 +29,3 @@ private:
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
     bool m_ViewportFocussed = false, m_ViewportHovered = false;
 };
-
-} // namespace Mist

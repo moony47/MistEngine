@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Scene.h"
 #include "Components.h"
+#include "Scene.h"
 
 #include <entt.hpp>
 
@@ -25,7 +25,14 @@ public:
         return m_Scene->m_Registry.get<T>(m_EntityID);
     }
 
-    inline TransformComponent Transform() {
+    template <typename T>
+    T* TryGetComponent() {
+        MIST_CORE_ASSERT(HasComponent<T>(), "[Entity::GetComponent] Entity does not have such component");
+
+        return m_Scene->m_Registry.try_get<T>(m_EntityID);
+    }
+
+    inline TransformComponent& Transform() {
         return GetComponent<TransformComponent>();
     }
 
@@ -36,19 +43,19 @@ public:
         return m_Scene->m_Registry.emplace<T>(m_EntityID, std::forward<Args>(args)...);
     }
 
-    template<typename T>
+    template <typename T>
     void RemoveComponent() {
         MIST_CORE_ASSERT(HasComponent<T>(), "[Entity::RemoveComponent] Entity does not have such component");
-        
+
         m_Scene->m_Registry.remove<T>(m_EntityID);
     }
 
     operator bool() const {
-        return (uint32_t)m_EntityID != 0;
+        return m_EntityID != entt::null;
     }
 
 private:
-    entt::entity m_EntityID{0};
+    entt::entity m_EntityID{entt::null};
     Scene* m_Scene = nullptr;
 };
 

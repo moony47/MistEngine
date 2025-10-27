@@ -23,8 +23,14 @@ public:
         return m_Registry;
     }
 
+    void SetPrimaryCamera(Entity* camera) {
+        m_PrimaryCameraEntity = camera;
+    }
+
 private:
     entt::registry m_Registry;
+
+    Entity* m_PrimaryCameraEntity = nullptr;
 
     friend class Entity;
 };

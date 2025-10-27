@@ -1,6 +1,6 @@
 #include "mistpch.h"
 
-#include "Camera.h"
+#include "Mist/Cameras/Camera.h"
 
 namespace Mist {
 

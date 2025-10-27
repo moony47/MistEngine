@@ -1,7 +1,7 @@
 #include "mistpch.h"
 #include "Renderer2D.h"
 
-#include "Camera.h"
+#include "Mist/Cameras/Camera.h"
 #include "RenderCommand.h"
 #include "Shader.h"
 #include "VertexArray.h"
@@ -41,7 +41,7 @@ struct Renderer2DData {
     QuadVertex* QuadVertexBufferBase = nullptr;
     QuadVertex* QuadVertexBufferPtr = nullptr;
 
-    size_t TextureIndex = 0;
+    int TextureIndex = 0;
     std::array<std::string, 32> TextureSlots;
 
     Renderer2D::Statistics Stats;
@@ -82,9 +82,9 @@ void Renderer2D::Init() {
 
     // Set the sampler uniforms for each texture slot
     int samplers[32];
-    for (int i = 0; i < s_Data.TextureSlots.size(); i++)
+    for (int i = 0; (size_t)i < s_Data.TextureSlots.size(); i++)
         samplers[i] = i;
-    MIST_SHADER(s_Data.ShaderName)->SetUniform1iv("u_Texture", s_Data.TextureSlots.size(), samplers);
+    MIST_SHADER(s_Data.ShaderName)->SetUniform1iv("u_Texture", (uint32_t)s_Data.TextureSlots.size(), samplers);
 
     // Create the white pixel texture for solid colours
     MIST_TEXLIB->Create(s_Data.WhiteTexName, 1, 1)->SetData(new uint32_t(0xFFFFFFFF), sizeof(uint32_t));
@@ -97,6 +97,18 @@ void Renderer2D::Shutdown() {
     MIST_TEXLIB->Remove(s_Data.WhiteTexName);
 
     delete[] s_Data.QuadVertexBufferBase;
+}
+
+void Renderer2D::BeginView(const glm::mat4& projection, const glm::mat4& transform) {
+    MIST_PROFILE_FUNCTION();
+
+    glm::mat4 VP = projection * glm::inverse(transform);
+
+    // Set the camera transform for this scene
+    MIST_SHADERLIB->Bind(s_Data.ShaderName);
+    MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", VP);
+
+    BeginBatch();
 }
 
 void Renderer2D::BeginView(OrthographicCamera& camera) {
@@ -133,7 +145,7 @@ void Renderer2D::FlushBatch() {
 
     // Bind 2D batch shader and all the required textures
     MIST_SHADERLIB->Bind(s_Data.ShaderName);
-    for (uint32_t i = 0; i < s_Data.TextureIndex; i++)
+    for (uint32_t i = 0; (int)i < s_Data.TextureIndex; i++)
         MIST_TEXLIB->Bind(s_Data.TextureSlots[i], i);
 
     // Draw call for entire batch
@@ -164,7 +176,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform,
 
     // If texture is already bound to a slot, reference the same slot again
     int textureIndex = -1;
-    for (size_t i = 0; i < s_Data.TextureIndex; i++)
+    for (int i = 0; (size_t)i < s_Data.TextureIndex; i++)
         if (s_Data.TextureSlots[i] == sourceTextureName) {
             textureIndex = i;
             break;
@@ -177,7 +189,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform,
             FlushBatch();
             BeginBatch();
         }
-        textureIndex = s_Data.TextureIndex;
+        textureIndex = (int)s_Data.TextureIndex;
         s_Data.TextureSlots[s_Data.TextureIndex++] = sourceTextureName;
     }
 

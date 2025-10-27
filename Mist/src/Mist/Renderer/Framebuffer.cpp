@@ -1,7 +1,7 @@
 #include "mistpch.h"
 #include "Framebuffer.h"
 
-#include "Platform/OpenGL/OpenGLFramebuffer.h";
+#include "Platform/OpenGL/OpenGLFramebuffer.h"
 #include "Renderer.h"
 
 namespace Mist {

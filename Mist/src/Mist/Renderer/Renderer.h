@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RenderCommand.h"
-#include "Camera.h"
+#include "Mist/Cameras/Camera.h"
 #include "Shader.h"
 
 namespace Mist {

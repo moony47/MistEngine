@@ -1,9 +1,23 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Mist {
+
+class Camera {
+public:
+    Camera(const glm::mat4& projection) :
+        m_Projection(projection) {
+    }
+
+    const glm::mat4& GetProjection() const {
+        return m_Projection;
+    }
+
+private:
+    glm::mat4 m_Projection;
+};
 
 class OrthographicCamera {
 public:

@@ -2,7 +2,7 @@
 
 #include "Mist/Core/DeltaTime.h"
 
-#include "Mist/Renderer/Camera.h"
+#include "Mist/Cameras/Camera.h"
 
 #include "Mist/Events/EventSystem.h"
 

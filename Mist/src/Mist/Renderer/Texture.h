@@ -42,10 +42,10 @@ public:
     }
 
     inline uint32_t GetWidth() const override {
-        return m_SourceTexture->GetWidth() * (m_TexCoords[2].x - m_TexCoords[0].x);
+        return (uint32_t)(m_SourceTexture->GetWidth() * (m_TexCoords[2].x - m_TexCoords[0].x));
     }
     inline uint32_t GetHeight() const override {
-        return m_SourceTexture->GetHeight() * (m_TexCoords[2].y - m_TexCoords[0].y);
+        return (uint32_t)(m_SourceTexture->GetHeight() * (m_TexCoords[2].y - m_TexCoords[0].y));
     }
 
     inline uint32_t GetRendererID() const override {

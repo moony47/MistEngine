@@ -1,7 +1,5 @@
 #include "EditorLayer.h"
 
-namespace Mist {
-
 static const size_t s_MapWidth = 24;
 static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWGGGGGGGGGGGGWWWWWW"
@@ -37,42 +35,36 @@ EditorLayer::~EditorLayer() {
 void EditorLayer::OnAttach() {
     MIST_PROFILE_FUNCTION();
 
+    // Create textures
     MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
-    // MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEXLIB->Create("Star", "res/textures/star.png");
 
     MIST_TEXLIB->Create("SpriteSheet", "res/textures/RPGpack_sheet_2X.png");
-
-    MIST_TEXLIB->CreateSub("WSW", "SpriteSheet", {10, 10}, {128, 128});
-    MIST_TEXLIB->CreateSub("WS", "SpriteSheet", {11, 10}, {128, 128});
-    MIST_TEXLIB->CreateSub("WSE", "SpriteSheet", {12, 10}, {128, 128});
-    MIST_TEXLIB->CreateSub("WW", "SpriteSheet", {10, 11}, {128, 128});
     MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
-    MIST_TEXLIB->CreateSub("WE", "SpriteSheet", {12, 11}, {128, 128});
-    MIST_TEXLIB->CreateSub("WNW", "SpriteSheet", {10, 12}, {128, 128});
-    MIST_TEXLIB->CreateSub("WN", "SpriteSheet", {11, 12}, {128, 128});
-    MIST_TEXLIB->CreateSub("WNE", "SpriteSheet", {12, 12}, {128, 128});
-
-    MIST_TEXLIB->CreateSub("W1", "SpriteSheet", {13, 11}, {128, 128});
-    MIST_TEXLIB->CreateSub("W2", "SpriteSheet", {14, 11}, {128, 128});
-    MIST_TEXLIB->CreateSub("W3", "SpriteSheet", {13, 12}, {128, 128});
-    MIST_TEXLIB->CreateSub("W4", "SpriteSheet", {14, 12}, {128, 128});
-
     MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
+    // Create framebuffer
     Mist::FramebufferSpecification fbSpec(1280, 720);
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
+    // Create scene
     m_ActiveScene = CreateRef<Scene>();
 
-    m_PlayerEntity = m_ActiveScene->CreateEntity("Player");
-    m_PlayerEntity.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
+    // Create some entities in the scene, including primary camera
+    m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+    m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+    m_ActiveScene->SetPrimaryCamera(&m_CameraEntity);
+
+    m_SpriteEntity = m_ActiveScene->CreateEntity("Sprite");
+    m_SpriteEntity.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
 }
 
 void EditorLayer::OnDetach() {
     MIST_PROFILE_FUNCTION();
 
+    // Delete textures
     MIST_TEXLIB->Remove("Diamond");
-    // MIST_TEXLIB->Remove("Star");
+    MIST_TEXLIB->Remove("Star");
     MIST_TEXLIB->Remove("SpriteSheet", true);
 }
 
@@ -83,6 +75,20 @@ void EditorLayer::OnUpdate(DeltaTime deltaTime) {
         m_CameraController.OnUpdate(deltaTime);
 
     m_ActiveScene->OnUpdate(deltaTime);
+
+    // WASD Camera Controls
+    glm::vec3 cameraStep(0.0f);
+    if (Input::IsKeyPressed(KeyCode::W))
+        cameraStep.y += 1;
+    if (Input::IsKeyPressed(KeyCode::A))
+        cameraStep.x -= 1;
+    if (Input::IsKeyPressed(KeyCode::S))
+        cameraStep.y -= 1;
+    if (Input::IsKeyPressed(KeyCode::D))
+        cameraStep.x += 1;
+    if (cameraStep != glm::vec3{0.0f, 0.0f, 0.0f})
+        cameraStep = 5.0f * deltaTime * glm::normalize(cameraStep);
+    m_CameraEntity.Transform().Translate(cameraStep);
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -95,19 +101,8 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     RenderCommand::SetClearColour(glm::vec4{0.1f, 0.1f, 0.1f, 1.0f});
     RenderCommand::Clear();
 
-    Renderer2D::BeginView(m_CameraController.GetCamera());
-
     m_ActiveScene->OnRender(deltaTime);
 
-    //for (size_t y = 0; y < s_MapHeight; y++)
-    //    for (size_t x = 0; x < s_MapWidth; x++) {
-    //        const std::string* texStr = GetTileTexture(x, y);
-    //        Renderer2D::DrawQuad({(float)x - (float)(s_MapWidth / 2), (float)(s_MapHeight / 2) - (float)y},
-    //                             glm::radians(0.0f), {1.0f, 1.0f}, *texStr);
-    //        delete texStr;
-    //    }
-
-    Renderer2D::EndView();
     m_Framebuffer->Unbind();
 }
 
@@ -183,7 +178,7 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     ImGui::Begin("EditorLayer");
 
-    ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_PlayerEntity.GetComponent<SpriteComponent>().Colour),
+    ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_SpriteEntity.GetComponent<SpriteComponent>().Colour),
                       ImGuiColorEditFlags_Float);
 
     std::string texName = "Diamond";
@@ -191,8 +186,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
     Ref<Texture2D> texture = MIST_TEX(texName);
     glm::vec2 bl = texture->GetTexCoords(0);
     glm::vec2 tr = texture->GetTexCoords(2);
-    ImGui::Image((void*)texture->GetRendererID(), {height * texture->GetAspectRatio(), height}, ImVec2(bl.x, tr.y),
-                 ImVec2(tr.x, bl.y));
+    ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
+                 ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
 
     ImGui::End();
 
@@ -206,11 +201,12 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
     glm::vec2* viewportSizePtr = (glm::vec2*)&viewportSize;
     if (m_ViewportSize != *viewportSizePtr) {
-        m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
         m_ViewportSize = *viewportSizePtr;
+        m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
         m_CameraController.OnResize(viewportSize.x, viewportSize.y);
     }
-    ImGui::Image((void*)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
+
+    ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
 
     ImGui::End();
     ImGui::PopStyleVar();
@@ -223,5 +219,3 @@ void EditorLayer::OnEvent(Event& e) {
 
     m_CameraController.OnEvent(e);
 }
-
-} // namespace Mist
