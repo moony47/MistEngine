@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "Mist/Cameras/Camera.h"
+#include "Mist/Cameras/SceneCamera.h"
 
 namespace Mist {
 
@@ -12,8 +12,7 @@ struct TagComponent {
     TagComponent() = default;
     TagComponent(const TagComponent&) = default;
     TagComponent(const std::string& tag) :
-        Tag(tag) {
-    }
+        Tag(tag) {};
 };
 
 struct SpriteComponent {
@@ -23,11 +22,9 @@ struct SpriteComponent {
     SpriteComponent(const SpriteComponent&) = default;
     SpriteComponent(const std::string& textureName = "WHITE", const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f}) :
         TextureName(textureName),
-        Colour(colour) {
-    }
+        Colour(colour) {};
     SpriteComponent(const glm::vec4& colour) :
-        Colour(colour) {
-    }
+        Colour(colour) {};
 };
 
 struct TransformComponent {
@@ -43,8 +40,7 @@ struct TransformComponent {
         Transform = glm::scale(Transform, scale);
     }
     TransformComponent(const glm::mat4& transform) :
-        Transform(transform) {
-    }
+        Transform(transform) {};
 
     inline void Translate(glm::vec3 position) {
         Transform = glm::translate(Transform, position);
@@ -66,24 +62,41 @@ struct TransformComponent {
     //     m_Scale = scale;
     // }
 
-    inline glm::vec3 GetPosition() {
-        return {Transform[3].x, Transform[3].y, Transform[3].z};
+    inline const glm::vec3& GetPosition() const {
+        return Transform[3];
     }
-    // inline float GetRotation() {
+    // inline float GetRotation() const {
     //     return m_Rotation;
     // }
-    // inline glm::vec3& GetScale() {
+    // inline const glm::vec3& GetScale() const {
     //     return m_Scale;
     // }
 };
 
 struct CameraComponent {
-    Camera Camera;
+    SceneCamera Camera;
+    bool FixedAspectRatio = false;
 
     CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
-    CameraComponent(const glm::mat4& projection) :
-        Camera(projection) {
+};
+
+class ScriptableEntity;
+
+struct NativeScriptComponent {
+    ScriptableEntity* Instance = nullptr;
+
+    ScriptableEntity* (*InstantiateScript)();
+    void (*DestroyScript)(NativeScriptComponent*);
+
+    template <typename T>
+        requires std::is_base_of<ScriptableEntity, T>::value
+    void Bind() {
+        InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+        DestroyScript = [](NativeScriptComponent* ncs) {
+            delete ncs->Instance;
+            ncs->Instance = nullptr;
+        };
     }
 };
 

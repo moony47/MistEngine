@@ -4,6 +4,7 @@
 #include "Mist/Renderer/Renderer2D.h"
 
 #include <entt.hpp>
+#include <Mist/Events/Event.h>
 
 namespace Mist {
 
@@ -19,6 +20,10 @@ public:
     void OnUpdate(DeltaTime deltaTime);
     void OnRender(DeltaTime deltaTime);
 
+    void OnEvent(Event& e);
+
+    void OnViewportResize(uint32_t width, uint32_t height);
+
     entt::registry& Get() {
         return m_Registry;
     }
@@ -31,6 +36,7 @@ private:
     entt::registry m_Registry;
 
     Entity* m_PrimaryCameraEntity = nullptr;
+    uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
     friend class Entity;
 };

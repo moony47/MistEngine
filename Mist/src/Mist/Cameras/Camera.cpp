@@ -8,15 +8,13 @@ OrthographicCamera::OrthographicCamera(float x, float y, float z, float left, fl
     m_View(1.0f),
     m_VP(1.0f),
     m_Proj(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
-    m_Position(x, y, z) {
-}
+    m_Position(x, y, z) {};
 
 OrthographicCamera::OrthographicCamera(const glm::vec3& pos, float left, float right, float bottom, float top) :
     m_View(1.0f),
     m_VP(1.0f),
     m_Proj(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
-    m_Position(pos) {
-}
+    m_Position(pos) {};
 
 void OrthographicCamera::SetProjection(float left, float right, float bottom, float top) {
     m_Proj = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);

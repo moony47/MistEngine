@@ -17,6 +17,7 @@
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
 #include "Mist/Scene/Scene.h"
+#include "Mist/Scene/ScriptableEntity.h"
 
 #include "Mist/Core/Application.h"
 #include "Mist/Core/DeltaTime.h"

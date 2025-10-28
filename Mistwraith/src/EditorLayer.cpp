@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include "CameraController.h"
+
 static const size_t s_MapWidth = 24;
 static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWGGGGGGGGGGGGWWWWWW"
@@ -25,8 +27,7 @@ static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
 static const size_t s_MapHeight = strlen(s_MapTiles) / s_MapWidth;
 
 EditorLayer::EditorLayer() :
-    Layer("EditorLayer"),
-    m_CameraController(0.0f, 0.0f, 0.0f, 16.0f / 9.0f, true) {
+    Layer("EditorLayer") {
 }
 
 EditorLayer::~EditorLayer() {
@@ -52,7 +53,8 @@ void EditorLayer::OnAttach() {
 
     // Create some entities in the scene, including primary camera
     m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+    m_CameraEntity.AddComponent<CameraComponent>();
+    m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_ActiveScene->SetPrimaryCamera(&m_CameraEntity);
 
     m_SpriteEntity = m_ActiveScene->CreateEntity("Sprite");
@@ -71,24 +73,7 @@ void EditorLayer::OnDetach() {
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
 
-    if (m_ViewportFocussed)
-        m_CameraController.OnUpdate(deltaTime);
-
     m_ActiveScene->OnUpdate(deltaTime);
-
-    // WASD Camera Controls
-    glm::vec3 cameraStep(0.0f);
-    if (Input::IsKeyPressed(KeyCode::W))
-        cameraStep.y += 1;
-    if (Input::IsKeyPressed(KeyCode::A))
-        cameraStep.x -= 1;
-    if (Input::IsKeyPressed(KeyCode::S))
-        cameraStep.y -= 1;
-    if (Input::IsKeyPressed(KeyCode::D))
-        cameraStep.x += 1;
-    if (cameraStep != glm::vec3{0.0f, 0.0f, 0.0f})
-        cameraStep = 5.0f * deltaTime * glm::normalize(cameraStep);
-    m_CameraEntity.Transform().Translate(cameraStep);
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -162,54 +147,62 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     BeginEditorDockspace(); // Begin Dockspace
 
-    ImGui::Begin("Debug Info");
+    {
+        ImGui::Begin("Debug Info");
 
 #ifdef MIST_PROFILING
-    ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
+        ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
 #endif
-    ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
-                1.0f / deltaTime.GetSeconds());
-    ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
-    ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
-    ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().GetIndexCount());
-    ImGui::Text("Draw Calls: %i", Mist::Renderer2D::GetStats().DrawCalls);
+        ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
+                    1.0f / deltaTime.GetSeconds());
+        ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
+        ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
+        ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().GetIndexCount());
+        ImGui::Text("Draw Calls: %i", Mist::Renderer2D::GetStats().DrawCalls);
 
-    ImGui::End();
-
-    ImGui::Begin("EditorLayer");
-
-    ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_SpriteEntity.GetComponent<SpriteComponent>().Colour),
-                      ImGuiColorEditFlags_Float);
-
-    std::string texName = "Diamond";
-    float height = 256;
-    Ref<Texture2D> texture = MIST_TEX(texName);
-    glm::vec2 bl = texture->GetTexCoords(0);
-    glm::vec2 tr = texture->GetTexCoords(2);
-    ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
-                 ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
-
-    ImGui::End();
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Viewport");
-
-    m_ViewportFocussed = ImGui::IsWindowFocused();
-    m_ViewportHovered = ImGui::IsWindowHovered();
-    MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
-
-    ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-    glm::vec2* viewportSizePtr = (glm::vec2*)&viewportSize;
-    if (m_ViewportSize != *viewportSizePtr) {
-        m_ViewportSize = *viewportSizePtr;
-        m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
-        m_CameraController.OnResize(viewportSize.x, viewportSize.y);
+        ImGui::End();
     }
 
-    ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
+    {
+        ImGui::Begin("EditorLayer");
 
-    ImGui::End();
-    ImGui::PopStyleVar();
+        ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_SpriteEntity.GetComponent<SpriteComponent>().Colour),
+                          ImGuiColorEditFlags_Float);
+
+        {
+            std::string texName = "Diamond";
+            float height = 256;
+            Ref<Texture2D> texture = MIST_TEX(texName);
+            glm::vec2 bl = texture->GetTexCoords(0);
+            glm::vec2 tr = texture->GetTexCoords(2);
+            ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
+                         ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
+        }
+
+        ImGui::End();
+    }
+
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::Begin("Viewport");
+
+        m_ViewportFocussed = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
+
+        ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+        glm::vec2 viewportSizePtr = *(glm::vec2*)&viewportSize;
+        if (m_ViewportSize != viewportSizePtr) {
+            m_ViewportSize = viewportSizePtr;
+            m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+            m_ActiveScene->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+        }
+
+        ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
+
+        ImGui::End();
+        ImGui::PopStyleVar();
+    }
 
     ImGui::End(); // End Dockspace
 }
@@ -217,5 +210,6 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
 
-    m_CameraController.OnEvent(e);
+    m_ActiveScene->OnEvent(e);
+    // m_CameraController.OnEvent(e);
 }
