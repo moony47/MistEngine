@@ -2,6 +2,8 @@
 
 #include "CameraController.h"
 
+namespace Mist {
+
 static const size_t s_MapWidth = 24;
 static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWGGGGGGGGGGGGWWWWWW"
@@ -59,6 +61,10 @@ void EditorLayer::OnAttach() {
 
     m_SpriteEntity = m_ActiveScene->CreateEntity("Sprite");
     m_SpriteEntity.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
+    glm::vec3 rot = glm::radians(glm::vec3{0.0f, 0.0f, 0.0f});
+    m_SpriteEntity.Transform().ApplyRotation(rot);
+
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
 void EditorLayer::OnDetach() {
@@ -73,7 +79,8 @@ void EditorLayer::OnDetach() {
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
 
-    m_ActiveScene->OnUpdate(deltaTime);
+    if (m_ViewportFocussed)
+        m_ActiveScene->OnUpdate(deltaTime);
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -147,6 +154,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     BeginEditorDockspace(); // Begin Dockspace
 
+    m_SceneHierarchyPanel.OnImGuiRender();
+
     {
         ImGui::Begin("Debug Info");
 
@@ -210,6 +219,9 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
 
-    m_ActiveScene->OnEvent(e);
+    if (m_ViewportFocussed && m_ViewportHovered)
+        m_ActiveScene->OnEvent(e);
     // m_CameraController.OnEvent(e);
+}
+
 }

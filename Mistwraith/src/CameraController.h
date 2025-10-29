@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Mist.h>
-using namespace Mist;
+//using namespace Mist;
+namespace Mist {
 
 class CameraController : public ScriptableEntity {
 public:
@@ -22,7 +23,7 @@ public:
             cameraStep.x += 1;
         if (cameraStep != glm::vec3{0.0f, 0.0f, 0.0f})
             cameraStep = m_PanSpeed * deltaTime * glm::normalize(cameraStep);
-        GetComponent<TransformComponent>().Translate(cameraStep);
+        GetComponent<TransformComponent>().ApplyTranslation(cameraStep);
     }
 
     void OnEvent(Event& e) override {
@@ -43,3 +44,5 @@ private:
 
     const float m_PanSpeed = 5.0f, m_ScrollSpeed = 0.25f;
 };
+
+} // namespace Mist

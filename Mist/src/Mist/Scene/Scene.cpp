@@ -34,7 +34,7 @@ void Scene::OnRender(DeltaTime deltaTime) {
     Camera* mainCamera = &m_PrimaryCameraEntity->TryGetComponent<CameraComponent>()->Camera;
     if (!mainCamera)
         return;
-    glm::mat4& mainCameraTransform = m_PrimaryCameraEntity->GetComponent<TransformComponent>().Transform;
+    const glm::mat4& mainCameraTransform = m_PrimaryCameraEntity->GetComponent<TransformComponent>().GetTransform();
 
     // Render the scene from primary camera's view
     Renderer2D::BeginView(mainCamera->GetProjection(), mainCameraTransform);
@@ -42,7 +42,7 @@ void Scene::OnRender(DeltaTime deltaTime) {
     auto group = m_Registry.group<SpriteComponent, TransformComponent>();
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad(transform.Transform, sprite.Colour, sprite.TextureName);
+        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour, sprite.TextureName);
     }
 
     Renderer2D::EndView();

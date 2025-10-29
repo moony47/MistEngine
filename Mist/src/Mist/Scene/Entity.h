@@ -53,6 +53,19 @@ public:
     operator bool() const {
         return m_EntityID != entt::null;
     }
+    operator entt::entity() const {
+        return m_EntityID;
+    }
+    operator uint32_t() const {
+        return (uint32_t)m_EntityID;
+    }
+
+    bool operator ==(const Entity & other) const {
+        return other.m_EntityID == m_EntityID && other.m_Scene == m_Scene;
+    }
+    bool operator!=(const Entity& other) const {
+        return other.m_EntityID != m_EntityID || other.m_Scene != m_Scene;
+    }
 
 private:
     entt::entity m_EntityID{entt::null};

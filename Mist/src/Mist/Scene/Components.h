@@ -28,49 +28,77 @@ struct SpriteComponent {
 };
 
 struct TransformComponent {
-    glm::mat4 Transform = glm::mat4(1.0f);
+    glm::vec3 Position = glm::vec3(0.0f);
+    glm::vec3 Rotation = glm::vec3(0.0f);
+    glm::vec3 Scale = glm::vec3(1.0f);
 
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const glm::vec3& position = glm::vec3(0.0f),
-                       const float rotation = 0.0f,
+                       const glm::vec3& rotation = glm::vec3(0.0f),
                        const glm::vec3& scale = glm::vec3(1.0f)) :
-        Transform(1.0f) {
-        Transform = glm::translate(Transform, position);
-        Transform = glm::rotate(Transform, rotation, {0, 0, 1});
-        Transform = glm::scale(Transform, scale);
+        Position(position),
+        Rotation(rotation),
+        Scale(scale) {
+        UpdateTransform();
     }
     TransformComponent(const glm::mat4& transform) :
-        Transform(transform) {};
+        m_Transform(transform) {};
 
-    inline void Translate(glm::vec3 position) {
-        Transform = glm::translate(Transform, position);
+    inline void ApplyTranslation(const glm::vec3& position) {
+        Position += position;
+        m_Modified = true;
     }
-    inline void Rotate(float rotation) {
-        Transform = glm::rotate(Transform, rotation, {0, 0, 1});
+    inline void ApplyRotation(const glm::vec3& rotation) {
+        Rotation += rotation;
+        m_Modified = true;
     }
-    inline void Scale(glm::vec3 scale) {
-        Transform = glm::scale(Transform, scale);
+    inline void ApplyScale(const glm::vec3& scale) {
+        Scale += scale;
+        m_Modified = true;
     }
 
-    inline void SetPosition(glm::vec3& position) {
-        Transform[3] = glm::vec4(position, 1);
+    inline void SetPosition(glm::vec3 position) {
+        Position = position;
+        m_Modified = true;
     }
-    // inline void SetRotation(float rotation) {
-    //     m_Rotation = rotation;
-    // }
-    // inline void SetScale(glm::vec3& scale) {
-    //     m_Scale = scale;
-    // }
+    inline void SetRotation(glm::vec3 rotation) {
+        Rotation = rotation;
+        m_Modified = true;
+    }
+    inline void SetScale(glm::vec3 scale) {
+        Scale = scale;
+        m_Modified = true;
+    }
 
     inline const glm::vec3& GetPosition() const {
-        return Transform[3];
+        return Position;
     }
-    // inline float GetRotation() const {
-    //     return m_Rotation;
-    // }
-    // inline const glm::vec3& GetScale() const {
-    //     return m_Scale;
-    // }
+    inline const glm::vec3& GetRotation() const {
+        return Rotation;
+    }
+    inline const glm::vec3& GetScale() const {
+        return Scale;
+    }
+
+    inline const glm::mat4& GetTransform() {
+        if (m_Modified)
+            UpdateTransform();
+        return m_Transform;
+    }
+
+private:
+    void UpdateTransform() {
+        m_Transform = glm::translate(glm::mat4(1.0f), Position);
+        m_Transform = glm::rotate(m_Transform, Rotation.x, {1, 0, 0});
+        m_Transform = glm::rotate(m_Transform, Rotation.y, {0, 1, 0});
+        m_Transform = glm::rotate(m_Transform, Rotation.z, {0, 0, 1});
+        m_Transform = glm::scale(m_Transform, Scale);
+        m_Modified = false;
+    }
+
+private:
+    glm::mat4 m_Transform;
+    bool m_Modified;
 };
 
 struct CameraComponent {

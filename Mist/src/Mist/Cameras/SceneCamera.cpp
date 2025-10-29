@@ -8,6 +8,7 @@ SceneCamera::SceneCamera() {
 }
 
 void SceneCamera::SetOrthographic(float size, float nearClip, float farClip) {
+    m_CameraType = CameraType::Orthographic;
     m_OrthoSize = size;
     m_OrthoNear = nearClip;
     m_OrthoFar = farClip;
