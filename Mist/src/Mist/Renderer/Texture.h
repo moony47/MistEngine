@@ -81,6 +81,13 @@ public:
         return GetSourceTexture(source);
     }
 
+    inline auto Begin() {
+        return m_Textures.begin();
+    }
+    inline auto End() {
+        return m_Textures.end();
+    }
+
     inline static Texture2DLibrary* GetInstance() {
         return s_Instance;
     }

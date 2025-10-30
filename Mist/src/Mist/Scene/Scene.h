@@ -28,9 +28,7 @@ public:
         return m_Registry;
     }
 
-    void SetPrimaryCamera(Entity* camera) {
-        m_PrimaryCameraEntity = camera;
-    }
+    void SetPrimaryCamera(entt::entity id);
 
 private:
     entt::registry m_Registry;

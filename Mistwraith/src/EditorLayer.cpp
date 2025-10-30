@@ -57,12 +57,13 @@ void EditorLayer::OnAttach() {
     m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
     m_CameraEntity.AddComponent<CameraComponent>();
     m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-    m_ActiveScene->SetPrimaryCamera(&m_CameraEntity);
+    m_ActiveScene->SetPrimaryCamera(m_CameraEntity);
 
-    m_SpriteEntity = m_ActiveScene->CreateEntity("Sprite");
-    m_SpriteEntity.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
-    glm::vec3 rot = glm::radians(glm::vec3{0.0f, 0.0f, 0.0f});
-    m_SpriteEntity.Transform().ApplyRotation(rot);
+    m_SpriteEntity1 = m_ActiveScene->CreateEntity("Sprite1");
+    m_SpriteEntity1.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
+
+    m_SpriteEntity2 = m_ActiveScene->CreateEntity("Sprite2");
+    m_SpriteEntity2.AddComponent<SpriteComponent>("Star", glm::vec4{0.2f, 0.8f, 0.8f, 1.0f});
 
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
@@ -175,9 +176,6 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
     {
         ImGui::Begin("EditorLayer");
 
-        ImGui::ColorEdit4("Start Colour", glm::value_ptr(m_SpriteEntity.GetComponent<SpriteComponent>().Colour),
-                          ImGuiColorEditFlags_Float);
-
         {
             std::string texName = "Diamond";
             float height = 256;
@@ -224,4 +222,4 @@ void EditorLayer::OnEvent(Event& e) {
     // m_CameraController.OnEvent(e);
 }
 
-}
+} // namespace Mist

@@ -46,9 +46,8 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     if (ImGui::IsItemClicked())
         m_SelectionContext = entity;
 
-    if (opened) {
+    if (opened)
         ImGui::TreePop();
-    }
 }
 
 void SceneHierarchyPanel::DrawComponents(Entity entity) {
@@ -59,9 +58,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         memset(buffer, 0, sizeof(buffer));
         strcpy_s(buffer, sizeof(buffer), tag.c_str());
 
-        if (ImGui::InputText("Tag", buffer, sizeof(buffer))) {
+        if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
             tag = std::string(buffer);
-        }
     }
 
     if (entity.HasComponent<TransformComponent>()) {
@@ -92,19 +90,58 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera")) {
             auto& camera = entity.GetComponent<CameraComponent>().Camera;
 
+            if (ImGui::Button("Make Primary"))
+                m_Context->SetPrimaryCamera(entity);
+
             const static char* typeNames[] = {"Perspective", "Orthographic"};
             int type = (int)camera.GetType();
 
             if (ImGui::Combo("Camera Type", &type, typeNames, 2))
                 camera.SetType((SceneCamera::CameraType)type);
 
-            //if (ImGui::BeginCombo("Camera Type", typeNames[type])) {
-            //    ImGui::EndCombo();
-            //}
+            if ((SceneCamera::CameraType)type == SceneCamera::CameraType::Orthographic) {
+                float size = camera.GetOrthographicSize();
+                if (ImGui::DragFloat("Orthographic Size", &size, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetOrthographicSize(size);
+                float nearClip = camera.GetOrthographicNear();
+                if (ImGui::DragFloat("Near Clip", &nearClip, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetOrthographicNear(nearClip);
+                float farClip = camera.GetOrthographicFar();
+                if (ImGui::DragFloat("Far Clip", &farClip, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetOrthographicFar(farClip);
+            } else {
+                float fov = glm::degrees(camera.GetPerspectiveFOV());
+                if (ImGui::DragFloat("Field of View", &fov, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetPerspectiveFOV(glm::radians(fov));
+                float nearClip = camera.GetPerspectiveNear();
+                if (ImGui::DragFloat("Near Clip", &nearClip, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetPerspectiveNear(nearClip);
+                float farClip = camera.GetPerspectiveFar();
+                if (ImGui::DragFloat("Far Clip", &farClip, 0.1f, 0.0f, 0.0f, "%.2f"))
+                    camera.SetPerspectiveFar(farClip);
+            }
 
-            float size = camera.GetOrthographicSize();
-            if (ImGui::DragFloat("Orthographic Size", &size, 0.1f, 0.0f, 0.0f, "%.2f"))
-                camera.SetOrthographicSize(size);
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<SpriteComponent>()) {
+        ImGui::Separator();
+        if (ImGui::TreeNodeEx((void*)typeid(SpriteComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera")) {
+            auto& sprite = entity.GetComponent<SpriteComponent>();
+
+            ImGui::ColorEdit4("Colour", value_ptr(sprite.Colour));
+
+            if (ImGui::BeginCombo("Texture", sprite.TextureName.c_str())) {
+                for (auto iter = MIST_TEXLIB->Begin(); iter != MIST_TEXLIB->End(); iter++) {
+                    bool isSelected = sprite.TextureName == iter->first;
+                    if (ImGui::Selectable(iter->first.c_str(), isSelected))
+                        sprite.TextureName = iter->first;
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
 
             ImGui::TreePop();
         }

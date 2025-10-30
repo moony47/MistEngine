@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Mist/Renderer/Texture.h"
+
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
 #include "Mist/Scene/ScriptableEntity.h"
@@ -74,6 +75,12 @@ Entity& Scene::CreateEntity(const std::string& name) {
     entity->AddComponent<TransformComponent>();
     entity->AddComponent<TagComponent>(name.empty() ? "Entity" : name);
     return *entity;
+}
+
+void Scene::SetPrimaryCamera(entt::entity id) {
+    if (m_PrimaryCameraEntity)
+        delete m_PrimaryCameraEntity;
+    m_PrimaryCameraEntity = new Entity(this, id);
 }
 
 } // namespace Mist

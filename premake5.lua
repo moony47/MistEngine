@@ -30,6 +30,7 @@ group ""
         language "C++"
         cppdialect "C++23"
         staticruntime "On"
+        
 
         targetdir ("bin/" .. outputdir .. "/%{prj.name}")
         objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -81,6 +82,10 @@ group ""
 
             defines {
                 "MIST_PLATFORM_WINDOWS"
+            }
+
+            buildoptions {
+                "/MP"
             }
 
         filter "configurations:Debug"
@@ -141,6 +146,10 @@ group ""
 
             defines {
                 "MIST_PLATFORM_WINDOWS"
+            }
+            
+            buildoptions {
+                "/MP"
             }
 
         filter "configurations:Debug"

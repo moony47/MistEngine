@@ -13,11 +13,19 @@ public:
     }
     virtual ~Camera() = default;
 
-    const glm::mat4& GetProjection() const {
+    const glm::mat4& GetProjection() {
+        if (m_Modified) {
+            UpdateProjection();
+            m_Modified = false;
+        }
         return m_Projection;
     }
 
 protected:
+    virtual void UpdateProjection() = 0;
+
+protected:
+    bool m_Modified = false;
     glm::mat4 m_Projection = glm::mat4(1.0f);
 };
 

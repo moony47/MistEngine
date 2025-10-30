@@ -23,7 +23,7 @@ public:
 private:
     Ref<Scene> m_ActiveScene;
     Entity m_CameraEntity;
-    Entity m_SpriteEntity;
+    Entity m_SpriteEntity1, m_SpriteEntity2;
 
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};

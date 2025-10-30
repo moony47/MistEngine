@@ -23,6 +23,10 @@ project "GLAD"
 
     filter "system:windows"
         systemversion "latest"
+            
+        buildoptions {
+            "/MP"
+        }
 
     filter "configurations:Debug"
         runtime "Debug"
