@@ -10,3 +10,9 @@
 [submodule "Mist/vendor/glm"]
 	path = Mist/vendor/glm
 	url = https://github.com/moony47/glm.git
+[submodule "yaml-cpp"]
+	path = Mist/vendor/yaml-cpp
+	url = https://github.com/moony47/yaml-cpp
+[submodule "Mist/vendor/yaml-cpp"]
+	path = Mist/vendor/yaml-cpp
+	url = https://github.com/moony47/yaml-cpp
