@@ -3,8 +3,8 @@
 #include "Mist/Core/DeltaTime.h"
 #include "Mist/Renderer/Renderer2D.h"
 
-#include <entt.hpp>
 #include <Mist/Events/Event.h>
+#include <entt.hpp>
 
 namespace Mist {
 
@@ -16,6 +16,7 @@ public:
     ~Scene();
 
     Entity& CreateEntity(const std::string& name = "");
+    void DestroyEntity(Entity entity);
 
     void OnUpdate(DeltaTime deltaTime);
     void OnRender(DeltaTime deltaTime);
@@ -29,6 +30,10 @@ public:
     }
 
     void SetPrimaryCamera(entt::entity id);
+
+private:
+    template <typename T>
+    void OnComponentAdded(Entity entity, T& component);
 
 private:
     entt::registry m_Registry;

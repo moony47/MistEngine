@@ -21,8 +21,9 @@ public:
     template <typename T>
     T& GetComponent() {
         MIST_CORE_ASSERT(HasComponent<T>(), "[Entity::GetComponent] Entity does not have such component");
-
-        return m_Scene->m_Registry.get<T>(m_EntityID);
+        T& component = m_Scene->m_Registry.get<T>(m_EntityID);
+        m_Scene->OnComponentAdded<T>(*this, component);
+        return component;
     }
 
     template <typename T>

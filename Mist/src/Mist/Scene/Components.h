@@ -41,18 +41,16 @@ struct TransformComponent {
         Scale(scale) {
         UpdateTransform();
     }
-    TransformComponent(const glm::mat4& transform) :
-        m_Transform(transform) {};
 
-    inline void ApplyTranslation(const glm::vec3& position) {
+    inline void TranslateBy(const glm::vec3& position) {
         Position += position;
         m_Modified = true;
     }
-    inline void ApplyRotation(const glm::vec3& rotation) {
+    inline void RotateBy(const glm::vec3& rotation) {
         Rotation += rotation;
         m_Modified = true;
     }
-    inline void ApplyScale(const glm::vec3& scale) {
+    inline void ScaleBy(const glm::vec3& scale) {
         Scale += scale;
         m_Modified = true;
     }
@@ -68,16 +66,6 @@ struct TransformComponent {
     inline void SetScale(glm::vec3 scale) {
         Scale = scale;
         m_Modified = true;
-    }
-
-    inline const glm::vec3& GetPosition() const {
-        return Position;
-    }
-    inline const glm::vec3& GetRotation() const {
-        return Rotation;
-    }
-    inline const glm::vec3& GetScale() const {
-        return Scale;
     }
 
     inline const glm::mat4& GetTransform() {

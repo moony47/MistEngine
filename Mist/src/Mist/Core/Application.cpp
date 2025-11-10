@@ -15,6 +15,7 @@ Application::Application(const std::string& name) :
     s_Instance = this;
 
     m_Window = Scope<Window>(Window::Create(WindowProps(name)));
+    m_Window->SetVSync(true);
     m_Window->SetEventCallback(MIST_BIND_EVENT_FN(Application::OnEvent));
 
     Renderer::Init();

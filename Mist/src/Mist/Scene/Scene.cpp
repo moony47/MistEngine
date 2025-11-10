@@ -62,12 +62,10 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height) {
     m_ViewportWidth = width;
     m_ViewportHeight = height;
 
-    auto view = m_Registry.view<CameraComponent>();
-    for (auto entity : view) {
-        CameraComponent& camera = view.get<CameraComponent>(entity);
-        if (!camera.FixedAspectRatio)
-            camera.Camera.SetViewportSize(width, height);
-    }
+    // Adjust viewport size of primary camera
+    CameraComponent& camera = m_PrimaryCameraEntity->GetComponent<CameraComponent>();
+    if (!camera.FixedAspectRatio)
+        camera.Camera.SetViewportSize(width, height);
 }
 
 Entity& Scene::CreateEntity(const std::string& name) {
@@ -77,10 +75,36 @@ Entity& Scene::CreateEntity(const std::string& name) {
     return *entity;
 }
 
+void Scene::DestroyEntity(Entity entity) {
+    m_Registry.destroy(entity);
+}
+
 void Scene::SetPrimaryCamera(entt::entity id) {
     if (m_PrimaryCameraEntity)
         delete m_PrimaryCameraEntity;
+
     m_PrimaryCameraEntity = new Entity(this, id);
+
+    // Adjust viewport size of new primary camera
+    CameraComponent& camera = m_PrimaryCameraEntity->GetComponent<CameraComponent>();
+    if (!camera.FixedAspectRatio)
+        camera.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 }
+
+template <typename T>
+void Scene::OnComponentAdded(Entity entity, T& component) {
+    static_assert(false);
+}
+
+template <>
+void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component) {};
+template <>
+void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {};
+template <>
+void Scene::OnComponentAdded<SpriteComponent>(Entity entity, SpriteComponent& component) {};
+template <>
+void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {};
+template <>
+void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {};
 
 } // namespace Mist

@@ -23,6 +23,8 @@ public:
         m_PassEvents = block;
     }
 
+    void SetDarkThemeColours();
+
 private:
     bool m_PassEvents = false;
     float m_Time = 0.0f;

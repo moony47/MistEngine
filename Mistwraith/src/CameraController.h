@@ -23,7 +23,7 @@ public:
             cameraStep.x += 1;
         if (cameraStep != glm::vec3{0.0f, 0.0f, 0.0f})
             cameraStep = m_PanSpeed * deltaTime * glm::normalize(cameraStep);
-        GetComponent<TransformComponent>().ApplyTranslation(cameraStep);
+        GetComponent<TransformComponent>().TranslateBy(cameraStep);
     }
 
     void OnEvent(Event& e) override {
