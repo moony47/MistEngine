@@ -17,11 +17,13 @@ IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["glm"] = "Mist/vendor/glm"
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
 IncludeDir["entt"] = "Mist/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "Mist/vendor/yaml-cpp/include"
 
 group "Dependencies"
     include "Mist/vendor/GLFW"
     include "Mist/vendor/GLAD"
     include "Mist/vendor/ImGui"
+    include "Mist/vendor/yaml-cpp"
 
 group ""
     project "Mist"
@@ -68,12 +70,14 @@ group ""
             "%{IncludeDir.glm}",
             "%{IncludeDir.stb_image}",
             "%{IncludeDir.entt}",
+            "%{IncludeDir.yaml_cpp}",
         }
 
         links {
             "GLFW",
             "GLAD",
             "ImGui",
+            "yaml-cpp",
             "opengl32"
         }
 

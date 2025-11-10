@@ -372,3 +372,5 @@ bin-int/
 
 *bin/
 *bin-int/
+
+*MistProfile_*.json
