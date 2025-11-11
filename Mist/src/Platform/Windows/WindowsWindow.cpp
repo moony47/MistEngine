@@ -125,17 +125,17 @@ void WindowsWindow::InitEventCallbacks() {
 
         switch (action) {
             case GLFW_PRESS: {
-                KeyPressedEvent e(key, 0);
+                KeyPressedEvent e((KeyCode)key, 0);
                 data.EventCallback(e);
                 break;
             }
             case GLFW_RELEASE: {
-                KeyReleasedEvent e(key, 0);
+                KeyReleasedEvent e((KeyCode)key, 0);
                 data.EventCallback(e);
                 break;
             }
             case GLFW_REPEAT: {
-                KeyPressedEvent e(key, 1);
+                KeyPressedEvent e((KeyCode)key, 1);
                 data.EventCallback(e);
                 break;
             }
@@ -176,7 +176,7 @@ void WindowsWindow::InitEventCallbacks() {
     glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t c) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        KeyTypedEvent e(c);
+        KeyTypedEvent e((KeyCode)c);
         data.EventCallback(e);
     });
 }

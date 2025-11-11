@@ -18,8 +18,7 @@ void SceneHierarchyPanel::OnImGuiRender() {
         //ImGui::SetNextWindowSizeConstraints({200.0f, 300.0f}, {999999.0f, 999999.0f});
         ImGui::Begin("Scene Hierarchy");
 
-        auto view = m_Context->m_Registry.view<entt::entity>();
-        for (auto entityID : view) {
+        for (auto entityID : m_Context->m_Registry.view<entt::entity>()) {
             Entity entity(m_Context.get(), entityID);
             DrawEntityNode(entity);
         }

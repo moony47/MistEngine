@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Mist/Core/Window.h"
 #include "Mist/Renderer/GraphicsContext.h"
 
+#include "Mist/Core/Window.h"
 #include "Mist/Core/DeltaTime.h"
 
-#include "ImGui/imgui.h"
-
+#include <ImGui/imgui.h>
 #include <GLFW/glfw3.h>
 
 

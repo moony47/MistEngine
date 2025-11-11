@@ -54,7 +54,8 @@ group ""
 
         defines {
             "_CRT_SECURE_NO_WARNINGS",
-            "GLFW_INCLUDE_NONE"
+            "GLFW_INCLUDE_NONE",
+            "YAML_CPP_STATIC_DEFINE"
         }
 
         includedirs {
@@ -138,6 +139,7 @@ group ""
             "%{IncludeDir.ImGui}",
             "%{IncludeDir.glm}",
             "%{IncludeDir.entt}",
+            "%{IncludeDir.yaml_cpp}",
 
         }
 

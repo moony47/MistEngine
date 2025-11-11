@@ -1,27 +1,28 @@
 #pragma once
 
+#include "Mist/Core/KeyCodes.h"
 #include "Event.h"
 
 namespace Mist {
 
 class KeyEvent : public Event {
 public:
-    inline int GetKeyCode() const {
+    inline KeyCode GetKeyCode() const {
         return m_KeyCode;
     }
 
     EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 protected:
-    KeyEvent(int keycode) :
+    KeyEvent(KeyCode keycode) :
         m_KeyCode(keycode) {
     }
 
-    int m_KeyCode;
+    KeyCode m_KeyCode;
 };
 
 class KeyPressedEvent : public KeyEvent {
 public:
-    KeyPressedEvent(int keycode, int repeatCount) :
+    KeyPressedEvent(KeyCode keycode, int repeatCount) :
         KeyEvent(keycode),
         m_RepeatCount(repeatCount) {
     }
@@ -32,7 +33,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "KeyPressedEvent:     '" << (char)m_KeyCode << "' (" << m_RepeatCount << " repeats)";
+        ss << "KeyPressedEvent:     '" << (char)(int)m_KeyCode << "' (" << m_RepeatCount << " repeats)";
         return ss.str();
     }
 
@@ -43,13 +44,13 @@ private:
 
 class KeyReleasedEvent : public KeyEvent {
 public:
-    KeyReleasedEvent(int keycode, int repeatCount) :
+    KeyReleasedEvent(KeyCode keycode, int repeatCount) :
         KeyEvent(keycode) {
     }
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "KeyReleasedEvent:    '" << (char)m_KeyCode << "'";
+        ss << "KeyReleasedEvent:    '" << (char)(int)m_KeyCode << "'";
         return ss.str();
     }
 
@@ -58,13 +59,13 @@ public:
 
 class KeyTypedEvent : public KeyEvent {
 public:
-    KeyTypedEvent(uint32_t keycode) :
+    KeyTypedEvent(KeyCode keycode) :
         KeyEvent(keycode) {
     }
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << "KeyTypedEvent:    '" << (char)m_KeyCode << "'";
+        ss << "KeyTypedEvent:    '" << (char)(int)m_KeyCode << "'";
         return ss.str();
     }
 

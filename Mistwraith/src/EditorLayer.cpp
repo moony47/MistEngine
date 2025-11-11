@@ -2,6 +2,8 @@
 
 #include "CameraController.h"
 
+#include "Mist/Scene/SceneSerialiser.h"
+
 namespace Mist {
 
 static const size_t s_MapWidth = 24;
@@ -53,19 +55,22 @@ void EditorLayer::OnAttach() {
     // Create scene
     m_ActiveScene = CreateRef<Scene>();
 
-    // Create some entities in the scene, including primary camera
-    m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    m_CameraEntity.AddComponent<CameraComponent>();
-    m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-    m_ActiveScene->SetPrimaryCamera(m_CameraEntity);
-
-    m_SpriteEntity1 = m_ActiveScene->CreateEntity("Sprite1");
-    m_SpriteEntity1.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
-
-    m_SpriteEntity2 = m_ActiveScene->CreateEntity("Sprite2");
-    m_SpriteEntity2.AddComponent<SpriteComponent>("Star", glm::vec4{0.2f, 0.8f, 0.8f, 1.0f});
-
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+    SceneSerialiser serialiser(m_ActiveScene);
+    serialiser.Deserialise("res/scenes/Example.mist.yaml");
+
+    // Create some entities in the scene, including primary camera
+    // m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+    // m_CameraEntity.AddComponent<CameraComponent>();
+    // m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+    // m_ActiveScene->SetPrimaryCamera(m_CameraEntity);
+
+    // m_SpriteEntity1 = m_ActiveScene->CreateEntity("Sprite1");
+    // m_SpriteEntity1.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
+
+    // m_SpriteEntity2 = m_ActiveScene->CreateEntity("Sprite2");
+    // m_SpriteEntity2.AddComponent<SpriteComponent>("Star", glm::vec4{0.2f, 0.8f, 0.8f, 1.0f});
 }
 
 void EditorLayer::OnDetach() {
@@ -133,14 +138,10 @@ static void BeginEditorDockspace() {
         ImGui::PopStyleVar(2);
 
     ImGuiIO& io = ImGui::GetIO();
-    ImGuiStyle& style = ImGui::GetStyle();
-    //float defaultMinWinSize = style.WindowMinSize.x;
-    //style.WindowMinSize.x = 370.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
-    //style.WindowMinSize.x = defaultMinWinSize;
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Mistwraith")) {
@@ -199,7 +200,7 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
         m_ViewportFocussed = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
-        MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
+        //MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
 
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
         glm::vec2 viewportSizePtr = *(glm::vec2*)&viewportSize;
@@ -221,7 +222,18 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
 
-    if (m_ViewportFocussed && m_ViewportHovered)
+    EventDispatcher dispatcher(e);
+
+    dispatcher.Dispatch<KeyPressedEvent>([=](KeyPressedEvent& e) {
+        if (e.GetKeyCode() == KeyCode::S && Input::IsKeyPressed(KeyCode::LeftControl)) {
+            SceneSerialiser serialiser(m_ActiveScene);
+            serialiser.Serialise("res/scenes/Example.mist.yaml");
+            return true;
+        }
+        return false;
+    });
+
+    if (m_ViewportFocussed && (m_ViewportHovered || !e.IsInCategory(EventCategoryMouse)))
         m_ActiveScene->OnEvent(e);
     // m_CameraController.OnEvent(e);
 }

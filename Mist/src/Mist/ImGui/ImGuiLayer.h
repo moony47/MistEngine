@@ -26,7 +26,7 @@ public:
     void SetDarkThemeColours();
 
 private:
-    bool m_PassEvents = false;
+    bool m_PassEvents = true;
     float m_Time = 0.0f;
 };
 
