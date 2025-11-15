@@ -16,3 +16,6 @@
 [submodule "Mist/vendor/yaml-cpp"]
 	path = Mist/vendor/yaml-cpp
 	url = https://github.com/moony47/yaml-cpp
+[submodule "Mist/vendor/ImGuizmo"]
+	path = Mist/vendor/ImGuizmo
+	url = https://github.com/moony47/ImGuizmo
