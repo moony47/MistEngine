@@ -94,6 +94,10 @@ void Scene::SetPrimaryCamera(entt::entity id) {
         camera.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 }
 
+Entity Scene::GetPrimaryCamera() const {
+    return *m_PrimaryCameraEntity;
+}
+
 template <typename T>
 void Scene::OnComponentAdded(Entity entity, T& component) {
     static_assert(false);

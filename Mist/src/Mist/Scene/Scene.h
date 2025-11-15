@@ -30,6 +30,7 @@ public:
     }
 
     void SetPrimaryCamera(entt::entity id);
+    Entity GetPrimaryCamera() const;
 
 private:
     template <typename T>

@@ -11,10 +11,14 @@ workspace "MistEngine"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
+
 IncludeDir["GLFW"] = "Mist/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Mist/vendor/GLAD/include"
-IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["glm"] = "Mist/vendor/glm"
+
+IncludeDir["ImGui"] = "Mist/vendor/ImGui"
+IncludeDir["ImGuizmo"] = "Mist/vendor/ImGuizmo"
+
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
 IncludeDir["entt"] = "Mist/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Mist/vendor/yaml-cpp/include"
@@ -48,6 +52,8 @@ group ""
 		    "%{prj.name}/vendor/glm/glm/**.inl",
 		    "%{prj.name}/vendor/stb_image/**.h",
 		    "%{prj.name}/vendor/stb_image/**.cpp",
+		    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
             "%{prj.name}/.clang-format"
         }
 
@@ -68,6 +74,7 @@ group ""
             "%{IncludeDir.GLFW}",
             "%{IncludeDir.GLAD}",
             "%{IncludeDir.ImGui}",
+            "%{IncludeDir.ImGuizmo}",
             "%{IncludeDir.glm}",
             "%{IncludeDir.stb_image}",
             "%{IncludeDir.entt}",
@@ -81,6 +88,9 @@ group ""
             "yaml-cpp",
             "opengl32"
         }
+
+        filter "files:Mist/vendor/ImGuizmo/**.cpp"
+            flags{ "NoPCH" }
 
         filter "system:windows"
             systemversion "latest"
@@ -137,6 +147,7 @@ group ""
             "Mist/vendor/spdlog/include",
 
             "%{IncludeDir.ImGui}",
+            "%{IncludeDir.ImGuizmo}",
             "%{IncludeDir.glm}",
             "%{IncludeDir.entt}",
             "%{IncludeDir.yaml_cpp}",

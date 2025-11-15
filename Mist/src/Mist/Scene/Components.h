@@ -2,6 +2,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
 #include "Mist/Cameras/SceneCamera.h"
 
 namespace Mist {
@@ -77,9 +80,10 @@ struct TransformComponent {
 private:
     void UpdateTransform() {
         m_Transform = glm::translate(glm::mat4(1.0f), Position);
-        m_Transform = glm::rotate(m_Transform, Rotation.x, {1, 0, 0});
-        m_Transform = glm::rotate(m_Transform, Rotation.y, {0, 1, 0});
-        m_Transform = glm::rotate(m_Transform, Rotation.z, {0, 0, 1});
+        m_Transform = glm::toMat4(glm::quat(Rotation));
+        //m_Transform = glm::rotate(m_Transform, Rotation.x, {1, 0, 0});
+        //m_Transform = glm::rotate(m_Transform, Rotation.y, {0, 1, 0});
+        //m_Transform = glm::rotate(m_Transform, Rotation.z, {0, 0, 1});
         m_Transform = glm::scale(m_Transform, Scale);
         m_Modified = false;
     }

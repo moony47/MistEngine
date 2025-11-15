@@ -13,6 +13,10 @@ public:
 
     void OnImGuiRender();
 
+    inline Entity GetSelectedEntity() const {
+        return m_SelectionContext;
+    }
+
 private:
     void DrawEntityNode(Entity entity);
     void DrawComponents(Entity entity);

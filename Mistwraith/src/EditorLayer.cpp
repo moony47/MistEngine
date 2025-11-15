@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
-
 #include "CameraController.h"
+
+#include <ImGuizmo.h>
 
 #include "Mist/Scene/SceneSerialiser.h"
 #include "Mist/Utils/PlatformUtils.h"
@@ -241,6 +242,29 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
         }
 
         ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
+
+        {
+            // Gizmos
+            Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+            if (selectedEntity) {
+                ImGuizmo::SetOrthographic(false);
+                ImGuizmo::SetDrawlist();
+
+                ImVec2 pos = ImGui::GetWindowPos();
+                ImVec2 size = ImGui::GetWindowSize();
+                ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
+
+                auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
+                auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+                const glm::mat4& cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+                const glm::mat4& cameraProj = camera.GetProjection();
+
+                auto& transformComp = selectedEntity.GetComponent<TransformComponent>();
+                glm::mat4 transform = transformComp.GetTransform();
+
+                ImGuizmo::Manipulate(value_ptr(cameraView), value_ptr(cameraProj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, value_ptr(transform));
+            }
+        }
 
         ImGui::End();
         ImGui::PopStyleVar();

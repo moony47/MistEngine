@@ -1,15 +1,17 @@
 #include "mistpch.h"
-
 #include "ImGuiLayer.h"
 
-#include "Mist/Core/Application.h"
+#include <imgui.h>
 
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "imgui.h"
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
+#include <ImGuizmo.h>
 
 #include <GLFW/glfw3.h>
-#include <Mist/Renderer/Renderer2D.h>
+
+#include "Mist/Core/Application.h"
+#include "Mist/Renderer/Renderer2D.h"
 
 namespace Mist {
 
@@ -80,6 +82,7 @@ void ImGuiLayer::Begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 }
 
 void ImGuiLayer::End() {
