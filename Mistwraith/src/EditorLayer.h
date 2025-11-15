@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Mist.h>
 #include "Panels/SceneHierarchyPanel.h"
+#include <Mist.h>
 
-//using namespace Mist;
+// using namespace Mist;
 namespace Mist {
 
 class EditorLayer : public Layer {
@@ -19,6 +19,12 @@ public:
     void OnImGuiRender(DeltaTime deltaTime) override;
 
     void OnEvent(Event& e) override;
+
+private:
+    void NewScene();
+    void OpenScene();
+    void SaveScene();
+    void BeginEditorDockspace();
 
 private:
     Ref<Scene> m_ActiveScene;

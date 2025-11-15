@@ -62,6 +62,9 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height) {
     m_ViewportWidth = width;
     m_ViewportHeight = height;
 
+    if (!m_PrimaryCameraEntity)
+        return;
+
     // Adjust viewport size of primary camera
     CameraComponent& camera = m_PrimaryCameraEntity->GetComponent<CameraComponent>();
     if (!camera.FixedAspectRatio)

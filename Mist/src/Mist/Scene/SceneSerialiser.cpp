@@ -124,7 +124,8 @@ void SceneSerialiser::Serialise(const std::string& filepath) {
 
     out << BeginMap;
     out << Key << "Scene" << Value << "Untitled";
-    out << Key << "PrimaryCamera" << Value << m_Scene->m_PrimaryCameraEntity->GetComponent<TagComponent>().Tag;
+    out << Key << "PrimaryCamera" << Value
+        << (m_Scene->m_PrimaryCameraEntity ? m_Scene->m_PrimaryCameraEntity->GetComponent<TagComponent>().Tag : "");
     {
         out << Key << "Entities" << Value << BeginSeq;
         auto view = m_Scene->m_Registry.view<entt::entity>();

@@ -3,6 +3,7 @@
 #include "CameraController.h"
 
 #include "Mist/Scene/SceneSerialiser.h"
+#include "Mist/Utils/PlatformUtils.h"
 
 namespace Mist {
 
@@ -57,8 +58,8 @@ void EditorLayer::OnAttach() {
 
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
-    SceneSerialiser serialiser(m_ActiveScene);
-    serialiser.Deserialise("res/scenes/Example.mist.yaml");
+    // SceneSerialiser serialiser(m_ActiveScene);
+    // serialiser.Deserialise("res/scenes/Example.mist.yaml");
 
     // Create some entities in the scene, including primary camera
     // m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
@@ -104,7 +105,30 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     m_Framebuffer->Unbind();
 }
 
-static void BeginEditorDockspace() {
+void EditorLayer::NewScene() {
+    m_ActiveScene = CreateRef<Scene>();
+    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+
+void EditorLayer::OpenScene() {
+    std::string filepath = FileDialogs::OpenFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
+    if (!filepath.empty()) {
+        NewScene();
+        SceneSerialiser serialiser(m_ActiveScene);
+        serialiser.Deserialise(filepath);
+    }
+}
+
+void EditorLayer::SaveScene() {
+    std::string filepath = FileDialogs::SaveFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
+    if (!filepath.empty()) {
+        SceneSerialiser serialiser(m_ActiveScene);
+        serialiser.Serialise(filepath);
+    }
+}
+
+void EditorLayer::BeginEditorDockspace() {
     static bool dockspaceOpen = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
@@ -148,6 +172,12 @@ static void BeginEditorDockspace() {
             ImGui::Separator();
             if (ImGui::MenuItem("Exit"))
                 MIST_APP.Close();
+            if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+                NewScene();
+            if (ImGui::MenuItem("Open Scene...", "Ctrl+O"))
+                OpenScene();
+            if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
+                SaveScene();
             ImGui::EndMenu();
         }
 
@@ -200,7 +230,7 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
         m_ViewportFocussed = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
-        //MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
+        // MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
 
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
         glm::vec2 viewportSizePtr = *(glm::vec2*)&viewportSize;
@@ -225,11 +255,28 @@ void EditorLayer::OnEvent(Event& e) {
     EventDispatcher dispatcher(e);
 
     dispatcher.Dispatch<KeyPressedEvent>([=](KeyPressedEvent& e) {
-        if (e.GetKeyCode() == KeyCode::S && Input::IsKeyPressed(KeyCode::LeftControl)) {
-            SceneSerialiser serialiser(m_ActiveScene);
-            serialiser.Serialise("res/scenes/Example.mist.yaml");
-            return true;
+        if (e.GetRepeatCount() > 0)
+            return false;
+
+        bool controlPressed = Input::IsKeyPressed(KeyCode::LeftControl) || Input::IsKeyPressed(KeyCode::RightControl);
+        bool shiftPressed = Input::IsKeyPressed(KeyCode::LeftShift) || Input::IsKeyPressed(KeyCode::RightShift);
+
+        // Hotkeys
+        switch (e.GetKeyCode()) {
+            case KeyCode::S:
+                if (controlPressed && shiftPressed)
+                    SaveScene();
+                break;
+            case KeyCode::O:
+                if (controlPressed)
+                    OpenScene();
+                break;
+            case KeyCode::N:
+                if (controlPressed)
+                    NewScene();
+                break;
         }
+
         return false;
     });
 
