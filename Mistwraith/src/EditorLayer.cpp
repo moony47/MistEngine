@@ -251,8 +251,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
             // Gizmos
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
             if (selectedEntity && m_GizmoType != -1) {
-                ImGuizmo::SetOrthographic(false);
-                ImGuizmo::SetDrawlist();
+                ImGuizmo::SetOrthographic(true);
+                ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 
                 ImVec2 pos = ImGui::GetWindowPos();
                 ImVec2 size = ImGui::GetWindowSize();
@@ -278,7 +278,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
             
                 if (ImGuizmo::IsUsing()) {
                     glm::vec3 position, rotation, scale;
-                    Maths::DecomposeTransform(transform, position, rotation, scale);
+                    ImGuizmo::DecomposeMatrixToComponents(value_ptr(transform), value_ptr(position),
+                                                          value_ptr(rotation), value_ptr(scale));
                     transformComp.SetPosition(position);
                     transformComp.SetRotation(rotation);
                     transformComp.SetScale(scale);
