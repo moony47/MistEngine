@@ -16,8 +16,8 @@ Entities:
         PerspectiveNear: 0.01
         PerspectiveFar: 1000
         OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
+        OrthographicNear: -4
+        OrthographicFar: 3.5
   - Entity: 1234
     TagComponent:
       Tag: Sprite1

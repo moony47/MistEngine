@@ -6,6 +6,8 @@
 #include "Mist/Scene/SceneSerialiser.h"
 #include "Mist/Utils/PlatformUtils.h"
 
+#include "Mist/Maths/Maths.h"
+
 namespace Mist {
 
 static const size_t s_MapWidth = 24;
@@ -244,9 +246,11 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
         ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
 
         {
+            m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+
             // Gizmos
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-            if (selectedEntity) {
+            if (selectedEntity && m_GizmoType != -1) {
                 ImGuizmo::SetOrthographic(false);
                 ImGuizmo::SetDrawlist();
 
@@ -262,7 +266,23 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
                 auto& transformComp = selectedEntity.GetComponent<TransformComponent>();
                 glm::mat4 transform = transformComp.GetTransform();
 
-                ImGuizmo::Manipulate(value_ptr(cameraView), value_ptr(cameraProj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, value_ptr(transform));
+                ImGuizmo::Style& style = ImGuizmo::GetStyle();
+                style.RotationLineThickness = 6.0f;
+                style.RotationOuterLineThickness = 6.0f;
+                style.TranslationLineThickness = 6.0f;
+                style.TranslationLineArrowSize = 12.0f;
+                style.ScaleLineThickness = 6.0f;
+                style.ScaleLineCircleSize = 12.0f;
+                ImGuizmo::Manipulate(value_ptr(cameraView), value_ptr(cameraProj), (ImGuizmo::OPERATION)m_GizmoType,
+                                     ImGuizmo::LOCAL, value_ptr(transform));
+            
+                if (ImGuizmo::IsUsing()) {
+                    glm::vec3 position, rotation, scale;
+                    Maths::DecomposeTransform(transform, position, rotation, scale);
+                    transformComp.SetPosition(position);
+                    transformComp.SetRotation(rotation);
+                    transformComp.SetScale(scale);
+                }
             }
         }
 

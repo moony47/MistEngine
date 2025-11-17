@@ -35,6 +35,8 @@ private:
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
     bool m_ViewportFocussed = false, m_ViewportHovered = false;
 
+    int m_GizmoType = -1;
+
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
 };

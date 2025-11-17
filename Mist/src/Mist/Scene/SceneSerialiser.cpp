@@ -55,11 +55,11 @@ struct convert<glm::vec4> {
 
 namespace Mist {
 
-Emitter& operator<<(Emitter& out, glm::vec3& vec) {
+Emitter& operator<<(Emitter& out, const glm::vec3& vec) {
     out << Flow << BeginSeq << vec.x << vec.y << vec.z << EndSeq;
     return out;
 }
-Emitter& operator<<(Emitter& out, glm::vec4& vec) {
+Emitter& operator<<(Emitter& out, const glm::vec4& vec) {
     out << Flow << BeginSeq << vec.r << vec.g << vec.b << vec.a << EndSeq;
     return out;
 }
@@ -78,9 +78,9 @@ static void SerialiseEntity(Emitter& out, Entity entity) {
     if (entity.HasComponent<TransformComponent>()) {
         out << Key << "TransformComponent" << BeginMap;
         auto& transform = entity.GetComponent<TransformComponent>();
-        out << Key << "Position" << Value << transform.Position;
-        out << Key << "Rotation" << Value << transform.Rotation;
-        out << Key << "Scale" << Value << transform.Scale;
+        out << Key << "Position" << Value << transform.GetPosition();
+        out << Key << "Rotation" << Value << transform.GetRotation();
+        out << Key << "Scale" << Value << transform.GetScale();
         out << EndMap;
     }
 

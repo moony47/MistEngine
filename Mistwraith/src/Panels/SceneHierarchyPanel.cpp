@@ -239,15 +239,15 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     ImGui::PopItemWidth();
 
     DrawComponent<TransformComponent>("Transform", entity, [](Entity entity, TransformComponent& comp) {
-        glm::vec3 position = comp.Position;
+        glm::vec3 position = comp.GetPosition();
         if (DrawVec3Control("Position", position))
             comp.SetPosition(position);
 
-        glm::vec3 rotation = glm::degrees(comp.Rotation);
+        glm::vec3 rotation = glm::degrees(comp.GetRotation());
         if (DrawVec3Control("Rotation", rotation))
             comp.SetRotation(glm::radians(rotation));
 
-        glm::vec3 scale = comp.Scale;
+        glm::vec3 scale = comp.GetScale();
         if (DrawVec3Control("Scale", scale, 1.0f))
             comp.SetScale(scale);
     });
