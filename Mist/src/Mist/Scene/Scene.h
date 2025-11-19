@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Mist/Cameras/EditorCamera.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Events/Event.h"
 #include "Mist/Renderer/Renderer2D.h"
 
-#include <Mist/Events/Event.h>
 #include <entt.hpp>
 
 namespace Mist {
@@ -20,6 +21,9 @@ public:
 
     void OnUpdate(DeltaTime deltaTime);
     void OnRender(DeltaTime deltaTime);
+
+    // void OnUpdateEditor(DeltaTime deltaTime, EditorCamera& camera);
+    void OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera);
 
     void OnEvent(Event& e);
 

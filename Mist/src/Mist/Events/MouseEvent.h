@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Mist/Core/MouseButtonCodes.h"
 #include "Event.h"
 
 namespace Mist {
@@ -60,22 +61,22 @@ private:
 
 class MouseButtonEvent : public Event {
 public:
-    inline int GetMouseButton() const {
+    inline MouseButtonCode GetMouseButton() const {
         return m_Button;
     }
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 protected:
-    MouseButtonEvent(int button) :
+    MouseButtonEvent(MouseButtonCode button) :
         m_Button(button) {
     }
 
-    int m_Button;
+    MouseButtonCode m_Button;
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
 public: 
-    MouseButtonPressedEvent(int button):
+    MouseButtonPressedEvent(MouseButtonCode button) :
         MouseButtonEvent(button) {
     }
 
@@ -90,7 +91,7 @@ public:
 
 class MouseButtonReleasedEvent : public MouseButtonEvent {
 public:
-    MouseButtonReleasedEvent(int button) :
+    MouseButtonReleasedEvent(MouseButtonCode button) :
         MouseButtonEvent(button) {
     }
 

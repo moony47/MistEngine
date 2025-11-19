@@ -38,6 +38,7 @@ void SceneCamera::UpdateProjection() {
     } else {
         m_Projection = glm::perspective(m_PerspFOV, m_AspectRatio, m_PerspNear, m_PerspFar);
     }
+    m_Modified = false;
 }
 
 } // namespace Mist

@@ -1,15 +1,26 @@
 #pragma once
 
-// From glfw3.h
-#define MIST_MOUSE_BUTTON_1 0
-#define MIST_MOUSE_BUTTON_2 1
-#define MIST_MOUSE_BUTTON_3 2
-#define MIST_MOUSE_BUTTON_4 3
-#define MIST_MOUSE_BUTTON_5 4
-#define MIST_MOUSE_BUTTON_6 5
-#define MIST_MOUSE_BUTTON_7 6
-#define MIST_MOUSE_BUTTON_8 7
-#define MIST_MOUSE_BUTTON_LAST MIST_MOUSE_BUTTON_8
-#define MIST_MOUSE_BUTTON_LEFT MIST_MOUSE_BUTTON_1
-#define MIST_MOUSE_BUTTON_RIGHT MIST_MOUSE_BUTTON_2
-#define MIST_MOUSE_BUTTON_MIDDLE MIST_MOUSE_BUTTON_3
+namespace Mist {
+
+enum class MouseButtonCode : uint16_t {
+    Button1 /*    */ = 0,
+    Button2 /*    */ = 1,
+    Button3 /*    */ = 2,
+    Button4 /*    */ = 3,
+    Button5 /*    */ = 4,
+    Button6 /*    */ = 5,
+    Button7 /*    */ = 6,
+    Button8 /*    */ = 7,
+
+    Left /*       */ = Button1,
+    Right /*      */ = Button2,
+    Middle /*     */ = Button3,
+    Last /*       */ = Button8
+};
+
+inline std::ostream& operator<<(std::ostream& os, MouseButtonCode keycode) {
+    os << static_cast<uint16_t>(keycode);
+    return os;
+}
+
+} // namespace Mist

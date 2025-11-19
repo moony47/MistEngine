@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Mist/Cameras/Camera.h"
+#include "Mist/Cameras/EditorCamera.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -13,6 +15,7 @@ public:
 
     static void BeginView(const glm::mat4& projection, const glm::mat4& transform);
     static void BeginView(OrthographicCamera& camera);
+    static void BeginView(EditorCamera& camera);
     static void EndView();
 
     static void DrawQuad(const glm::mat4& transform,

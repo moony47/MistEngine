@@ -49,6 +49,21 @@ void Scene::OnRender(DeltaTime deltaTime) {
     Renderer2D::EndView();
 }
 
+// void Scene::OnUpdateEditor(DeltaTime deltaTime, EditorCamera& camera) {}
+
+void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
+    // Render the scene from primary camera's view
+    Renderer2D::BeginView(camera);
+
+    auto group = m_Registry.group<SpriteComponent, TransformComponent>();
+    for (auto entity : group) {
+        auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
+        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour, sprite.TextureName);
+    }
+
+    Renderer2D::EndView();
+}
+
 void Scene::OnEvent(Event& e) {
     auto view = m_Registry.view<NativeScriptComponent>();
     for (auto entity : view) {

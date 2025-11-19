@@ -147,12 +147,12 @@ void WindowsWindow::InitEventCallbacks() {
 
         switch (action) {
             case GLFW_PRESS: {
-                MouseButtonPressedEvent e(button);
+                MouseButtonPressedEvent e((MouseButtonCode)button);
                 data.EventCallback(e);
                 break;
             }
             case GLFW_RELEASE: {
-                MouseButtonReleasedEvent e(button);
+                MouseButtonReleasedEvent e((MouseButtonCode)button);
                 data.EventCallback(e);
                 break;
             }

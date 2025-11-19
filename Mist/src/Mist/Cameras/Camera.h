@@ -14,10 +14,8 @@ public:
     virtual ~Camera() = default;
 
     const glm::mat4& GetProjection() {
-        if (m_Modified) {
+        if (m_Modified)
             UpdateProjection();
-            m_Modified = false;
-        }
         return m_Projection;
     }
 

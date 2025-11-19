@@ -121,6 +121,16 @@ void Renderer2D::BeginView(OrthographicCamera& camera) {
     BeginBatch();
 }
 
+void Renderer2D::BeginView(EditorCamera& camera) {
+    MIST_PROFILE_FUNCTION();
+
+    // Set the camera transform for this scene
+    MIST_SHADERLIB->Bind(s_Data.ShaderName);
+    MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", camera.GetViewProj());
+
+    BeginBatch();
+}
+
 void Renderer2D::EndView() {
     MIST_PROFILE_FUNCTION();
 

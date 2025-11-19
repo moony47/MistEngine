@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Panels/SceneHierarchyPanel.h"
 #include <Mist.h>
+#include <Mist/Cameras/EditorCamera.h>
+
+#include "Panels/SceneHierarchyPanel.h"
 
 // using namespace Mist;
 namespace Mist {
@@ -28,14 +30,13 @@ private:
 
 private:
     Ref<Scene> m_ActiveScene;
-    Entity m_CameraEntity;
-    Entity m_SpriteEntity1, m_SpriteEntity2;
+    EditorCamera m_EditorCamera;
 
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
     bool m_ViewportFocussed = false, m_ViewportHovered = false;
 
-    int m_GizmoType = -1;
+    int m_GizmoType = 7;
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;

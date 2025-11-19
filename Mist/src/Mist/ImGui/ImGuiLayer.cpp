@@ -129,6 +129,30 @@ void ImGuiLayer::SetDarkThemeColours() {
     colours[ImGuiCol_TitleBg] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
     colours[ImGuiCol_TitleBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
     colours[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+
+    ImGuizmo::Style& style = ImGuizmo::GetStyle();
+    style.RotationLineThickness = 6.0f;
+    style.RotationOuterLineThickness = 6.0f;
+    style.TranslationLineThickness = 6.0f;
+    style.TranslationLineArrowSize = 12.0f;
+    style.ScaleLineThickness = 6.0f;
+    style.ScaleLineCircleSize = 12.0f;
+
+    style.Colors[ImGuizmo::COLOR::DIRECTION_X] = ImVec4{0.8f, 0.1f, 0.15f, 1.0f};
+    style.Colors[ImGuizmo::COLOR::DIRECTION_Y] = ImVec4{0.1f, 0.65f, 0.3f, 1.0f};
+    style.Colors[ImGuizmo::COLOR::DIRECTION_Z] = ImVec4{0.1f, 0.25f, 0.8f, 1.0f};
+    style.Colors[ImGuizmo::COLOR::PLANE_X] = ImVec4{0.8f, 0.1f, 0.15f, 1.0f};
+    style.Colors[ImGuizmo::COLOR::PLANE_Y] = ImVec4{0.1f, 0.65f, 0.3f, 1.0f};
+    style.Colors[ImGuizmo::COLOR::PLANE_Z] = ImVec4{0.1f, 0.25f, 0.8f, 1.0f};
+    //style.Colors[ImGuizmo::COLOR::SELECTION] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::INACTIVE] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::TRANSLATION_LINE] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::SCALE_LINE] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::ROTATION_USING_BORDER] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::ROTATION_USING_FILL] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::HATCHED_AXIS_LINES] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::TEXT] = ImVec4{};
+    //style.Colors[ImGuizmo::COLOR::TEXT_SHADOW] = ImVec4{};
 }
 
 } // namespace Mist

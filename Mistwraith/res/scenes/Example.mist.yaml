@@ -46,5 +46,5 @@ Entities:
       Rotation: [-0.11868239, 0, -1.6528268]
       Scale: [5, 5.4, 1]
     SpriteComponent:
-      Colour: [0.9111967, 0, 1, 1]
+      Colour: [0.5173745, 0, 1, 1]
       TextureName: Star

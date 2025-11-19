@@ -1,5 +1,5 @@
-#include "EditorLayer.h"
 #include "CameraController.h"
+#include "EditorLayer.h"
 
 #include <ImGuizmo.h>
 
@@ -59,10 +59,12 @@ void EditorLayer::OnAttach() {
     // Create scene
     m_ActiveScene = CreateRef<Scene>();
 
+    m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
-    // SceneSerialiser serialiser(m_ActiveScene);
-    // serialiser.Deserialise("res/scenes/Example.mist.yaml");
+    SceneSerialiser serialiser(m_ActiveScene);
+    serialiser.Deserialise("res/scenes/Example.mist.yaml");
 
     // Create some entities in the scene, including primary camera
     // m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
@@ -91,6 +93,7 @@ void EditorLayer::OnUpdate(DeltaTime deltaTime) {
 
     if (m_ViewportFocussed)
         m_ActiveScene->OnUpdate(deltaTime);
+    m_EditorCamera.OnUpdate(deltaTime, m_ViewportFocussed && m_ViewportHovered);
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -103,13 +106,14 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     RenderCommand::SetClearColour(glm::vec4{0.1f, 0.1f, 0.1f, 1.0f});
     RenderCommand::Clear();
 
-    m_ActiveScene->OnRender(deltaTime);
+    m_ActiveScene->OnRenderEditor(deltaTime, m_EditorCamera);
 
     m_Framebuffer->Unbind();
 }
 
 void EditorLayer::NewScene() {
     m_ActiveScene = CreateRef<Scene>();
+    m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
     m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
@@ -233,21 +237,20 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
         m_ViewportFocussed = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
-        // MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed && m_ViewportHovered);
+        // MIST_APP.GetImGuiLayer()->SetPassEvents(m_ViewportFocussed || m_ViewportHovered);
 
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
         glm::vec2 viewportSizePtr = *(glm::vec2*)&viewportSize;
         if (m_ViewportSize != viewportSizePtr) {
             m_ViewportSize = viewportSizePtr;
             m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+            m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
             m_ActiveScene->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
         }
 
         ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
 
         {
-            m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-
             // Gizmos
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
             if (selectedEntity && m_GizmoType != -1) {
@@ -258,24 +261,32 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
                 ImVec2 size = ImGui::GetWindowSize();
                 ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
 
-                auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
-                auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-                const glm::mat4& cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-                const glm::mat4& cameraProj = camera.GetProjection();
+                const glm::mat4& cameraView = m_EditorCamera.GetView();
+                const glm::mat4& cameraProj = m_EditorCamera.GetProjection();
 
                 auto& transformComp = selectedEntity.GetComponent<TransformComponent>();
                 glm::mat4 transform = transformComp.GetTransform();
 
-                ImGuizmo::Style& style = ImGuizmo::GetStyle();
-                style.RotationLineThickness = 6.0f;
-                style.RotationOuterLineThickness = 6.0f;
-                style.TranslationLineThickness = 6.0f;
-                style.TranslationLineArrowSize = 12.0f;
-                style.ScaleLineThickness = 6.0f;
-                style.ScaleLineCircleSize = 12.0f;
-                ImGuizmo::Manipulate(value_ptr(cameraView), value_ptr(cameraProj), (ImGuizmo::OPERATION)m_GizmoType,
-                                     ImGuizmo::LOCAL, value_ptr(transform));
-            
+                ImGuizmo::OPERATION op = (ImGuizmo::OPERATION)m_GizmoType;
+                bool snapping = !Input::IsKeyPressed(KeyCode::LeftControl);
+                glm::vec3 snapValue;
+                switch (op) {
+                    case ImGuizmo::OPERATION::TRANSLATE:
+                        snapValue = {0.5f, 0.5f, 0.5f};
+                        break;
+                    case ImGuizmo::OPERATION::ROTATE:
+                        snapValue = {15.0f, 15.0f, 15.0f};
+                        break;
+                    case ImGuizmo::OPERATION::SCALE:
+                        snapValue = {0.25f, 0.25f, 0.25f};
+                        break;
+                }
+                ImGuizmo::MODE mode = ImGuizmo::WORLD;
+                //(op == ImGuizmo::OPERATION::TRANSLATE) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+
+                ImGuizmo::Manipulate(value_ptr(cameraView), value_ptr(cameraProj), op, mode, value_ptr(transform),
+                                     nullptr, snapping ? value_ptr(snapValue) : nullptr);
+
                 if (ImGuizmo::IsUsing()) {
                     glm::vec3 position, rotation, scale;
                     ImGuizmo::DecomposeMatrixToComponents(value_ptr(transform), value_ptr(position),
@@ -308,6 +319,7 @@ void EditorLayer::OnEvent(Event& e) {
 
         // Hotkeys
         switch (e.GetKeyCode()) {
+            // File Options
             case KeyCode::S:
                 if (controlPressed && shiftPressed)
                     SaveScene();
@@ -320,6 +332,20 @@ void EditorLayer::OnEvent(Event& e) {
                 if (controlPressed)
                     NewScene();
                 break;
+
+            // Gizmo Types
+            case KeyCode::Q:
+                m_GizmoType = -1;
+                break;
+            case KeyCode::W:
+                m_GizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
+                break;
+            case KeyCode::E:
+                m_GizmoType = (int)ImGuizmo::OPERATION::ROTATE;
+                break;
+            case KeyCode::R:
+                m_GizmoType = (int)ImGuizmo::OPERATION::SCALE;
+                break;
         }
 
         return false;
@@ -327,7 +353,8 @@ void EditorLayer::OnEvent(Event& e) {
 
     if (m_ViewportFocussed && (m_ViewportHovered || !e.IsInCategory(EventCategoryMouse)))
         m_ActiveScene->OnEvent(e);
-    // m_CameraController.OnEvent(e);
+    if (m_ViewportHovered || !e.IsInCategory(EventCategoryMouse))
+        m_EditorCamera.OnEvent(e);
 }
 
 } // namespace Mist
