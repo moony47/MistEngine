@@ -13,6 +13,9 @@ public:
 
     void OnImGuiRender();
 
+    inline void SetSelectedEntity(uint32_t entity) {
+        m_SelectionContext = {m_Context.get(), (entt::entity) entity};
+    }
     inline Entity GetSelectedEntity() const {
         return m_SelectionContext;
     }

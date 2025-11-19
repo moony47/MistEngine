@@ -53,7 +53,9 @@ void EditorLayer::OnAttach() {
     MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
     // Create framebuffer
-    Mist::FramebufferSpecification fbSpec(1280, 720);
+    Mist::FramebufferSpecification fbSpec(
+        1280, 720,
+        {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth});
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
     // Create scene
@@ -90,10 +92,8 @@ void EditorLayer::OnDetach() {
 
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
-
     if (m_ViewportFocussed)
         m_ActiveScene->OnUpdate(deltaTime);
-    m_EditorCamera.OnUpdate(deltaTime, m_ViewportFocussed && m_ViewportHovered);
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -107,6 +107,23 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     RenderCommand::Clear();
 
     m_ActiveScene->OnRenderEditor(deltaTime, m_EditorCamera);
+
+    if (!Input::IsMouseButtonPressed(MouseButtonCode::Left)) {
+        auto [mx, my] = ImGui::GetMousePos();
+        mx -= m_ViewportBounds[0].x;
+        my -= m_ViewportBounds[0].y;
+        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+        my = viewportSize.y - my;
+
+        int mouseX = (int)mx;
+        int mouseY = (int)my;
+
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < m_ViewportSize.x && mouseY < m_ViewportSize.y) {
+            int entity = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+            m_HoveredEntity =
+                (entity > -1 && entity < 10000) ? Entity{m_ActiveScene.get(), (entt::entity)entity} : Entity{};
+        }
+    }
 
     m_Framebuffer->Unbind();
 }
@@ -234,6 +251,11 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("Viewport");
+        auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+        auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+        auto viewportOffset = ImGui::GetWindowPos();
+        m_ViewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
+        m_ViewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
 
         m_ViewportFocussed = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
@@ -294,8 +316,10 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
                     transformComp.SetPosition(position);
                     transformComp.SetRotation(rotation);
                     transformComp.SetScale(scale);
-                }
-            }
+                } else
+                    m_EditorCamera.OnUpdate(deltaTime, m_ViewportFocussed && m_ViewportHovered);
+            } else
+                m_EditorCamera.OnUpdate(deltaTime, m_ViewportFocussed && m_ViewportHovered);
         }
 
         ImGui::End();
@@ -307,6 +331,9 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
+
+    if (e.Handled)
+        return;
 
     EventDispatcher dispatcher(e);
 
@@ -351,8 +378,18 @@ void EditorLayer::OnEvent(Event& e) {
         return false;
     });
 
+    dispatcher.Dispatch<MouseButtonReleasedEvent>([=](MouseButtonReleasedEvent& e) {
+        if (e.GetMouseButton() == MouseButtonCode::Left && m_ViewportHovered && !ImGuizmo::IsOver()) {
+            m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+            if (m_HoveredEntity != Entity{})
+                return true;
+        }
+        return false;
+    });
+
     if (m_ViewportFocussed && (m_ViewportHovered || !e.IsInCategory(EventCategoryMouse)))
         m_ActiveScene->OnEvent(e);
+
     if (m_ViewportHovered || !e.IsInCategory(EventCategoryMouse))
         m_EditorCamera.OnEvent(e);
 }

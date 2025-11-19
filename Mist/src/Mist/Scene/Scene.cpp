@@ -43,7 +43,7 @@ void Scene::OnRender(DeltaTime deltaTime) {
     auto group = m_Registry.group<SpriteComponent, TransformComponent>();
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour, sprite.TextureName);
+        Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName);
     }
 
     Renderer2D::EndView();
@@ -58,13 +58,16 @@ void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
     auto group = m_Registry.group<SpriteComponent, TransformComponent>();
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour, sprite.TextureName);
+        Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName);
     }
 
     Renderer2D::EndView();
 }
 
 void Scene::OnEvent(Event& e) {
+    if (e.Handled)
+        return;
+
     auto view = m_Registry.view<NativeScriptComponent>();
     for (auto entity : view) {
         auto& script = view.get<NativeScriptComponent>(entity);

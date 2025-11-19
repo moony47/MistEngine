@@ -34,9 +34,13 @@ private:
 
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
+    glm::vec2 m_ViewportBounds[2];
+
     bool m_ViewportFocussed = false, m_ViewportHovered = false;
 
     int m_GizmoType = 7;
+
+    Entity m_HoveredEntity;
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;

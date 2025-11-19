@@ -18,15 +18,20 @@ public:
     static void BeginView(EditorCamera& camera);
     static void EndView();
 
-    static void DrawQuad(const glm::mat4& transform,
+    static void DrawQuad(uint32_t entityID,
+                         const glm::mat4& transform,
                          const glm::vec4& colour = glm::vec4(1.0f),
                          const std::string& textureName = "WHITE",
                          float tilingFactor = 1.0f);
-    static inline void DrawQuad(const glm::mat4& transform, const std::string& textureName, float tilingFactor = 1.0f) {
-        DrawQuad(transform, glm::vec4(1.0f), textureName, tilingFactor);
-    }
 
-    static inline void DrawQuad(const glm::vec3& position,
+    static inline void DrawQuad(uint32_t entityID,
+                                const glm::mat4& transform,
+                                const std::string& textureName,
+                                float tilingFactor = 1.0f) {
+        DrawQuad(entityID, transform, glm::vec4(1.0f), textureName, tilingFactor);
+    }
+    static inline void DrawQuad(uint32_t entityID,
+                                const glm::vec3& position,
                                 const float angleRad,
                                 const glm::vec2& size,
                                 const glm::vec4& colour = glm::vec4(1.0f),
@@ -36,30 +41,32 @@ public:
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
         transform = glm::rotate(transform, angleRad, {0, 0, 1});
         transform = glm::scale(transform, glm::vec3(size, 1.0f));
-        DrawQuad(transform, colour, textureName, tilingFactor);
+        DrawQuad(entityID, transform, colour, textureName, tilingFactor);
     }
-    static inline void DrawQuad(const glm::vec3& position,
+    static inline void DrawQuad(uint32_t entityID,
+                                const glm::vec3& position,
                                 const float angleRad,
                                 const glm::vec2& size,
                                 const std::string& textureName,
                                 float tilingFactor = 1.0f) {
-        DrawQuad(position, angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
+        DrawQuad(entityID, position, angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
     }
-
-    static inline void DrawQuad(const glm::vec2& position,
+    static inline void DrawQuad(uint32_t entityID,
+                                const glm::vec2& position,
                                 const float angleRad,
                                 const glm::vec2& size,
                                 const glm::vec4& colour = glm::vec4(1.0f),
                                 const std::string& textureName = "WHITE",
                                 float tilingFactor = 1.0f) {
-        DrawQuad(glm::vec3(position, 0.0f), angleRad, size, colour, textureName, tilingFactor);
+        DrawQuad(entityID, glm::vec3(position, 0.0f), angleRad, size, colour, textureName, tilingFactor);
     }
-    static inline void DrawQuad(const glm::vec2& position,
+    static inline void DrawQuad(uint32_t entityID,
+                                const glm::vec2& position,
                                 const float angleRad,
                                 const glm::vec2& size,
                                 const std::string& textureName,
                                 float tilingFactor = 1.0f) {
-        DrawQuad(glm::vec3(position, 0.0f), angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
+        DrawQuad(entityID, glm::vec3(position, 0.0f), angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
     }
 
 private:

@@ -49,6 +49,8 @@ float EditorCamera::ZoomSpeed() const {
 }
 
 void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
+    MIST_CORE_WARN("Focussed = {0}", focussed);
+
     if (!m_Using && !focussed) {
         m_Using = false;
         return;
@@ -59,12 +61,17 @@ void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
         glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
         m_InitialMousePosition = mouse;
 
-        if (Input::IsMouseButtonPressed(MouseButtonCode::Middle))
+        if (Input::IsMouseButtonPressed(MouseButtonCode::Left)) {
+            if (Input::IsKeyPressed(KeyCode::LeftShift))
+                MouseZoom(delta.y);
+            else if (Input::IsKeyPressed(KeyCode::LeftControl))
+                MousePan(delta);
+            else
+                MouseRotate(delta);
+        } else if (Input::IsMouseButtonPressed(MouseButtonCode::Middle))
             MousePan(delta);
-        else if (Input::IsMouseButtonPressed(MouseButtonCode::Left))
-            MouseRotate(delta);
         else if (Input::IsMouseButtonPressed(MouseButtonCode::Right))
-            MouseZoom(delta.y);
+            MouseRotate(delta);
         else
             m_Using = false;
     }
@@ -73,6 +80,9 @@ void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
 }
 
 void EditorCamera::OnEvent(Event& e) {
+    if (e.Handled)
+        return;
+
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<MouseScrolledEvent>(MIST_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
     dispatcher.Dispatch<MouseButtonPressedEvent>(MIST_BIND_EVENT_FN(EditorCamera::OnMousePressed));

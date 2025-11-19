@@ -1,11 +1,13 @@
 #version 460 core
 
 layout(location = 0) out vec4 colour;
+layout(location = 1) out int entity;
 
 in vec4 v_Colour;
 in vec2 v_TexCoord;
 in flat int v_TexIndex;
 in float v_TilingFactor;
+in flat int v_EntityID;
 
 uniform sampler2D u_Texture[32];
 
@@ -49,4 +51,6 @@ void main() {
 		case 31: texColor = texture(u_Texture[31], v_TexCoord * v_TilingFactor); break;
 	}
 	colour = texColor * v_Colour;
+
+	entity = v_EntityID;
 }

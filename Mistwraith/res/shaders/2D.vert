@@ -5,11 +5,13 @@ layout(location = 1) in vec4 a_Colour;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in int a_TexIndex;
 layout(location = 4) in float a_TilingFactor;
+layout(location = 5) in int a_EntityID;
 
 out vec4 v_Colour;
 out vec2 v_TexCoord;
 out flat int v_TexIndex;
 out float v_TilingFactor;
+out flat int v_EntityID;
 
 uniform mat4 u_VP;
 
@@ -18,5 +20,6 @@ void main() {
 	v_TexCoord = a_TexCoord;
 	v_TexIndex = a_TexIndex;
 	v_TilingFactor = a_TilingFactor;
+	v_EntityID = a_EntityID;
 	gl_Position = u_VP * vec4(a_Position, 1.0);
 }

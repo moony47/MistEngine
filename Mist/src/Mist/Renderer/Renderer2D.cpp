@@ -14,6 +14,7 @@ struct QuadVertex {
     glm::vec2 TexCoord;
     int TexIndex;
     float TilingFactor;
+    int EntityID;
 
     static BufferLayout Layout;
 };
@@ -23,7 +24,8 @@ BufferLayout QuadVertex::Layout = {
     {ShaderDataType::Float4,       "a_Colour"},
     {ShaderDataType::Float2,    "a_TexCoords"},
     {   ShaderDataType::Int,     "a_TexIndex"},
-    { ShaderDataType::Float, "a_TilingFactor"}
+    { ShaderDataType::Float, "a_TilingFactor"},
+    {   ShaderDataType::Int,     "a_EntityID"}
 };
 
 struct Renderer2DData {
@@ -163,7 +165,8 @@ void Renderer2D::FlushBatch() {
     s_Data.Stats.DrawCalls++;
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform,
+void Renderer2D::DrawQuad(uint32_t entityID,
+                          const glm::mat4& transform,
                           const glm::vec4& colour,
                           const std::string& textureName,
                           float tilingFactor) {
@@ -212,6 +215,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform,
         s_Data.QuadVertexBufferPtr->TexCoord = texture->GetTexCoords(i);
         s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
         s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+        s_Data.QuadVertexBufferPtr->EntityID = entityID;
         s_Data.QuadVertexBufferPtr++;
     }
 
