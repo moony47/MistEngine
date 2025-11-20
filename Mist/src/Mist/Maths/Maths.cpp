@@ -28,7 +28,7 @@ bool DecomposeTransform(const glm::mat4& transform, glm::vec3& position, glm::ve
     position = vec3(LocalMatrix[3]);
     LocalMatrix[3] = vec4(0, 0, 0, LocalMatrix[3].w);
 
-    vec3 Row[3], Pdum3;
+    vec3 Row[3];
 
     // Now get scale.
     for (length_t i = 0; i < 3; ++i)

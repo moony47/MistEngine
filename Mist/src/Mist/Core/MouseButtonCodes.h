@@ -23,4 +23,6 @@ inline std::ostream& operator<<(std::ostream& os, MouseButtonCode keycode) {
     return os;
 }
 
+#define MAX_CLICK_DURATION 0.15f
+
 } // namespace Mist

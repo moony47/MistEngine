@@ -23,6 +23,8 @@ public:
         return m_DepthAttachment;
     }
 
+    void ClearColourAttachment(size_t index, int clearValue) override;
+
     void Bind() override;
     void Unbind() override;
 

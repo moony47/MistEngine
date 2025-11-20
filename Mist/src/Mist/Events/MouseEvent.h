@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mist/Core/MouseButtonCodes.h"
 #include "Event.h"
+#include "Mist/Core/MouseButtonCodes.h"
 
 namespace Mist {
 
@@ -39,10 +39,10 @@ public:
         m_YOffset(yOffset) {
     }
 
-        inline float GetXOffset() const {
+    inline float GetXOffset() const {
         return m_XOffset;
     }
-        inline float GetYOffset() const {
+    inline float GetYOffset() const {
         return m_YOffset;
     }
 
@@ -75,7 +75,7 @@ protected:
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
-public: 
+public:
     MouseButtonPressedEvent(MouseButtonCode button) :
         MouseButtonEvent(button) {
     }
@@ -89,10 +89,21 @@ public:
     EVENT_CLASS_TYPE(MouseButtonPressed)
 };
 
+enum class MousePressedType : uint8_t {
+    Click,
+    DoubleClick,
+    Hold
+};
+
 class MouseButtonReleasedEvent : public MouseButtonEvent {
 public:
-    MouseButtonReleasedEvent(MouseButtonCode button) :
-        MouseButtonEvent(button) {
+    MouseButtonReleasedEvent(MouseButtonCode button, MousePressedType type) :
+        MouseButtonEvent(button),
+        m_PressType(type) {
+    }
+
+    inline MousePressedType GetPressType() const {
+        return m_PressType;
     }
 
     std::string ToString() const override {
@@ -102,6 +113,9 @@ public:
     }
 
     EVENT_CLASS_TYPE(MouseButtonReleased)
+
+private:
+    MousePressedType m_PressType;
 };
 
 } // namespace Mist

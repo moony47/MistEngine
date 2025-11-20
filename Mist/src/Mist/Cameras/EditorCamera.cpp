@@ -43,14 +43,12 @@ float EditorCamera::RotationSpeed() const {
 }
 
 float EditorCamera::ZoomSpeed() const {
-    float distance = std::max(m_Distance * 0.4f, 0.0f);
-    float speed = std::min(distance * distance, 100.0f);
+    float distance = std::max(m_Distance, 0.0f);
+    float speed = std::min(distance * distance * 0.09f, 100.0f);
     return speed;
 }
 
 void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
-    MIST_CORE_WARN("Focussed = {0}", focussed);
-
     if (!m_Using && !focussed) {
         m_Using = false;
         return;
@@ -71,7 +69,7 @@ void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
         } else if (Input::IsMouseButtonPressed(MouseButtonCode::Middle))
             MousePan(delta);
         else if (Input::IsMouseButtonPressed(MouseButtonCode::Right))
-            MouseRotate(delta);
+            MouseZoom(delta.y);
         else
             m_Using = false;
     }

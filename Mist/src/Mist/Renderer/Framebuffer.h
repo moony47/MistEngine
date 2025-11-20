@@ -53,6 +53,8 @@ public:
     virtual uint32_t GetColourAttachment(size_t i = 0) const = 0;
     virtual uint32_t GetDepthAttachment() const = 0;
 
+    virtual void ClearColourAttachment(size_t index, int clearValue) = 0;
+
     virtual void Bind() = 0;
     virtual void Unbind() = 0;
 

@@ -4,8 +4,8 @@
 #include "Mist/Events/EventSystem.h"
 #include "Mist/Renderer/Renderer.h"
 
-#include "OpenGL/OpenGLRenderer.h"
 #include "OpenGL/OpenGLContext.h"
+#include "OpenGL/OpenGLRenderer.h"
 
 namespace Mist {
 
@@ -61,11 +61,15 @@ void WindowsWindow::Init(const WindowProps& props) {
 void WindowsWindow::Shutdown() {
     MIST_PROFILE_FUNCTION();
 
-    //delete TEMP_layer;
+    // delete TEMP_layer;
     delete m_Context;
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
+
+static bool s_MouseHeld = false;
+static float s_MouseHeldDuration = 0.0f;
+static float s_MouseReleasedDuration = 0.0f;
 
 DeltaTime WindowsWindow::OnUpdate() {
     MIST_PROFILE_FUNCTION();
@@ -73,6 +77,15 @@ DeltaTime WindowsWindow::OnUpdate() {
     float time = (float)glfwGetTime();
     DeltaTime deltaTime = time - m_LastFrameTime;
     m_LastFrameTime = time;
+
+    if (s_MouseHeld)
+        s_MouseHeldDuration += deltaTime;
+    else if (s_MouseHeldDuration > 0.0f && s_MouseReleasedDuration < MAX_CLICK_DURATION)
+        s_MouseReleasedDuration += deltaTime;
+    else {
+        s_MouseHeldDuration = 0.0f;
+        s_MouseReleasedDuration = MAX_CLICK_DURATION;
+    }
 
     glfwPollEvents();
     return deltaTime;
@@ -149,11 +162,27 @@ void WindowsWindow::InitEventCallbacks() {
             case GLFW_PRESS: {
                 MouseButtonPressedEvent e((MouseButtonCode)button);
                 data.EventCallback(e);
+
+                s_MouseHeld = true;
+                if (s_MouseReleasedDuration < MAX_CLICK_DURATION)
+                    s_MouseHeldDuration = 0.0f;
+
                 break;
             }
             case GLFW_RELEASE: {
-                MouseButtonReleasedEvent e((MouseButtonCode)button);
+                MousePressedType type = (s_MouseHeldDuration < MAX_CLICK_DURATION)
+                                            ? (s_MouseReleasedDuration < MAX_CLICK_DURATION)
+                                                  ? MousePressedType::DoubleClick
+                                                  : MousePressedType::Click
+                                            : MousePressedType::Hold;
+
+                MouseButtonReleasedEvent e((MouseButtonCode)button, type);
                 data.EventCallback(e);
+
+                s_MouseHeld = false;
+                if (s_MouseHeldDuration < MAX_CLICK_DURATION)
+                    s_MouseReleasedDuration = 0.0f;
+
                 break;
             }
         }

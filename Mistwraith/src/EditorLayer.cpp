@@ -105,24 +105,24 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
 
     RenderCommand::SetClearColour(glm::vec4{0.1f, 0.1f, 0.1f, 1.0f});
     RenderCommand::Clear();
+    m_Framebuffer->ClearColourAttachment(1, -1);
 
+    // Render Scene from EditorCamera view
     m_ActiveScene->OnRenderEditor(deltaTime, m_EditorCamera);
 
-    if (!Input::IsMouseButtonPressed(MouseButtonCode::Left)) {
-        auto [mx, my] = ImGui::GetMousePos();
-        mx -= m_ViewportBounds[0].x;
-        my -= m_ViewportBounds[0].y;
-        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-        my = viewportSize.y - my;
+    // Which entity is being hovered over right now?
+    auto [mx, my] = ImGui::GetMousePos();
+    mx -= m_ViewportBounds[0].x;
+    my -= m_ViewportBounds[0].y;
+    glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+    my = viewportSize.y - my;
 
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
+    int mouseX = (int)mx;
+    int mouseY = (int)my;
 
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < m_ViewportSize.x && mouseY < m_ViewportSize.y) {
-            int entity = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            m_HoveredEntity =
-                (entity > -1 && entity < 10000) ? Entity{m_ActiveScene.get(), (entt::entity)entity} : Entity{};
-        }
+    if (mouseX >= 0 && mouseY >= 0 && mouseX < m_ViewportSize.x && mouseY < m_ViewportSize.y) {
+        int entity = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+        m_HoveredEntity = entity == -1 ? Entity{} : Entity{m_ActiveScene.get(), (entt::entity)entity};
     }
 
     m_Framebuffer->Unbind();
@@ -222,6 +222,8 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 #ifdef MIST_PROFILING
         ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
 #endif
+        ImGui::Text("Hovered Entity: %s",
+                    m_HoveredEntity ? m_HoveredEntity.GetComponent<TagComponent>().Tag.c_str() : "None");
         ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                     1.0f / deltaTime.GetSeconds());
         ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
@@ -379,10 +381,11 @@ void EditorLayer::OnEvent(Event& e) {
     });
 
     dispatcher.Dispatch<MouseButtonReleasedEvent>([=](MouseButtonReleasedEvent& e) {
-        if (e.GetMouseButton() == MouseButtonCode::Left && m_ViewportHovered && !ImGuizmo::IsOver()) {
+        // If left clicked, select the hovered entity / deselect if nothing is hovered
+        if (e.GetPressType() == MousePressedType::Click && e.GetMouseButton() == MouseButtonCode::Left &&
+            m_ViewportHovered) {
             m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
-            if (m_HoveredEntity != Entity{})
-                return true;
+            return true;
         }
         return false;
     });

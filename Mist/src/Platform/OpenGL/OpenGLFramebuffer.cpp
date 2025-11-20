@@ -14,8 +14,13 @@ static GLenum TextureTarget(bool multisampled) {
     return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 }
 
-static void AttachColourTexture(
-    uint32_t attachmentID, uint32_t samples, GLint internalFormat, GLenum format, uint32_t width, uint32_t height, int index) {
+static void AttachColourTexture(uint32_t attachmentID,
+                                uint32_t samples,
+                                GLint internalFormat,
+                                GLenum format,
+                                uint32_t width,
+                                uint32_t height,
+                                int index) {
     bool multisampled = samples > 1;
     if (multisampled) {
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
@@ -51,7 +56,7 @@ static void AttachDepthTexture(
 }
 
 static void CreateTextures(bool multisampled, uint32_t* outAttachmentIDs, size_t count) {
-    glCreateTextures(TextureTarget(multisampled), count, outAttachmentIDs);
+    glCreateTextures(TextureTarget(multisampled), (GLsizei) count, outAttachmentIDs);
 }
 
 static void BindTexture(bool multisampled, uint32_t attachmentID) {
@@ -65,6 +70,20 @@ static bool IsDepthFormat(FramebufferTextureFormat format) {
     }
 
     return false;
+}
+
+static GLenum GLFormat(FramebufferTextureFormat fbFormat) {
+    switch (fbFormat) {
+        case FramebufferTextureFormat::RGBA8:
+            return GL_RGBA8;
+        case FramebufferTextureFormat::RED_INTEGER:
+            return GL_RED_INTEGER;
+        case FramebufferTextureFormat::DEPTH24STENCIL8:
+            return GL_DEPTH24_STENCIL8;
+    }
+
+    MIST_CORE_ASSERT(false, "[TextureFormatToGL] Unknown FramebufferTextureFormat");
+    return 0;
 }
 
 } // namespace Utils
@@ -88,7 +107,7 @@ OpenGLFramebuffer::~OpenGLFramebuffer() {
 
 void OpenGLFramebuffer::DeleteTextures() {
     glDeleteFramebuffers(1, &m_RendererID);
-    glDeleteTextures(m_ColourAttachments.size(), m_ColourAttachments.data());
+    glDeleteTextures((GLsizei)m_ColourAttachments.size(), m_ColourAttachments.data());
     m_ColourAttachments.clear();
     glDeleteTextures(1, &m_DepthAttachment);
     m_DepthAttachment = 0;
@@ -113,12 +132,11 @@ void OpenGLFramebuffer::Invalidate() {
             switch (m_ColourAttachmentSpecs[i].TextureFormat) {
                 case FramebufferTextureFormat::RGBA8:
                     Utils::AttachColourTexture(m_ColourAttachments[i], m_Spec.Samples, GL_RGBA8, GL_RGBA, m_Spec.Width,
-                                               m_Spec.Height, i);
+                                               m_Spec.Height, (int)i);
                     break;
                 case FramebufferTextureFormat::RED_INTEGER:
-                    Utils::AttachColourTexture(m_ColourAttachments[i], m_Spec.Samples, GL_R32I, GL_RED_INTEGER, 
-                                               m_Spec.Width,
-                                               m_Spec.Height, i);
+                    Utils::AttachColourTexture(m_ColourAttachments[i], m_Spec.Samples, GL_R32I, GL_RED_INTEGER,
+                                               m_Spec.Width, m_Spec.Height, (int)i);
                     break;
             }
         }
@@ -138,7 +156,7 @@ void OpenGLFramebuffer::Invalidate() {
     if (colourCount > 1) {
         MIST_CORE_ASSERT(colourCount <= 4, "[OpenGLFramebuffer::Invalidate] Maximum of 4 colour attachments supported");
         GLenum buffers[4] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
-        glDrawBuffers(colourCount, buffers);
+        glDrawBuffers((GLsizei)colourCount, buffers);
     } else if (!colourCount) {
         glDrawBuffer(GL_NONE);
     }
@@ -166,6 +184,13 @@ int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
     int pixelData;
     glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
     return pixelData;
+}
+
+void OpenGLFramebuffer::ClearColourAttachment(size_t index, int clearValue) {
+    MIST_CORE_ASSERT(index < m_ColourAttachments.size(), "[OpenGLFramebuffer::ClearColourAttachment] Attachment index out of range");
+
+    auto& spec = m_ColourAttachmentSpecs[index];
+    glClearTexImage(m_ColourAttachments[index], 0, Utils::GLFormat(spec.TextureFormat), GL_INT, &clearValue);
 }
 
 void OpenGLFramebuffer::Bind() {
