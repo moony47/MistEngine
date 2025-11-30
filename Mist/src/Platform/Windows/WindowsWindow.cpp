@@ -138,17 +138,17 @@ void WindowsWindow::InitEventCallbacks() {
 
         switch (action) {
             case GLFW_PRESS: {
-                KeyPressedEvent e((KeyCode)key, 0);
+                KeyPressedEvent e((Key)key, 0);
                 data.EventCallback(e);
                 break;
             }
             case GLFW_RELEASE: {
-                KeyReleasedEvent e((KeyCode)key, 0);
+                KeyReleasedEvent e((Key)key, 0);
                 data.EventCallback(e);
                 break;
             }
             case GLFW_REPEAT: {
-                KeyPressedEvent e((KeyCode)key, 1);
+                KeyPressedEvent e((Key)key, 1);
                 data.EventCallback(e);
                 break;
             }
@@ -160,7 +160,7 @@ void WindowsWindow::InitEventCallbacks() {
 
         switch (action) {
             case GLFW_PRESS: {
-                MouseButtonPressedEvent e((MouseButtonCode)button);
+                MouseButtonPressedEvent e((MouseButton)button);
                 data.EventCallback(e);
 
                 s_MouseHeld = true;
@@ -176,7 +176,7 @@ void WindowsWindow::InitEventCallbacks() {
                                                   : MousePressedType::Click
                                             : MousePressedType::Hold;
 
-                MouseButtonReleasedEvent e((MouseButtonCode)button, type);
+                MouseButtonReleasedEvent e((MouseButton)button, type);
                 data.EventCallback(e);
 
                 s_MouseHeld = false;
@@ -205,7 +205,7 @@ void WindowsWindow::InitEventCallbacks() {
     glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t c) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        KeyTypedEvent e((KeyCode)c);
+        KeyTypedEvent e((Key)c);
         data.EventCallback(e);
     });
 }

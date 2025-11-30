@@ -1,25 +1,33 @@
-#version 460 core
+#version 450 core
 
-layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Colour;
-layout(location = 2) in vec2 a_TexCoord;
-layout(location = 3) in int a_TexIndex;
-layout(location = 4) in float a_TilingFactor;
-layout(location = 5) in int a_EntityID;
+layout(location = 0) in vec3	a_Position;
+layout(location = 1) in vec4	a_Colour;
+layout(location = 2) in vec2	a_TexCoord;
+layout(location = 3) in float	a_TilingFactor;
+layout(location = 4) in int	a_TexIndex;
+layout(location = 5) in int		a_EntityID;
 
-out vec4 v_Colour;
-out vec2 v_TexCoord;
-out flat int v_TexIndex;
-out float v_TilingFactor;
-out flat int v_EntityID;
+layout(std140, binding = 0) uniform Camera {
+	mat4 u_ViewProjection;
+};
 
-uniform mat4 u_VP;
+struct VertexOutput {
+	vec4	Colour;
+	vec2	TexCoord;
+	float	TilingFactor;
+};
+
+layout (location = 0) out VertexOutput	Output;
+layout (location = 3) out flat int		v_TexIndex;
+layout (location = 4) out flat int		v_EntityID;
 
 void main() {
-	v_Colour = a_Colour;
-	v_TexCoord = a_TexCoord;
+	Output.Colour		= a_Colour;
+	Output.TexCoord		= a_TexCoord;
+	Output.TilingFactor = a_TilingFactor;
+	
 	v_TexIndex = a_TexIndex;
-	v_TilingFactor = a_TilingFactor;
 	v_EntityID = a_EntityID;
-	gl_Position = u_VP * vec4(a_Position, 1.0);
+
+	gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }

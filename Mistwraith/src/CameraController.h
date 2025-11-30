@@ -13,13 +13,13 @@ public:
     void OnUpdate(DeltaTime deltaTime) override {
         // WASD Camera Controls
         glm::vec3 cameraStep(0.0f);
-        if (Input::IsKeyPressed(KeyCode::W))
+        if (Input::IsKeyPressed(Key::W))
             cameraStep.y += 1;
-        if (Input::IsKeyPressed(KeyCode::A))
+        if (Input::IsKeyPressed(Key::A))
             cameraStep.x -= 1;
-        if (Input::IsKeyPressed(KeyCode::S))
+        if (Input::IsKeyPressed(Key::S))
             cameraStep.y -= 1;
-        if (Input::IsKeyPressed(KeyCode::D))
+        if (Input::IsKeyPressed(Key::D))
             cameraStep.x += 1;
         if (cameraStep != glm::vec3{0.0f, 0.0f, 0.0f})
             cameraStep = m_PanSpeed * deltaTime * glm::normalize(cameraStep);

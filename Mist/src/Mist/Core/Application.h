@@ -10,9 +10,19 @@
 
 namespace Mist {
 
+    struct ApplicationCommandLineArgs {
+    int Count = 0;
+        char** Args = nullptr;
+
+        const char* operator[](int index) const {
+            MIST_CORE_ASSERT(index < Count, "[ApplicationCommandLineArgs::operator[]] Index is out of range");
+            return Args[index];
+        }
+    };
+
 class Application {
 public:
-    Application(const std::string& name = "Mist App");
+    Application(const std::string& name = "Mist App", ApplicationCommandLineArgs args = {});
     virtual ~Application();
 
     void Run();
@@ -33,6 +43,9 @@ public:
     inline Window& GetWindow() {
         return *m_Window;
     }
+    inline ApplicationCommandLineArgs GetCommandLineArgs() const {
+        return m_CommandLineArgs;
+    }
 
     inline static Application& Get() {
         return *s_Instance;
@@ -41,6 +54,8 @@ public:
 private:
     bool OnWindowClose(WindowCloseEvent& e);
     bool OnWindowResize(WindowResizeEvent& e);
+
+    ApplicationCommandLineArgs m_CommandLineArgs;
 
     LayerStack* m_LayerStack;
     LayerStack* m_NewLayerStack = nullptr;
@@ -57,7 +72,7 @@ private:
     static Application* s_Instance;
 };
 
-Application* CreateApplication();
+Application* CreateApplication(ApplicationCommandLineArgs args);
 
 #define MIST_APP Application::Get()
 

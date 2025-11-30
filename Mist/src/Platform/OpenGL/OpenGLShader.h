@@ -6,40 +6,48 @@
 
 namespace Mist {
 
+typedef unsigned int GLenum;
+
 class OpenGLShader : public Shader {
 public:
-    OpenGLShader(const std::string& name, const std::string& vertShaderPath, const std::string& fragShaderPath);
+    // OpenGLShader(const std::string& name, const std::string& vertSrc, const std::string& fragSrc);
+    OpenGLShader(const std::string& name, const std::string& directory);
     ~OpenGLShader() override;
 
     void Bind() const override;
     void Unbind() const override;
 
-    // Set Uniforms
-    void SetUniformMat4f(const std::string& uniformName, const glm::mat4& v0) const override;
-    void SetUniform1i(const std::string& uniformName, int v0) const override;
-    void SetUniform1iv(const std::string& uniformName, uint32_t count, int* v0) const override;
-    void SetUniform1f(const std::string& uniformName, float v0) const override;
-    void SetUniform4f(const std::string& uniformName, float v0, float v1, float v2, float v3) const override;
-    void SetUniform1b(const std::string& uniformName, bool val) const override;
-    // void SetUniform4fv(int loc, const glm::vec4& v) const override;
-
-    //int GetUniformLocation(const std::string& name) const override;
+    void SetInt(const std::string& name, int value) override;
+    void SetIntArray(const std::string& name, int* values, uint32_t count) override;
+    void SetFloat(const std::string& name, float value) override;
+    void SetFloat2(const std::string& name, const glm::vec2& value) override;
+    void SetFloat3(const std::string& name, const glm::vec3& value) override;
+    void SetFloat4(const std::string& name, const glm::vec4& value) override;
+    void SetMat3(const std::string& name, const glm::mat3& value) override;
+    void SetMat4(const std::string& name, const glm::mat4& value) override;
 
     const std::string& GetName() const override {
         return m_Name;
     }
 
 private:
-    std::string ReadFile(const std::string& path) const;
-    std::expected<uint32_t, std::string> CompileShader(uint32_t type, const std::string& source) const;
-    std::expected<uint32_t, std::string> CreateShader(const ShaderProgramSource& source) const;
-    void FindUniforms(const std::string& source);
+    std::string ReadFile(const std::string& filepath);
+
+    void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+    void CompileOrGetOpenGLBinaries();
+    void CreateProgram();
+    void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
     uint32_t m_RendererID;
     std::string m_Name;
 
-    std::unordered_map<std::string, int> m_UniformLocations;
+    std::unordered_map<GLenum, std::string> m_Filepaths;
+
+    std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
+    std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
+
+    std::unordered_map<GLenum, std::string> m_OpenGLSourceCode;
 };
 
 } // namespace Mist

@@ -2,13 +2,13 @@
 
 #ifdef MIST_PLATFORM_WINDOWS
 
-extern Mist::Application* Mist::CreateApplication();
+extern Mist::Application* Mist::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv) {
     Mist::Logger::Init();
 
     MIST_PROFILE_START("Start Up", "MistProfile_StartUp.json");
-    auto app = Mist::CreateApplication();
+    auto app = Mist::CreateApplication({argc, argv});
     MIST_PROFILE_END();
 
     // Only profile when user has enabled it
@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     app->Run();
     MIST_PROFILE_END();
 
-    // Ensure profiling of shutdown 
+    // Ensure profiling of shutdown
     MIST_PROFILE_ENABLED = true;
 
     MIST_PROFILE_START("Shutdown", "MistProfile_Shutdown.json");

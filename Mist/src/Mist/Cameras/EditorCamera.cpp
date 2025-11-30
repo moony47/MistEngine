@@ -59,16 +59,16 @@ void EditorCamera::OnUpdate(DeltaTime deltatime, bool focussed) {
         glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
         m_InitialMousePosition = mouse;
 
-        if (Input::IsMouseButtonPressed(MouseButtonCode::Left)) {
-            if (Input::IsKeyPressed(KeyCode::LeftShift))
+        if (Input::IsMouseButtonPressed(MouseButton::Left)) {
+            if (Input::IsKeyPressed(Key::LeftShift))
                 MouseZoom(delta.y);
-            else if (Input::IsKeyPressed(KeyCode::LeftControl))
+            else if (Input::IsKeyPressed(Key::LeftControl))
                 MousePan(delta);
             else
                 MouseRotate(delta);
-        } else if (Input::IsMouseButtonPressed(MouseButtonCode::Middle))
+        } else if (Input::IsMouseButtonPressed(MouseButton::Middle))
             MousePan(delta);
-        else if (Input::IsMouseButtonPressed(MouseButtonCode::Right))
+        else if (Input::IsMouseButtonPressed(MouseButton::Right))
             MouseZoom(delta.y);
         else
             m_Using = false;
@@ -95,9 +95,9 @@ bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e) {
 
 bool EditorCamera::OnMousePressed(MouseButtonPressedEvent& e) {
     switch (e.GetMouseButton()) {
-        case MouseButtonCode::Middle:
-        case MouseButtonCode::Left:
-        case MouseButtonCode::Right:
+        case MouseButton::Middle:
+        case MouseButton::Left:
+        case MouseButton::Right:
             m_InitialMousePosition = {Input::GetMouseX(), Input::GetMouseY()};
             m_Using = true;
             return true;

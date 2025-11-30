@@ -103,8 +103,6 @@ namespace Mist {
 
 		MIST_GLCALL(glBindVertexArray(m_RendererID));
 		ib->Bind();
-
-		//ib->Unbind();
 	}
 
 } // namespace Mist

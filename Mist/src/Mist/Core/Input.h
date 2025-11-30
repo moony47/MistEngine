@@ -8,9 +8,9 @@ namespace Mist {
 
 class Input {
 public:
-    static bool IsKeyPressed(KeyCode keycode);
+    static bool IsKeyPressed(Key keycode);
 
-    static bool IsMouseButtonPressed(MouseButtonCode button);
+    static bool IsMouseButtonPressed(MouseButton button);
     static float GetMouseX();
     static float GetMouseY();
     static std::pair<float, float> GetMousePosition();

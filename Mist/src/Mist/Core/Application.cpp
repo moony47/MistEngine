@@ -9,8 +9,9 @@ namespace Mist {
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application(const std::string& name) :
-    m_LayerStack(new LayerStack) {
+Application::Application(const std::string& name, ApplicationCommandLineArgs args) :
+    m_LayerStack(new LayerStack),
+    m_CommandLineArgs(args) {
     MIST_CORE_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 

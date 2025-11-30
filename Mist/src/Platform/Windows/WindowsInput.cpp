@@ -6,13 +6,13 @@
 
 namespace Mist {
 
-bool Input::IsKeyPressed(KeyCode keycode) {
+bool Input::IsKeyPressed(Key keycode) {
     auto window = static_cast<GLFWwindow*>(MIST_APP.GetWindow().GetNativeWindow());
     auto state = glfwGetKey(window, (int)keycode);
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool Input::IsMouseButtonPressed(MouseButtonCode button) {
+bool Input::IsMouseButtonPressed(MouseButton button) {
     auto window = static_cast<GLFWwindow*>(MIST_APP.GetWindow().GetNativeWindow());
     auto state = glfwGetMouseButton(window, (int)button);
     return state == GLFW_PRESS;

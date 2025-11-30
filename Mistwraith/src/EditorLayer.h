@@ -23,10 +23,16 @@ public:
     void OnEvent(Event& e) override;
 
 private:
+    void FindHoveredEntity();
+
     void NewScene();
     void OpenScene();
-    void SaveScene();
-    void BeginEditorDockspace();
+    void SaveScene() const;
+
+    void RenderEditorDockspace();
+    void RenderDebugPanel(DeltaTime deltaTime);
+    void ViewportGizmos(DeltaTime deltaTime);
+    void RenderViewportPanel(DeltaTime deltaTime);
 
 private:
     Ref<Scene> m_ActiveScene;

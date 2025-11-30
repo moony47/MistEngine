@@ -35,15 +35,21 @@ void Scene::OnRender(DeltaTime deltaTime) {
     Camera* mainCamera = &m_PrimaryCameraEntity->TryGetComponent<CameraComponent>()->Camera;
     if (!mainCamera)
         return;
-    const glm::mat4& mainCameraTransform = m_PrimaryCameraEntity->GetComponent<TransformComponent>().GetTransform();
+    TransformComponent& transformComp = m_PrimaryCameraEntity->GetComponent<TransformComponent>();
+    const glm::mat4& transformMatrix = transformComp.GetTransform();
 
     // Render the scene from primary camera's view
-    Renderer2D::BeginView(mainCamera->GetProjection(), mainCameraTransform);
+    Renderer2D::BeginView(mainCamera->GetProjection(), transformMatrix);
 
     auto group = m_Registry.group<SpriteComponent, TransformComponent>();
+    group.sort<TransformComponent>(
+        [pos = transformComp.GetPosition()](const TransformComponent& first, const TransformComponent& second) {
+            return glm::distance2(first.GetPosition(), pos) > glm::distance2(second.GetPosition(), pos);
+        });
+
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName);
+        Renderer2D::DrawQuad({transform.GetTransform(), sprite.Colour, sprite.TextureName});
     }
 
     Renderer2D::EndView();
@@ -56,9 +62,14 @@ void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
     Renderer2D::BeginView(camera);
 
     auto group = m_Registry.group<SpriteComponent, TransformComponent>();
+    group.sort<TransformComponent>(
+        [pos = camera.GetPosition()](const TransformComponent& first, const TransformComponent& second) {
+            return glm::distance2(first.GetPosition(), pos) > glm::distance2(second.GetPosition(), pos);
+        });
+
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName);
+        Renderer2D::DrawQuad({(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName});
     }
 
     Renderer2D::EndView();

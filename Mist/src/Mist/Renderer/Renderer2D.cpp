@@ -4,6 +4,7 @@
 #include "Mist/Cameras/Camera.h"
 #include "RenderCommand.h"
 #include "Shader.h"
+#include "UniformBuffer.h"
 #include "VertexArray.h"
 
 namespace Mist {
@@ -12,9 +13,9 @@ struct QuadVertex {
     glm::vec3 Position;
     glm::vec4 Colour;
     glm::vec2 TexCoord;
-    int TexIndex;
     float TilingFactor;
-    int EntityID;
+    int TexIndex;
+    int EntityID = -1;
 
     static BufferLayout Layout;
 };
@@ -23,8 +24,8 @@ BufferLayout QuadVertex::Layout = {
     {ShaderDataType::Float3,     "a_Position"},
     {ShaderDataType::Float4,       "a_Colour"},
     {ShaderDataType::Float2,    "a_TexCoords"},
-    {   ShaderDataType::Int,     "a_TexIndex"},
     { ShaderDataType::Float, "a_TilingFactor"},
+    {   ShaderDataType::Int,     "a_TexIndex"},
     {   ShaderDataType::Int,     "a_EntityID"}
 };
 
@@ -47,6 +48,13 @@ struct Renderer2DData {
     std::array<std::string, 32> TextureSlots;
 
     Renderer2D::Statistics Stats;
+
+    struct CameraData {
+        glm::mat4 ViewProjection;
+    };
+    CameraData CameraBuffer;
+
+    Ref<UniformBuffer> CameraUniformBuffer;
 };
 
 static Renderer2DData s_Data;
@@ -80,16 +88,18 @@ void Renderer2D::Init() {
     s_Data.QuadVertexBufferBase = new QuadVertex[Renderer2DData::MaxVertices];
 
     // Create 2D batch shader
-    MIST_SHADERLIB->Create(s_Data.ShaderName, "res/shaders/2D.vert", "res/shaders/2D.frag")->Bind();
+    MIST_SHADERLIB->Create(s_Data.ShaderName)->Bind();
 
     // Set the sampler uniforms for each texture slot
-    int samplers[32];
-    for (int i = 0; (size_t)i < s_Data.TextureSlots.size(); i++)
-        samplers[i] = i;
-    MIST_SHADER(s_Data.ShaderName)->SetUniform1iv("u_Texture", (uint32_t)s_Data.TextureSlots.size(), samplers);
+    // int samplers[32];
+    // for (int i = 0; (size_t)i < s_Data.TextureSlots.size(); i++)
+    //    samplers[i] = i;
+    // MIST_SHADER(s_Data.ShaderName)->SetUniform1iv("u_Texture", (uint32_t)s_Data.TextureSlots.size(), samplers);
 
     // Create the white pixel texture for solid colours
     MIST_TEXLIB->Create(s_Data.WhiteTexName, 1, 1)->SetData(new uint32_t(0xFFFFFFFF), sizeof(uint32_t));
+
+    s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 }
 
 void Renderer2D::Shutdown() {
@@ -104,11 +114,13 @@ void Renderer2D::Shutdown() {
 void Renderer2D::BeginView(const glm::mat4& projection, const glm::mat4& transform) {
     MIST_PROFILE_FUNCTION();
 
-    glm::mat4 VP = projection * glm::inverse(transform);
-
     // Set the camera transform for this scene
-    MIST_SHADERLIB->Bind(s_Data.ShaderName);
-    MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", VP);
+    // MIST_SHADERLIB->Bind(s_Data.ShaderName);
+    // glm::mat4 VP = projection * glm::inverse(transform);
+    // MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", VP);
+
+    s_Data.CameraBuffer.ViewProjection = projection * glm::inverse(transform);
+    s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
     BeginBatch();
 }
@@ -117,8 +129,8 @@ void Renderer2D::BeginView(OrthographicCamera& camera) {
     MIST_PROFILE_FUNCTION();
 
     // Set the camera transform for this scene
-    MIST_SHADERLIB->Bind(s_Data.ShaderName);
-    MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", camera.GetVP());
+    s_Data.CameraBuffer.ViewProjection = camera.GetVP();
+    s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
     BeginBatch();
 }
@@ -127,8 +139,8 @@ void Renderer2D::BeginView(EditorCamera& camera) {
     MIST_PROFILE_FUNCTION();
 
     // Set the camera transform for this scene
-    MIST_SHADERLIB->Bind(s_Data.ShaderName);
-    MIST_SHADER(s_Data.ShaderName)->SetUniformMat4f("u_VP", camera.GetViewProj());
+    s_Data.CameraBuffer.ViewProjection = camera.GetViewProj();
+    s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
     BeginBatch();
 }
@@ -165,11 +177,7 @@ void Renderer2D::FlushBatch() {
     s_Data.Stats.DrawCalls++;
 }
 
-void Renderer2D::DrawQuad(uint32_t entityID,
-                          const glm::mat4& transform,
-                          const glm::vec4& colour,
-                          const std::string& textureName,
-                          float tilingFactor) {
+void Renderer2D::DrawQuad(const QuadDrawArgs&& drawArgs) {
     MIST_PROFILE_FUNCTION();
 
     constexpr glm::vec4 QuadGeoCorners[4] = {
@@ -185,12 +193,12 @@ void Renderer2D::DrawQuad(uint32_t entityID,
         BeginBatch();
     }
 
-    std::string sourceTextureName = MIST_TEXLIB->GetSourceTexture(textureName);
+    std::string rootTextureName = MIST_TEXLIB->GetRootTexture(drawArgs.TextureName);
 
     // If texture is already bound to a slot, reference the same slot again
     int textureIndex = -1;
     for (int i = 0; (size_t)i < s_Data.TextureIndex; i++)
-        if (s_Data.TextureSlots[i] == sourceTextureName) {
+        if (s_Data.TextureSlots[i] == rootTextureName) {
             textureIndex = i;
             break;
         }
@@ -203,19 +211,19 @@ void Renderer2D::DrawQuad(uint32_t entityID,
             BeginBatch();
         }
         textureIndex = (int)s_Data.TextureIndex;
-        s_Data.TextureSlots[s_Data.TextureIndex++] = sourceTextureName;
+        s_Data.TextureSlots[s_Data.TextureIndex++] = rootTextureName;
     }
 
-    Ref<Texture2D> texture = MIST_TEX(textureName);
+    Ref<Texture2D> texture = MIST_TEX(drawArgs.TextureName);
 
     // Populate the vertex data of the quad's 4 vertices
     for (size_t i = 0; i < 4; i++) {
-        s_Data.QuadVertexBufferPtr->Position = transform * QuadGeoCorners[i];
-        s_Data.QuadVertexBufferPtr->Colour = colour;
+        s_Data.QuadVertexBufferPtr->Position = drawArgs.Transform * QuadGeoCorners[i];
+        s_Data.QuadVertexBufferPtr->Colour = drawArgs.Colour;
         s_Data.QuadVertexBufferPtr->TexCoord = texture->GetTexCoords(i);
+        s_Data.QuadVertexBufferPtr->TilingFactor = drawArgs.TilingFactor;
         s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-        s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr->EntityID = entityID;
+        s_Data.QuadVertexBufferPtr->EntityID = drawArgs.EntityID;
         s_Data.QuadVertexBufferPtr++;
     }
 

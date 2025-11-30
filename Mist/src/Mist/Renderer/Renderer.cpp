@@ -44,8 +44,8 @@ void Renderer::Submit(const Ref<Shader>& shader,
     MIST_PROFILE_FUNCTION();
 
     shader->Bind();
-    shader->SetUniformMat4f("u_VP", s_SceneData->VP);
-    shader->SetUniformMat4f("u_Transform", transform);
+    shader->SetMat4("u_VP", s_SceneData->VP);
+    shader->SetMat4("u_Transform", transform);
 
     vertexArray->Bind();
     RenderCommand::DrawIndexed(vertexArray);

@@ -374,6 +374,10 @@ bin-int/
 *bin-int/
 
 *MistProfile_*.json
-/Mistwraith/MistProfile_Runtime.json
-/Mistwraith/MistProfile_Shutdown.json
-/Mistwraith/MistProfile_StartUp.json
+Mistwraith/MistProfile_Runtime.json
+Mistwraith/MistProfile_Shutdown.json
+Mistwraith/MistProfile_StartUp.json
+
+Mist/vendor/VulkanSDK
+Mistwraith/assets/cache
+scripts/__pycache__

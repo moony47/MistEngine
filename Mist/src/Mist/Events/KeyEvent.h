@@ -7,22 +7,22 @@ namespace Mist {
 
 class KeyEvent : public Event {
 public:
-    inline KeyCode GetKeyCode() const {
+    inline Key GetKeyCode() const {
         return m_KeyCode;
     }
 
     EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 protected:
-    KeyEvent(KeyCode keycode) :
+    KeyEvent(Key keycode) :
         m_KeyCode(keycode) {
     }
 
-    KeyCode m_KeyCode;
+    Key m_KeyCode;
 };
 
 class KeyPressedEvent : public KeyEvent {
 public:
-    KeyPressedEvent(KeyCode keycode, int repeatCount) :
+    KeyPressedEvent(Key keycode, int repeatCount) :
         KeyEvent(keycode),
         m_RepeatCount(repeatCount) {
     }
@@ -44,7 +44,7 @@ private:
 
 class KeyReleasedEvent : public KeyEvent {
 public:
-    KeyReleasedEvent(KeyCode keycode, int repeatCount) :
+    KeyReleasedEvent(Key keycode, int repeatCount) :
         KeyEvent(keycode) {
     }
 
@@ -59,7 +59,7 @@ public:
 
 class KeyTypedEvent : public KeyEvent {
 public:
-    KeyTypedEvent(KeyCode keycode) :
+    KeyTypedEvent(Key keycode) :
         KeyEvent(keycode) {
     }
 

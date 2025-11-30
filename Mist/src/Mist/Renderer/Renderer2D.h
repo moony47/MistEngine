@@ -8,6 +8,58 @@
 
 namespace Mist {
 
+struct QuadDrawArgs {
+    int EntityID;
+    const glm::mat4& Transform;
+    const glm::vec4& Colour;
+    const std::string& TextureName;
+    float TilingFactor;
+
+    QuadDrawArgs(int entityID,
+                 const glm::mat4& transform,
+                 const glm::vec4& colour = glm::vec4(1.0f),
+                 const std::string& textureName = "WHITE",
+                 float tilingFactor = 1.0f) :
+        EntityID(entityID),
+        Transform(transform),
+        Colour(colour),
+        TextureName(textureName),
+        TilingFactor(tilingFactor) {};
+    QuadDrawArgs(int entityID, const glm::mat4& transform, const std::string& textureName, float tilingFactor = 1.0f) :
+        EntityID(entityID),
+        Transform(transform),
+        Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
+        TextureName(textureName),
+        TilingFactor(tilingFactor) {};
+    QuadDrawArgs(int entityID, const glm::mat4& transform, float tilingFactor) :
+        EntityID(entityID),
+        Transform(transform),
+        Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
+        TextureName("WHITE"),
+        TilingFactor(tilingFactor) {};
+    QuadDrawArgs(const glm::mat4& transform,
+                 const glm::vec4& colour = glm::vec4(1.0f),
+                 const std::string& textureName = "WHITE",
+                 float tilingFactor = 1.0f) :
+        EntityID(-1),
+        Transform(transform),
+        Colour(colour),
+        TextureName(textureName),
+        TilingFactor(tilingFactor) {};
+    QuadDrawArgs(const glm::mat4& transform, const std::string& textureName, float tilingFactor = 1.0f) :
+        EntityID(-1),
+        Transform(transform),
+        Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
+        TextureName(textureName),
+        TilingFactor(tilingFactor) {};
+    QuadDrawArgs(const glm::mat4& transform, float tilingFactor) :
+        EntityID(-1),
+        Transform(transform),
+        Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
+        TextureName("WHITE"),
+        TilingFactor(tilingFactor) {};
+};
+
 class Renderer2D {
 public:
     static void Init();
@@ -18,56 +70,7 @@ public:
     static void BeginView(EditorCamera& camera);
     static void EndView();
 
-    static void DrawQuad(uint32_t entityID,
-                         const glm::mat4& transform,
-                         const glm::vec4& colour = glm::vec4(1.0f),
-                         const std::string& textureName = "WHITE",
-                         float tilingFactor = 1.0f);
-
-    static inline void DrawQuad(uint32_t entityID,
-                                const glm::mat4& transform,
-                                const std::string& textureName,
-                                float tilingFactor = 1.0f) {
-        DrawQuad(entityID, transform, glm::vec4(1.0f), textureName, tilingFactor);
-    }
-    static inline void DrawQuad(uint32_t entityID,
-                                const glm::vec3& position,
-                                const float angleRad,
-                                const glm::vec2& size,
-                                const glm::vec4& colour = glm::vec4(1.0f),
-                                const std::string& textureName = "WHITE",
-                                float tilingFactor = 1.0f) {
-        // Compute transform for the quad geometry
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
-        transform = glm::rotate(transform, angleRad, {0, 0, 1});
-        transform = glm::scale(transform, glm::vec3(size, 1.0f));
-        DrawQuad(entityID, transform, colour, textureName, tilingFactor);
-    }
-    static inline void DrawQuad(uint32_t entityID,
-                                const glm::vec3& position,
-                                const float angleRad,
-                                const glm::vec2& size,
-                                const std::string& textureName,
-                                float tilingFactor = 1.0f) {
-        DrawQuad(entityID, position, angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
-    }
-    static inline void DrawQuad(uint32_t entityID,
-                                const glm::vec2& position,
-                                const float angleRad,
-                                const glm::vec2& size,
-                                const glm::vec4& colour = glm::vec4(1.0f),
-                                const std::string& textureName = "WHITE",
-                                float tilingFactor = 1.0f) {
-        DrawQuad(entityID, glm::vec3(position, 0.0f), angleRad, size, colour, textureName, tilingFactor);
-    }
-    static inline void DrawQuad(uint32_t entityID,
-                                const glm::vec2& position,
-                                const float angleRad,
-                                const glm::vec2& size,
-                                const std::string& textureName,
-                                float tilingFactor = 1.0f) {
-        DrawQuad(entityID, glm::vec3(position, 0.0f), angleRad, size, glm::vec4(1.0f), textureName, tilingFactor);
-    }
+    static void DrawQuad(const QuadDrawArgs&& drawArgs);
 
 private:
     static void BeginBatch();

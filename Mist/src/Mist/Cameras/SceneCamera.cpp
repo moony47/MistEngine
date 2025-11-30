@@ -24,6 +24,7 @@ void SceneCamera::SetPerspective(float fov, float nearClip, float farClip) {
 }
 
 void SceneCamera::SetViewportSize(uint32_t width, uint32_t height) {
+    MIST_CORE_ASSERT(width > 0 && height > 0, "[SceneCamera::SetViewportSize] Width and Height must be positive");
     m_AspectRatio = (float)width / (float)height;
     m_Modified = true;
 }

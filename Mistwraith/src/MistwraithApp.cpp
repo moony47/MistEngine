@@ -8,7 +8,8 @@ using namespace Mist;
 
 class Mistwraith : public Application {
 public:
-    Mistwraith() : Application("Mistwraith Editor") {
+    Mistwraith(ApplicationCommandLineArgs args) :
+        Application("Mistwraith Editor", args) {
         PushLayer(CreateRef<EditorLayer>());
     }
 
@@ -16,6 +17,6 @@ public:
     }
 };
 
-Application* Mist::CreateApplication() {
-    return new Mistwraith();
+Application* Mist::CreateApplication(ApplicationCommandLineArgs args) {
+    return new Mistwraith(args);
 }

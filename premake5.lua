@@ -10,11 +10,18 @@ workspace "MistEngine"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
 IncludeDir = {}
+IncludeDir["glm"] = "Mist/vendor/glm"
 
 IncludeDir["GLFW"] = "Mist/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Mist/vendor/GLAD/include"
-IncludeDir["glm"] = "Mist/vendor/glm"
+
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
+
+IncludeDir["shaderc"] = "Mist/vendor/shaderc/include"
+IncludeDir["SPIRV_Cross"] = "Mist/vendor/SPIRV-Cross"
 
 IncludeDir["ImGui"] = "Mist/vendor/ImGui"
 IncludeDir["ImGuizmo"] = "Mist/vendor/ImGuizmo"
@@ -22,6 +29,22 @@ IncludeDir["ImGuizmo"] = "Mist/vendor/ImGuizmo"
 IncludeDir["stb_image"] = "Mist/vendor/stb_image"
 IncludeDir["entt"] = "Mist/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Mist/vendor/yaml-cpp/include"
+
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
+Library = {}
+Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+Library["VulkanUtils"] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"
+
+Library["ShaderC_Debug"] = "%{LibraryDir.VulkanSDK}/shaderc_sharedd.lib"
+Library["SPIRV_Cross_Debug"] = "%{LibraryDir.VulkanSDK}/spirv-cross-cored.lib"
+Library["SPIRV_Cross_GLSL_Debug"] = "%{LibraryDir.VulkanSDK}/spirv-cross-glsld.lib"
+Library["SPIRV_Tools_Debug"] = "%{LibraryDir.VulkanSDK}/SPIRV-Toolsd.lib"
+
+Library["ShaderC_Release"] = "%{LibraryDir.VulkanSDK}/shaderc_shared.lib"
+Library["SPIRV_Cross_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-core.lib"
+Library["SPIRV_Cross_GLSL_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-glsl.lib"
 
 group "Dependencies"
     include "Mist/vendor/GLFW"
@@ -35,7 +58,7 @@ group ""
         kind "StaticLib"
         language "C++"
         cppdialect "C++23"
-        staticruntime "On"
+        staticruntime "off"
         
 
         targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -46,15 +69,19 @@ group ""
 
         files {
             "premake5.lua",
+            "%{prj.name}/.clang-format",
+
             "%{prj.name}/src/**.h",
             "%{prj.name}/src/**.cpp",
-		    "%{prj.name}/vendor/glm/glm/**.hpp",
-		    "%{prj.name}/vendor/glm/glm/**.inl",
+
 		    "%{prj.name}/vendor/stb_image/**.h",
 		    "%{prj.name}/vendor/stb_image/**.cpp",
+
+		    "%{prj.name}/vendor/glm/glm/**.hpp",
+		    "%{prj.name}/vendor/glm/glm/**.inl",
+
 		    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
 		    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
-            "%{prj.name}/.clang-format"
         }
 
 
@@ -79,6 +106,7 @@ group ""
             "%{IncludeDir.stb_image}",
             "%{IncludeDir.entt}",
             "%{IncludeDir.yaml_cpp}",
+            "%{IncludeDir.VulkanSDK}",
         }
 
         links {
@@ -109,7 +137,12 @@ group ""
                 "MIST_PROFILING"
             }
             runtime "Debug"
-            symbols "On"
+            symbols "on"
+            links {
+                "%{Library.ShaderC_Debug}",
+                "%{Library.SPIRV_Cross_Debug}",
+                "%{Library.SPIRV_Cross_GLSL_Debug}",
+            }
 
         filter "configurations:Release"
             defines {
@@ -117,27 +150,38 @@ group ""
                 "MIST_PROFILING"
             }
             runtime "Release"
-            optimize "On"
+            optimize "on"
+            links {
+                "%{Library.ShaderC_Release}",
+                "%{Library.SPIRV_Cross_Release}",
+                "%{Library.SPIRV_Cross_GLSL_Release}",
+            }
 
         filter "configurations:Dist"
             defines "MIST_DIST"
             runtime "Release"
-            optimize "On"
+            optimize "on"
+            links {
+                "%{Library.ShaderC_Release}",
+                "%{Library.SPIRV_Cross_Release}",
+                "%{Library.SPIRV_Cross_GLSL_Release}",
+            }
 
     project "Mistwraith"
         location "Mistwraith"
         kind "ConsoleApp"
         language "C++"
         cppdialect "C++23"
-        staticruntime "On"
+        staticruntime "off"
 
         targetdir ("bin/" .. outputdir .. "/%{prj.name}")
         objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
         files {
+            "%{prj.name}/.clang-format",
+
             "%{prj.name}/src/**.h",
             "%{prj.name}/src/**.cpp",
-            "%{prj.name}/.clang-format"
         }
 
         includedirs {
@@ -175,7 +219,7 @@ group ""
                 "MIST_PROFILING"
             }
             runtime "Debug"
-            symbols "On"
+            symbols "on"
 
         filter "configurations:Release"
             defines {
@@ -183,14 +227,14 @@ group ""
                 "MIST_PROFILING"
             }
             runtime "Release"
-            optimize "On"
+            optimize "on"
 
         filter "configurations:Dist"
             defines {
                 "MIST_DIST"
             }
             runtime "Release"
-            optimize "On"
+            optimize "on"
 
     project "Sandbox"
         location "Sandbox"

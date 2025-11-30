@@ -38,13 +38,12 @@ Ref<Shader> ShaderLibrary::Get(const std::string& name) {
 }
 
 Ref<Shader> ShaderLibrary::Create(const std::string& name,
-                                  const std::string& vertShaderPath,
-                                  const std::string& fragShaderPath) {
+                                  const std::string& shaderDirectory) {
     MIST_PROFILE_FUNCTION();
 
     MIST_CORE_ASSERT(!ShaderExists(name), "[ShaderLibrary::Create] Shader already exists");
 
-    Ref<Shader> shader = Create_Impl(name, vertShaderPath, fragShaderPath);
+    Ref<Shader> shader = Create_Impl(name, shaderDirectory);
     m_Shaders[name] = shader;
     return shader;
 }

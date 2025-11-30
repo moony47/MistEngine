@@ -2,7 +2,7 @@
 
 namespace Mist {
 
-enum class KeyCode : uint16_t {
+enum class Key : uint16_t {
     Space /*         */ = 32,
     Apostrophe /*    */ = 39,
     Comma /*         */ = 44,
@@ -138,7 +138,7 @@ enum class KeyCode : uint16_t {
     Menu /*          */ = 348
 };
 
-inline std::ostream& operator<<(std::ostream& os, KeyCode keycode) {
+inline std::ostream& operator<<(std::ostream& os, Key keycode) {
     os << static_cast<uint16_t>(keycode);
     return os;
 }

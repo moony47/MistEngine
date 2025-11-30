@@ -24,13 +24,13 @@ void OrthographicCameraController::OnUpdate(DeltaTime deltaTime) {
 
     glm::vec3 position = m_Camera.GetPosition();
 
-    if (Input::IsKeyPressed(KeyCode::D))
+    if (Input::IsKeyPressed(Key::D))
         position.x += deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
-    if (Input::IsKeyPressed(KeyCode::A))
+    if (Input::IsKeyPressed(Key::A))
         position.x -= deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
-    if (Input::IsKeyPressed(KeyCode::W))
+    if (Input::IsKeyPressed(Key::W))
         position.y += deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
-    if (Input::IsKeyPressed(KeyCode::S))
+    if (Input::IsKeyPressed(Key::S))
         position.y -= deltaTime * m_CameraMoveSpeed * m_ZoomLevel;
 
     m_Camera.SetPosition(position);
@@ -38,9 +38,9 @@ void OrthographicCameraController::OnUpdate(DeltaTime deltaTime) {
     if (m_RotationEnabled) {
         float rotation = m_Camera.GetRotation();
 
-        if (Input::IsKeyPressed(KeyCode::Q))
+        if (Input::IsKeyPressed(Key::Q))
             rotation += deltaTime * m_CameraRotationSpeed;
-        if (Input::IsKeyPressed(KeyCode::E))
+        if (Input::IsKeyPressed(Key::E))
             rotation -= deltaTime * m_CameraRotationSpeed;
 
         m_Camera.SetRotation(rotation);

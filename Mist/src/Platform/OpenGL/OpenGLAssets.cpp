@@ -13,9 +13,8 @@ void OpenGLShaderLibrary::Unbind_Impl() {
 }
 
 Ref<Shader> OpenGLShaderLibrary::Create_Impl(const std::string& name,
-                                             const std::string& vertShaderPath,
-                                             const std::string& fragShaderPath) {
-    return std::make_shared<OpenGLShader>(name, vertShaderPath, fragShaderPath);
+                                             const std::string& shaderDirectory) {
+    return std::make_shared<OpenGLShader>(name, shaderDirectory);
 }
 
 void OpenGLTexture2DLibrary::Unbind_Impl(uint32_t slot) {

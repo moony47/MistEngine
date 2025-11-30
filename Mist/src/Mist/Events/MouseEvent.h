@@ -61,22 +61,22 @@ private:
 
 class MouseButtonEvent : public Event {
 public:
-    inline MouseButtonCode GetMouseButton() const {
+    inline MouseButton GetMouseButton() const {
         return m_Button;
     }
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 protected:
-    MouseButtonEvent(MouseButtonCode button) :
+    MouseButtonEvent(MouseButton button) :
         m_Button(button) {
     }
 
-    MouseButtonCode m_Button;
+    MouseButton m_Button;
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
 public:
-    MouseButtonPressedEvent(MouseButtonCode button) :
+    MouseButtonPressedEvent(MouseButton button) :
         MouseButtonEvent(button) {
     }
 
@@ -97,7 +97,7 @@ enum class MousePressedType : uint8_t {
 
 class MouseButtonReleasedEvent : public MouseButtonEvent {
 public:
-    MouseButtonReleasedEvent(MouseButtonCode button, MousePressedType type) :
+    MouseButtonReleasedEvent(MouseButton button, MousePressedType type) :
         MouseButtonEvent(button),
         m_PressType(type) {
     }

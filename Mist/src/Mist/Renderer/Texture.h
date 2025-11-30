@@ -74,11 +74,11 @@ public:
 
     void Remove(const std::string& name, bool removeSubTextures = false);
     
-    inline const std::string& GetSourceTexture(const std::string& name) {
+    inline const std::string& GetRootTexture(const std::string& name) {
         std::string& source = m_Textures[name].second;
         if (source.empty())
             return name;
-        return GetSourceTexture(source);
+        return GetRootTexture(source);
     }
 
     inline auto Begin() {

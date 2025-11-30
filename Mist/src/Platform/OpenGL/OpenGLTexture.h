@@ -15,7 +15,7 @@ public:
     ~OpenGLTexture2D() override;
 
     const glm::vec2& GetTexCoords(size_t index) const override {
-        constexpr glm::vec2 standardCoords[4] = {
+        static constexpr glm::vec2 standardCoords[4] = {
             {0.0f, 0.0f},
             {1.0f, 0.0f},
             {1.0f, 1.0f},
