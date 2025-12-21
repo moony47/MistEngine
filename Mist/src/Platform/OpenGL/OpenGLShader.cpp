@@ -40,7 +40,7 @@ static const char* GLShaderStageToString(GLenum stage) {
 }
 
 static const char* GetCacheDirectory() {
-    return "res/cache/shader/opengl";
+    return "res/cache/shaders/opengl";
 }
 
 static void CreateCacheDirectory() {
@@ -276,7 +276,7 @@ void OpenGLShader::CreateProgram() {
         glDeleteProgram(program);
 
         for (auto id : shaderIDs)
-            glDeleteShader;
+            glDeleteShader(id);
     }
 
     for (auto id : shaderIDs) {
