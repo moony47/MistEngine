@@ -38,12 +38,12 @@ TestSpritesBatch::TestSpritesBatch() :
     }));
 
     // Compile shader and push onto device
-    MIST_SHADERLIB->Create("Batch", "res/shaders/Batch.vert", "res/shaders/Batch.frag");
+    MIST_SHADERLIB->Create("Batch", "assets/shaders/Batch.vert", "assets/shaders/Batch.frag");
     MIST_SHADERLIB->Bind("Batch");
 
     // Push textures onto device
-    MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
-    MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
+    MIST_TEXLIB->Create("Star", "assets/textures/star.png");
     MIST_TEX("Diamond")->Bind(0);
     MIST_TEX("Star")->Bind(1);
 

@@ -33,10 +33,10 @@ public:
         auto indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
-        MIST_SHADERLIB->Create("BasicTexture", "res/shaders/Basic.vert", "res/shaders/Basic.frag");
+        MIST_SHADERLIB->Create("BasicTexture", "assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
         MIST_SHADERLIB->Bind("BasicTexture");
 
-        MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
+        MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
         MIST_TEXLIB->Bind("Diamond", 1);
         MIST_SHADER("BasicTexture")->SetUniform1i("u_Texture", 1);
 

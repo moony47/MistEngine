@@ -4,6 +4,7 @@
 #include <Mist/Cameras/EditorCamera.h>
 
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 
 // using namespace Mist;
 namespace Mist {
@@ -50,6 +51,7 @@ private:
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
+    ContentBrowserPanel m_ContentBrowserPanel;
 };
 
 } // namespace Mist

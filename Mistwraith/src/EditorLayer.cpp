@@ -45,10 +45,10 @@ void EditorLayer::OnAttach() {
     MIST_PROFILE_FUNCTION();
 
     // Create textures
-    MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
-    MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
+    MIST_TEXLIB->Create("Star", "assets/textures/star.png");
 
-    MIST_TEXLIB->Create("SpriteSheet", "res/textures/RPGpack_sheet_2X.png");
+    MIST_TEXLIB->Create("SpriteSheet", "assets/textures/RPGpack_sheet_2X.png");
     MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
     MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
@@ -318,6 +318,7 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     RenderEditorDockspace(); // Begin Dockspace
 
+    m_ContentBrowserPanel.OnImGuiRender();
     m_SceneHierarchyPanel.OnImGuiRender();
 
     RenderDebugPanel(deltaTime);

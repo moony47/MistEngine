@@ -36,7 +36,7 @@ public:
     void Unbind();
 
     Ref<Shader> Get(const std::string& name);
-    Ref<Shader> Create(const std::string& name, const std::string& shaderDirectory = "res/shaders");
+    Ref<Shader> Create(const std::string& name, const std::string& shaderDirectory = "assets/shaders");
     void Remove(const std::string& name);
 
     inline static ShaderLibrary* GetInstance() {

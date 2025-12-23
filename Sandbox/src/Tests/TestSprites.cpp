@@ -41,12 +41,12 @@ TestSprites::TestSprites() :
     ib = IndexBuffer::Create(singleQuadIndices, 6);
     m_VA->SetIndexBuffer(ib);
 
-    MIST_SHADERLIB->Create("Basic", "res/shaders/Basic.vert", "res/shaders/Basic.frag");
+    MIST_SHADERLIB->Create("Basic", "assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
     MIST_SHADERLIB->Bind("Basic");
 
     // Add textures
-    MIST_TEXLIB->Create("Diamond", "res/textures/diamond.png");
-    MIST_TEXLIB->Create("Star", "res/textures/star.png");
+    MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
+    MIST_TEXLIB->Create("Star", "assets/textures/star.png");
     MIST_TEX("Diamond")->Bind(0);
     MIST_TEX("Star")->Bind(1);
 

@@ -32,8 +32,8 @@ Entities:
     TagComponent:
       Tag: Sprite2
     TransformComponent:
-      Position: [0, -2.7, 0]
-      Rotation: [0, 0, 0]
+      Position: [0.89125204, 1.4142339, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
       Colour: [0.2, 0.7791507, 0.8, 1]
@@ -42,9 +42,9 @@ Entities:
     TagComponent:
       Tag: Sprite3
     TransformComponent:
-      Position: [-1.7, 2.7, 0.5]
-      Rotation: [0, 0, 0]
-      Scale: [5, 5.4, 1]
+      Position: [-0.6549403, 0.5486793, 0]
+      Rotation: [-0.4033088, -0.7610622, -1.1502186]
+      Scale: [0.99999815, 0.99999815, 0.9999994]
     SpriteComponent:
-      Colour: [0.9111967, 0, 1, 1]
+      Colour: [0.8880309, 0.3712782, 0.25372308, 1]
       TextureName: Star

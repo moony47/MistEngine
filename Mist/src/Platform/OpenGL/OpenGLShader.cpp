@@ -40,7 +40,7 @@ static const char* GLShaderStageToString(GLenum stage) {
 }
 
 static const char* GetCacheDirectory() {
-    return "res/cache/shaders/opengl";
+    return "assets/cache/shaders/opengl";
 }
 
 static void CreateCacheDirectory() {
