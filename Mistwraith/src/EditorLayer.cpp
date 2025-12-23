@@ -10,6 +10,8 @@
 
 namespace Mist {
 
+extern const std::filesystem::path g_AssetPath;
+
 static const size_t s_MapWidth = 24;
 static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
                                 "WWWWWWGGGGGGGGGGGGWWWWWW"
@@ -71,7 +73,6 @@ void EditorLayer::OnAttach() {
         SceneSerialiser serialiser(m_ActiveScene);
         serialiser.Deserialise(sceneFilePath);
     }
-
 
     // Create some entities in the scene, including primary camera
     // m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
@@ -145,11 +146,14 @@ void EditorLayer::NewScene() {
 
 void EditorLayer::OpenScene() {
     std::string filepath = FileDialogs::OpenFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
-    if (!filepath.empty()) {
-        NewScene();
-        SceneSerialiser serialiser(m_ActiveScene);
-        serialiser.Deserialise(filepath);
-    }
+    if (!filepath.empty())
+        OpenScene(filepath);
+}
+
+void EditorLayer::OpenScene(const std::filesystem::path& path) {
+    NewScene();
+    SceneSerialiser serialiser(m_ActiveScene);
+    serialiser.Deserialise(path.string());
 }
 
 void EditorLayer::SaveScene() const {
@@ -235,7 +239,7 @@ void EditorLayer::RenderDebugPanel(DeltaTime deltaTime) {
     ImGui::End();
 }
 
-void EditorLayer::ViewportGizmos(DeltaTime deltaTime) {
+void EditorLayer::RenderViewportGizmos(DeltaTime deltaTime) {
     Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
     if (selectedEntity && m_GizmoType != -1) {
         ImGuizmo::SetOrthographic(true);
@@ -306,8 +310,16 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
 
     ImGui::Image((void*)(uint64_t)m_Framebuffer->GetColourAttachment(), viewportSize, {0, 1}, {1, 0});
 
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+            const wchar_t* path = (const wchar_t*)payload->Data;
+            OpenScene(std::filesystem::path(g_AssetPath) / path);
+        }
+        ImGui::EndDragDropTarget();
+    }
+
     // Gizmos
-    ViewportGizmos(deltaTime);
+    RenderViewportGizmos(deltaTime);
 
     ImGui::End();
     ImGui::PopStyleVar();

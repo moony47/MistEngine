@@ -5,17 +5,17 @@
 
 namespace Mist {
 
-static const std::filesystem::path s_AssetsPath = "assets";
+extern const std::filesystem::path g_AssetPath = "assets";
 
 ContentBrowserPanel::ContentBrowserPanel() :
-    m_CurrentDirectory(s_AssetsPath) {
+    m_CurrentDirectory(g_AssetPath) {
     m_DirectoryIcon = MIST_TEXLIB->Create("DirectoryIcon", "res/icons/DirectoryIcon.png");
     m_FileIcon = MIST_TEXLIB->Create("FileIcon", "res/icons/FileIcon.png");
     m_BackIcon = m_DirectoryIcon;
 };
 
 void ContentBrowserPanel::OnImGuiRender() {
-    static float padding = 12.0f;
+    static float padding = 8.0f;
     static float thumbnailSize = 96.0f;
 
     ImGui::Begin("Content Browser");
@@ -32,7 +32,7 @@ void ContentBrowserPanel::OnImGuiRender() {
         ImGui::Columns(columnCount, 0, false);
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
-        if (m_CurrentDirectory != s_AssetsPath) {
+        if (m_CurrentDirectory != g_AssetPath) {
             ImGui::ImageButton("..", (ImTextureID)m_BackIcon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1},
                                {1, 0});
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
@@ -42,12 +42,19 @@ void ContentBrowserPanel::OnImGuiRender() {
         }
 
         for (auto& dirEntry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-            auto relativePath = std::filesystem::relative(dirEntry.path(), s_AssetsPath);
+            auto relativePath = std::filesystem::relative(dirEntry.path(), g_AssetPath);
             std::string filename = relativePath.filename().string();
 
             Ref<Texture2D> icon = dirEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
             ImGui::ImageButton(filename.c_str(), (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize},
                                {0, 1}, {1, 0});
+
+            if (ImGui::BeginDragDropSource()) {
+                const wchar_t* itemPath = relativePath.c_str();
+                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t),
+                                          ImGuiCond_Once);
+                ImGui::EndDragDropSource();
+            }
 
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 if (dirEntry.is_directory())
@@ -66,7 +73,7 @@ void ContentBrowserPanel::OnImGuiRender() {
         ImGui::SetCursorPosY(panelSize.y - offset);
         if (ImGui::TreeNode("Display Options")) {
             offset = 85.0f;
-            ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
+            ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 8, 256);
             ImGui::SliderFloat("Padding", &padding, 0, 32);
             ImGui::TreePop();
         } else

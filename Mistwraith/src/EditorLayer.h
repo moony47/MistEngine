@@ -28,11 +28,13 @@ private:
 
     void NewScene();
     void OpenScene();
+    void OpenScene(const std::filesystem::path& path);
+    
     void SaveScene() const;
 
     void RenderEditorDockspace();
     void RenderDebugPanel(DeltaTime deltaTime);
-    void ViewportGizmos(DeltaTime deltaTime);
+    void RenderViewportGizmos(DeltaTime deltaTime);
     void RenderViewportPanel(DeltaTime deltaTime);
 
 private:
