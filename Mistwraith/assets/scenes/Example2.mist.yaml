@@ -27,13 +27,13 @@ Entities:
       Scale: [-1, 1, 1]
     SpriteComponent:
       Colour: [0.11973592, 0.969112, 0, 1]
-      TextureName: WHITE
+      TextureName: None
   - Entity: 1234
     TagComponent:
       Tag: Sprite2
     TransformComponent:
-      Position: [0, -2.7, 0]
-      Rotation: [0.015707962, -1.314233, 0]
+      Position: [0.5433712, -0.37315392, 0]
+      Rotation: [0.015707955, -1.314233, 7.3402435e-09]
       Scale: [1, 1, 1]
     SpriteComponent:
       Colour: [0.2, 0.7791507, 0.8, 1]
@@ -48,3 +48,8 @@ Entities:
     SpriteComponent:
       Colour: [0.9111967, 0, 1, 1]
       TextureName: Star
+Textures:
+  - Name: Diamond
+    Path: assets\textures\Diamond.png
+  - Name: Star
+    Path: assets\textures\Star.png

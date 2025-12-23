@@ -9,8 +9,8 @@ extern const std::filesystem::path g_AssetPath = "assets";
 
 ContentBrowserPanel::ContentBrowserPanel() :
     m_CurrentDirectory(g_AssetPath) {
-    m_DirectoryIcon = MIST_TEXLIB->Create("DirectoryIcon", "res/icons/DirectoryIcon.png");
-    m_FileIcon = MIST_TEXLIB->Create("FileIcon", "res/icons/FileIcon.png");
+    m_DirectoryIcon = MIST_TEXLIB->Create("DirectoryIcon", "res/icons/DirectoryIcon.png", false);
+    m_FileIcon = MIST_TEXLIB->Create("FileIcon", "res/icons/FileIcon.png", false);
     m_BackIcon = m_DirectoryIcon;
 };
 

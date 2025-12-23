@@ -4,6 +4,7 @@
 #include "OpenGL/OpenGLRenderer.h"
 
 #include <string>
+#include <filesystem>
 
 namespace Mist {
 
@@ -37,6 +38,10 @@ public:
         return m_RendererID;
     }
 
+    inline std::filesystem::path GetPath() const override {
+        return m_Path;
+    }
+
     void SetData(void* data, uint32_t size) override;
 
 private:
@@ -46,7 +51,7 @@ private:
     GLenum m_InternalFormat = GL_RGBA8;
     GLenum m_DataFormat = GL_RGBA;
 
-    std::string m_Path;
+    std::filesystem::path m_Path;
 
     uint32_t m_RendererID = 0;
 };

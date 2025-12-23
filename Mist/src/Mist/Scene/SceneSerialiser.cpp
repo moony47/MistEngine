@@ -1,7 +1,8 @@
 #include "mistpch.h"
 #include "SceneSerialiser.h"
 
-#include "Entity.h"
+#include <Mist/Renderer/Texture.h>
+#include <algorithm>
 
 using namespace YAML;
 
@@ -64,7 +65,7 @@ Emitter& operator<<(Emitter& out, const glm::vec4& vec) {
     return out;
 }
 
-static void SerialiseEntity(Emitter& out, Entity entity) {
+void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
     out << BeginMap;
     out << Key << "Entity" << Value << "1234";
 
@@ -111,6 +112,9 @@ static void SerialiseEntity(Emitter& out, Entity entity) {
         out << Key << "Colour" << Value << sprite.Colour;
         out << Key << "TextureName" << Value << sprite.TextureName;
         out << EndMap;
+
+        if (!m_TexturePaths.contains(sprite.TextureName))
+            m_TexturePaths[sprite.TextureName] = MIST_TEX(sprite.TextureName)->GetPath();
     }
 
     out << EndMap;
@@ -134,6 +138,18 @@ void SceneSerialiser::Serialise(const std::string& filepath) {
             if (!entity)
                 return;
             SerialiseEntity(out, entity);
+        }
+        out << EndSeq;
+    }
+    {
+        out << Key << "Textures" << Value << BeginSeq;
+        for (auto& [name, path] : m_TexturePaths) {
+            if (path.string().empty())
+                continue;
+            out << BeginMap;
+            out << Key << "Name" << Value << name;
+            out << Key << "Path" << Value << path.string();
+            out << EndMap;
         }
         out << EndSeq;
     }
@@ -208,6 +224,14 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
                 spriteComp.Colour = spriteNode["Colour"].as<glm::vec4>();
                 spriteComp.TextureName = spriteNode["TextureName"].as<std::string>();
             }
+        }
+
+    Node textures = data["Textures"];
+    if (textures)
+        for (auto texture : textures) {
+            std::string texName = texture["Name"].as<std::string>();
+            if (!MIST_TEXLIB->Exists(texName))
+                MIST_TEXLIB->Create(texName, texture["Path"].as<std::string>());
         }
 
     return true;

@@ -49,7 +49,7 @@ void Scene::OnRender(DeltaTime deltaTime) {
 
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad({transform.GetTransform(), sprite.Colour, sprite.TextureName});
+        Renderer2D::DrawQuad({transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
     }
 
     Renderer2D::EndView();
@@ -69,7 +69,8 @@ void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
 
     for (auto entity : group) {
         auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad({(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName});
+        Renderer2D::DrawQuad(
+            {(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
     }
 
     Renderer2D::EndView();

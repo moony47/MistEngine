@@ -21,11 +21,13 @@ struct TagComponent {
 struct SpriteComponent {
     std::string TextureName;
     glm::vec4 Colour;
+    float TilingFactor = 1.0f;
 
     SpriteComponent(const SpriteComponent&) = default;
-    SpriteComponent(const std::string& textureName = "WHITE", const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f}) :
+    SpriteComponent(const std::string& textureName = "None", const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f}, float tilingFactor = 1.0f) :
         TextureName(textureName),
-        Colour(colour) {};
+        Colour(colour),
+        TilingFactor (tilingFactor) {};
     SpriteComponent(const glm::vec4& colour) :
         Colour(colour) {};
 };

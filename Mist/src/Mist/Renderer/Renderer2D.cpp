@@ -35,7 +35,7 @@ struct Renderer2DData {
     const static uint32_t MaxIndices = MaxQuads * 6;
 
     const std::string ShaderName = "2D";
-    const std::string WhiteTexName = "WHITE";
+    const std::string WhiteTexName = "None";
 
     Ref<VertexArray> QuadVertexArray;
     Ref<VertexBuffer> QuadVertexBuffer;

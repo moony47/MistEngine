@@ -3,7 +3,11 @@
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_internal.h>
 
+#include <filesystem>
+
 namespace Mist {
+
+extern const std::filesystem::path g_AssetPath;
 
 SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
     SetContext(context);
@@ -16,7 +20,7 @@ void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
 
 void SceneHierarchyPanel::OnImGuiRender() {
     {
-        //ImGui::SetNextWindowSizeConstraints({200.0f, 300.0f}, {999999.0f, 999999.0f});
+        // ImGui::SetNextWindowSizeConstraints({200.0f, 300.0f}, {999999.0f, 999999.0f});
         ImGui::Begin("Scene Hierarchy");
 
         for (auto entityID : m_Context->m_Registry.view<entt::entity>()) {
@@ -39,7 +43,7 @@ void SceneHierarchyPanel::OnImGuiRender() {
     }
 
     {
-        //ImGui::SetNextWindowSizeConstraints({370.0f, 400.0f}, {999999.0f, 999999.0f});
+        // ImGui::SetNextWindowSizeConstraints({370.0f, 400.0f}, {999999.0f, 999999.0f});
         ImGui::Begin("Properties");
         if (m_SelectionContext) {
             DrawComponents(m_SelectionContext);
@@ -51,8 +55,8 @@ void SceneHierarchyPanel::OnImGuiRender() {
 void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     auto& tag = entity.GetComponent<TagComponent>().Tag;
 
-    ImGuiTreeNodeFlags flags =
-        (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) |
+                               ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
     if (ImGui::IsItemClicked())
@@ -163,11 +167,11 @@ static bool DrawVec3Control(const std::string& label,
     return modified;
 }
 
-template<typename T, typename UIFunction>
+template <typename T, typename UIFunction>
 static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
-    static const ImGuiTreeNodeFlags flags =
-        ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_SpanAvailWidth |
-        ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
+    static const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+                                            ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed |
+                                            ImGuiTreeNodeFlags_FramePadding;
 
     if (entity.HasComponent<T>()) {
         auto& component = entity.GetComponent<T>();
@@ -290,6 +294,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     DrawComponent<SpriteComponent>("Sprite", entity, [](Entity entity, SpriteComponent& comp) {
         ImGui::ColorEdit4("Colour", value_ptr(comp.Colour));
 
+        ImGui::DragFloat("Tiling Factor", &comp.TilingFactor, 0.1f, 0.0f, 100.0f);
+
         if (ImGui::BeginCombo("Texture", comp.TextureName.c_str())) {
             for (auto iter = MIST_TEXLIB->Begin(); iter != MIST_TEXLIB->End(); iter++) {
                 bool isSelected = comp.TextureName == iter->first;
@@ -299,6 +305,16 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                     ImGui::SetItemDefaultFocus();
             }
             ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                std::filesystem::path path = g_AssetPath / (const wchar_t*) payload->Data;
+                comp.TextureName = path.stem().string();
+                if (!MIST_TEXLIB->Exists(comp.TextureName))
+                    MIST_TEXLIB->Create(comp.TextureName, path.string());
+            }
+            ImGui::EndDragDropTarget();
         }
     });
 }

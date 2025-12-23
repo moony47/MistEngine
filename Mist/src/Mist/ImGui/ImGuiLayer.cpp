@@ -29,12 +29,11 @@ void ImGuiLayer::OnAttach() {
     ImGui::CreateContext();
 
     ImGuiIO& io = ImGui::GetIO();
-    (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    float fontSize = 18.0f; // *2.0f;
+    float fontSize = 18.0f;
     io.Fonts->AddFontFromFileTTF("res/fonts/OpenSans/static/OpenSans-Bold.ttf", fontSize);
     io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/OpenSans/static/OpenSans-Regular.ttf", fontSize);
 
@@ -74,6 +73,9 @@ void ImGuiLayer::OnEvent(Event& e) {
 
 void ImGuiLayer::OnImGuiRender(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
+
+    static bool show = true;
+    ImGui::ShowDemoWindow(&show);
 }
 
 void ImGuiLayer::Begin() {

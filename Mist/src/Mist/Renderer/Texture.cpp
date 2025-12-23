@@ -27,7 +27,7 @@ Texture2DLibrary* Texture2DLibrary::s_Instance = new OpenGLTexture2DLibrary;
 void Texture2DLibrary::Bind(const std::string& name, uint32_t slot) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(TextureExists(name), "[Texture2DLibrary::Bind] Texture name not found");
+    MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Bind] Texture name not found");
     m_Textures[name].first->Bind(slot);
 }
 
@@ -40,27 +40,30 @@ void Texture2DLibrary::Unbind(uint32_t slot) {
 Ref<Texture2D> Texture2DLibrary::Get(const std::string& name) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(TextureExists(name), "[Texture2DLibrary::Get] Texture name not found");
+    MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Get] Texture name not found");
 
     return m_Textures[name].first;
 }
-Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, const std::string& path) {
+Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, const std::string& path, bool addToLib) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(!TextureExists(name), "[Texture2DLibrary::Create] Texture name already in used");
+    MIST_CORE_ASSERT(!Exists(name), "[Texture2DLibrary::Create] Texture name already in used");
 
     Ref<Texture2D> texture = Create_Impl(path);
-    m_Textures[name] = std::make_pair(texture, "");
+    if (addToLib)
+        m_Textures[name] = std::make_pair(texture, "");
     return texture;
 }
 
-Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, uint32_t width, uint32_t height) {
+Ref<Texture2D> Texture2DLibrary::Create(const std::string& name, uint32_t width, uint32_t height, bool addToLib) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(!TextureExists(name), "[Texture2DLibrary::Create] Texture name already in used");
+    MIST_CORE_ASSERT(!Exists(name), "[Texture2DLibrary::Create] Texture name already in used");
 
     Ref<Texture2D> texture = Create_Impl(width, height);
-    m_Textures[name] = std::make_pair(texture, "");
+
+    if (addToLib)
+        m_Textures[name] = std::make_pair(texture, "");
     return texture;
 }
 
@@ -68,21 +71,23 @@ Ref<Texture2D> Texture2DLibrary::CreateSub(const std::string& subTextureName,
                                            const std::string& textureName,
                                            const glm::vec2& coords,
                                            const glm::vec2& cellSize,
-                                           const glm::vec2& spriteSize) {
+                                           const glm::vec2& spriteSize,
+                                           bool addToLib) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(TextureExists(textureName), "[Texture2DLibrary::CreateSub] Texture name not found");
-    MIST_CORE_ASSERT(!TextureExists(subTextureName), "[Texture2DLibrary::CreateSub] Texture name already in used");
+    MIST_CORE_ASSERT(Exists(textureName), "[Texture2DLibrary::CreateSub] Texture name not found");
+    MIST_CORE_ASSERT(!Exists(subTextureName), "[Texture2DLibrary::CreateSub] Texture name already in used");
 
     Ref<Texture2D> subTexture = Ref<Texture2D>((Texture2D*)new SubTexture2D(textureName, coords, cellSize, spriteSize));
-    m_Textures[subTextureName] = std::make_pair(subTexture, textureName);
+    if (addToLib)
+        m_Textures[subTextureName] = std::make_pair(subTexture, textureName);
     return subTexture;
 }
 
 void Texture2DLibrary::Remove(const std::string& name, bool removeSubTextures) {
     MIST_PROFILE_FUNCTION();
 
-    MIST_CORE_ASSERT(TextureExists(name), "[Texture2DLibrary::Remove] Texture name not found");
+    MIST_CORE_ASSERT(Exists(name), "[Texture2DLibrary::Remove] Texture name not found");
 
     m_Textures.erase(name);
 

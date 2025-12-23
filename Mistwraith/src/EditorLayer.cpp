@@ -47,12 +47,12 @@ void EditorLayer::OnAttach() {
     MIST_PROFILE_FUNCTION();
 
     // Create textures
-    MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
-    MIST_TEXLIB->Create("Star", "assets/textures/star.png");
+    //MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
+    //MIST_TEXLIB->Create("Star", "assets/textures/star.png");
 
-    MIST_TEXLIB->Create("SpriteSheet", "assets/textures/RPGpack_sheet_2X.png");
-    MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
-    MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
+    //MIST_TEXLIB->Create("SpriteSheet", "assets/textures/RPGpack_sheet_2X.png");
+    //MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
+    //MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
 
     // Create framebuffer
     Mist::FramebufferSpecification fbSpec(
@@ -313,7 +313,7 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
             const wchar_t* path = (const wchar_t*)payload->Data;
-            OpenScene(std::filesystem::path(g_AssetPath) / path);
+            OpenScene(g_AssetPath / path);
         }
         ImGui::EndDragDropTarget();
     }
@@ -337,13 +337,13 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     {
         ImGui::Begin("EditorLayer");
-        std::string texName = "Diamond";
-        float height = 256;
-        Ref<Texture2D> texture = MIST_TEX(texName);
-        glm::vec2 bl = texture->GetTexCoords(0);
-        glm::vec2 tr = texture->GetTexCoords(2);
-        ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
-                     ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
+        //std::string texName = "diamond";
+        //float height = 256;
+        //Ref<Texture2D> texture = MIST_TEX(texName);
+        //glm::vec2 bl = texture->GetTexCoords(0);
+        //glm::vec2 tr = texture->GetTexCoords(2);
+        //ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
+        //             ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
         ImGui::End();
     }
 

@@ -18,7 +18,7 @@ struct QuadDrawArgs {
     QuadDrawArgs(int entityID,
                  const glm::mat4& transform,
                  const glm::vec4& colour = glm::vec4(1.0f),
-                 const std::string& textureName = "WHITE",
+                 const std::string& textureName = "None",
                  float tilingFactor = 1.0f) :
         EntityID(entityID),
         Transform(transform),
@@ -35,11 +35,11 @@ struct QuadDrawArgs {
         EntityID(entityID),
         Transform(transform),
         Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
-        TextureName("WHITE"),
+        TextureName("None"),
         TilingFactor(tilingFactor) {};
     QuadDrawArgs(const glm::mat4& transform,
                  const glm::vec4& colour = glm::vec4(1.0f),
-                 const std::string& textureName = "WHITE",
+                 const std::string& textureName = "None",
                  float tilingFactor = 1.0f) :
         EntityID(-1),
         Transform(transform),
@@ -56,7 +56,7 @@ struct QuadDrawArgs {
         EntityID(-1),
         Transform(transform),
         Colour(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}),
-        TextureName("WHITE"),
+        TextureName("None"),
         TilingFactor(tilingFactor) {};
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include <filesystem>
 
 namespace Mist {
 
@@ -16,6 +17,8 @@ public:
     virtual uint32_t GetWidth() const = 0;
     virtual uint32_t GetHeight() const = 0;
     virtual uint32_t GetRendererID() const = 0;
+
+    virtual std::filesystem::path GetPath() const = 0;
 
     float GetAspectRatio() const {
         return (float)GetWidth() / (float)GetHeight();
@@ -52,6 +55,10 @@ public:
         return m_SourceTexture->GetRendererID();
     }
 
+    std::filesystem::path GetPath() const override {
+        return m_SourceTexture->GetPath();
+    }
+
 private:
     Ref<Texture2D> m_SourceTexture;
     glm::vec2 m_TexCoords[4];
@@ -63,14 +70,18 @@ public:
     void Unbind(uint32_t slot);
 
     Ref<Texture2D> Get(const std::string& name);
+    inline bool Exists(const std::string& name) const {
+        return m_Textures.contains(name);
+    }
 
-    Ref<Texture2D> Create(const std::string& name, const std::string& path);
-    Ref<Texture2D> Create(const std::string& name, uint32_t width, uint32_t height);
+    Ref<Texture2D> Create(const std::string& name, const std::string& path, bool addToLib = true);
+    Ref<Texture2D> Create(const std::string& name, uint32_t width, uint32_t height, bool addToLib = true);
     Ref<Texture2D> CreateSub(const std::string& subTextureName,
                              const std::string& textureName,
                              const glm::vec2& coords,
                              const glm::vec2& cellSize,
-                             const glm::vec2& spriteSize = {1, 1});
+                             const glm::vec2& spriteSize = {1, 1},
+                             bool addToLib = true);
 
     void Remove(const std::string& name, bool removeSubTextures = false);
     
@@ -96,11 +107,6 @@ protected:
     virtual void Unbind_Impl(uint32_t slot) = 0;
     virtual Ref<Texture2D> Create_Impl(const std::string& path) = 0;
     virtual Ref<Texture2D> Create_Impl(uint32_t width, uint32_t height) = 0;
-
-private:
-    inline bool TextureExists(const std::string& name) const {
-        return m_Textures.contains(name);
-    }
 
 private:
     static Texture2DLibrary* s_Instance;
