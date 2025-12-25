@@ -47,12 +47,8 @@ void EditorLayer::OnAttach() {
     MIST_PROFILE_FUNCTION();
 
     // Create textures
-    //MIST_TEXLIB->Create("Diamond", "assets/textures/diamond.png");
-    //MIST_TEXLIB->Create("Star", "assets/textures/star.png");
-
-    //MIST_TEXLIB->Create("SpriteSheet", "assets/textures/RPGpack_sheet_2X.png");
-    //MIST_TEXLIB->CreateSub("W", "SpriteSheet", {11, 11}, {128, 128});
-    //MIST_TEXLIB->CreateSub("G", "SpriteSheet", {1, 11}, {128, 128});
+    m_IconPlay = MIST_TEXLIB->Create("PlayIcon", "res/icons/PlayButton.png", false);
+    m_IconStop = MIST_TEXLIB->Create("StopIcon", "res/icons/StopButton.png", false);
 
     // Create framebuffer
     Mist::FramebufferSpecification fbSpec(
@@ -62,9 +58,6 @@ void EditorLayer::OnAttach() {
 
     // Create scene
     m_ActiveScene = CreateRef<Scene>();
-
-    m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
     auto cmdLineArgs = MIST_APP.GetCommandLineArgs();
@@ -74,17 +67,9 @@ void EditorLayer::OnAttach() {
         serialiser.Deserialise(sceneFilePath);
     }
 
-    // Create some entities in the scene, including primary camera
-    // m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    // m_CameraEntity.AddComponent<CameraComponent>();
     // m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-    // m_ActiveScene->SetPrimaryCamera(m_CameraEntity);
 
-    // m_SpriteEntity1 = m_ActiveScene->CreateEntity("Sprite1");
-    // m_SpriteEntity1.AddComponent<SpriteComponent>("Diamond", glm::vec4{0.8f, 0.2f, 0.8f, 1.0f});
-
-    // m_SpriteEntity2 = m_ActiveScene->CreateEntity("Sprite2");
-    // m_SpriteEntity2.AddComponent<SpriteComponent>("Star", glm::vec4{0.2f, 0.8f, 0.8f, 1.0f});
+    m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 }
 
 void EditorLayer::OnDetach() {
@@ -129,7 +114,14 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     m_Framebuffer->ClearColourAttachment(1, -1);
 
     // Render Scene from EditorCamera view
-    m_ActiveScene->OnRenderEditor(deltaTime, m_EditorCamera);
+    switch (m_SceneState) {
+        case SceneState::Edit:
+            m_ActiveScene->OnRenderEditor(deltaTime, m_EditorCamera);
+            break;
+        case SceneState::Play:
+            m_ActiveScene->OnRender(deltaTime);
+            break;
+    }
 
     // Which entity is being hovered over right now?
     FindHoveredEntity();
@@ -319,10 +311,55 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
     }
 
     // Gizmos
-    RenderViewportGizmos(deltaTime);
+    if (m_SceneState == SceneState::Edit)
+        RenderViewportGizmos(deltaTime);
+
+    UI_Toolbar();
 
     ImGui::End();
     ImGui::PopStyleVar();
+}
+
+void EditorLayer::OnScenePlay() {
+    m_SceneState = SceneState::Play;
+}
+
+void EditorLayer::OnSceneStop() {
+    m_SceneState = SceneState::Edit;
+}
+
+void EditorLayer::UI_Toolbar() {
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+    auto& colours = ImGui::GetStyle().Colors;
+    const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+    const auto& buttonActive = colours[ImGuiCol_ButtonActive];
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+    {
+        ImGui::SetNextWindowSize({0, 50});
+        ImGui::Begin("##toolbar", nullptr,
+                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse |
+                         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+
+        float size = ImGui::GetContentRegionAvail().y - 5.0f;
+        Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
+        ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x * 0.5f) - (size * 0.5f));
+        if (ImGui::ImageButton("StartStop", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 1),
+                               ImVec2(1, 0))) {
+            if (m_SceneState == SceneState::Edit)
+                OnScenePlay();
+            else
+                OnSceneStop();
+        }
+
+        ImGui::End();
+    }
+
+    ImGui::PopStyleVar(2);
+    ImGui::PopStyleColor(3);
 }
 
 void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
@@ -337,13 +374,13 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
 
     {
         ImGui::Begin("EditorLayer");
-        //std::string texName = "diamond";
-        //float height = 256;
-        //Ref<Texture2D> texture = MIST_TEX(texName);
-        //glm::vec2 bl = texture->GetTexCoords(0);
-        //glm::vec2 tr = texture->GetTexCoords(2);
-        //ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
-        //             ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
+        // std::string texName = "diamond";
+        // float height = 256;
+        // Ref<Texture2D> texture = MIST_TEX(texName);
+        // glm::vec2 bl = texture->GetTexCoords(0);
+        // glm::vec2 tr = texture->GetTexCoords(2);
+        // ImGui::Image((void*)(uint64_t)texture->GetRendererID(), {height * texture->GetAspectRatio(), height},
+        //              ImVec2(bl.x, tr.y), ImVec2(tr.x, bl.y));
         ImGui::End();
     }
 

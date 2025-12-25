@@ -37,6 +37,11 @@ private:
     void RenderViewportGizmos(DeltaTime deltaTime);
     void RenderViewportPanel(DeltaTime deltaTime);
 
+    void OnScenePlay();
+    void OnSceneStop();
+
+    void UI_Toolbar();
+
 private:
     Ref<Scene> m_ActiveScene;
     EditorCamera m_EditorCamera;
@@ -51,9 +56,16 @@ private:
 
     Entity m_HoveredEntity;
 
+    enum class SceneState {
+        Edit = 0, Play = 1
+    };
+    SceneState m_SceneState = SceneState::Edit;
+
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
     ContentBrowserPanel m_ContentBrowserPanel;
+
+    Ref<Texture2D> m_IconPlay, m_IconStop;
 };
 
 } // namespace Mist
