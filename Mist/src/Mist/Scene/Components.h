@@ -130,4 +130,12 @@ struct NativeScriptComponent {
     }
 };
 
+template <typename... Component>
+struct ComponentGroup {};
+
+using AllComponents = ComponentGroup<TransformComponent,
+                                     SpriteComponent,
+                                     CameraComponent,
+                                     NativeScriptComponent>;
+
 } // namespace Mist

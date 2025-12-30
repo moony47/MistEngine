@@ -57,15 +57,12 @@ void EditorLayer::OnAttach() {
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
     // Create scene
-    m_ActiveScene = CreateRef<Scene>();
-    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
     auto cmdLineArgs = MIST_APP.GetCommandLineArgs();
     if (cmdLineArgs.Count > 1) {
         auto sceneFilePath = cmdLineArgs[1];
-        SceneSerialiser serialiser(m_ActiveScene);
-        serialiser.Deserialise(sceneFilePath);
-    }
+        OpenScene(sceneFilePath);
+    } else
+        NewScene();
 
     // m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
@@ -130,10 +127,10 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
 }
 
 void EditorLayer::NewScene() {
-    m_ActiveScene = CreateRef<Scene>();
+    m_EditorScene = CreateRef<Scene>();
     m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    OnSceneStop();
 }
 
 void EditorLayer::OpenScene() {
@@ -144,14 +141,14 @@ void EditorLayer::OpenScene() {
 
 void EditorLayer::OpenScene(const std::filesystem::path& path) {
     NewScene();
-    SceneSerialiser serialiser(m_ActiveScene);
+    SceneSerialiser serialiser(m_EditorScene);
     serialiser.Deserialise(path.string());
 }
 
 void EditorLayer::SaveScene() const {
     std::string filepath = FileDialogs::SaveFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
     if (!filepath.empty()) {
-        SceneSerialiser serialiser(m_ActiveScene);
+        SceneSerialiser serialiser(m_EditorScene);
         serialiser.Serialise(filepath);
     }
 }
@@ -163,35 +160,39 @@ void EditorLayer::RenderEditorDockspace() {
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-    if (opt_fullscreen) {
-        const ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-                        ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-    } else {
-        dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+
+    {
+        if (opt_fullscreen) {
+            const ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->WorkPos);
+            ImGui::SetNextWindowSize(viewport->WorkSize);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+                            ImGuiWindowFlags_NoNavFocus;
+        } else
+            dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+
+        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+            window_flags |= ImGuiWindowFlags_NoBackground;
+
+        {
+            if (!opt_padding)
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+            ImGui::Begin("EditorDockspace", &dockspaceOpen, window_flags);
+            if (!opt_padding)
+                ImGui::PopStyleVar();
+        }
+
+        if (opt_fullscreen)
+            ImGui::PopStyleVar(2);
     }
-
-    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-        window_flags |= ImGuiWindowFlags_NoBackground;
-
-    if (!opt_padding)
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-    if (!opt_padding)
-        ImGui::PopStyleVar();
-
-    if (opt_fullscreen)
-        ImGui::PopStyleVar(2);
 
     ImGuiIO& io = ImGui::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGuiID dockspace_id = ImGui::GetID("EditorDockspace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
 
@@ -208,7 +209,6 @@ void EditorLayer::RenderEditorDockspace() {
                 SaveScene();
             ImGui::EndMenu();
         }
-
         ImGui::EndMenuBar();
     }
 }
@@ -322,13 +322,22 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
 
 void EditorLayer::OnScenePlay() {
     m_SceneState = SceneState::Play;
+
+    m_ActiveScene = Scene::Copy(m_EditorScene);
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
 void EditorLayer::OnSceneStop() {
     m_SceneState = SceneState::Edit;
+
+    m_ActiveScene = m_EditorScene;
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
 void EditorLayer::UI_Toolbar() {
+    bool showPlayBorder = m_SceneState == SceneState::Play;
+    if (showPlayBorder)
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05, 0.5, 0.1, 1.0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -359,7 +368,7 @@ void EditorLayer::UI_Toolbar() {
     }
 
     ImGui::PopStyleVar(2);
-    ImGui::PopStyleColor(3);
+    ImGui::PopStyleColor(showPlayBorder ? 4 : 3);
 }
 
 void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {

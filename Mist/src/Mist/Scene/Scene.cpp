@@ -11,9 +11,72 @@
 
 namespace Mist {
 
+template <typename... Component>
+static void CopyComponent(entt::registry& dst,
+                          entt::registry& src,
+                          const std::unordered_map<std::string, entt::entity>& enttMap) {
+    (
+        [&]() {
+            auto view = src.view<Component>();
+            for (auto srcEntity : view) {
+                entt::entity dstEntity = enttMap.at(src.get<TagComponent>(srcEntity).Tag);
+
+                auto& srcComponent = src.get<Component>(srcEntity);
+                dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+            }
+        }(),
+        ...);
+}
+
+template <typename... Component>
+static void CopyComponent(ComponentGroup<Component...>,
+                          entt::registry& dst,
+                          entt::registry& src,
+                          const std::unordered_map<std::string, entt::entity>& enttMap) {
+    CopyComponent<Component...>(dst, src, enttMap);
+}
+
+template <typename... Component>
+static void CopyComponentIfExists(Entity dst, Entity src) {
+    (
+        [&]() {
+            if (src.HasComponent<Component>())
+                dst.AddComponent<Component>(src.GetComponent<Component>());
+        }(),
+        ...);
+}
+
+template <typename... Component>
+static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src) {
+    CopyComponentIfExists<Component...>(dst, src);
+}
+
 Scene::Scene() {};
 
 Scene::~Scene() {};
+
+Ref<Scene> Scene::Copy(Ref<Scene> other) {
+    Ref<Scene> newScene = CreateRef<Scene>();
+
+    newScene->m_ViewportWidth = other->m_ViewportWidth;
+    newScene->m_ViewportHeight = other->m_ViewportHeight;
+    newScene->m_PrimaryCameraEntity = other->m_PrimaryCameraEntity;
+
+    auto& srcRegistry = other->m_Registry;
+    auto& dstRegistry = newScene->m_Registry;
+    std::unordered_map<std::string, entt::entity> enttMap;
+
+    auto view = srcRegistry.view<TagComponent>();
+    for (auto e : view) {
+        const std::string& tag = srcRegistry.get<TagComponent>(e).Tag;
+        Entity newEntity = newScene->CreateEntity(tag);
+        enttMap[tag] = newEntity;
+    }
+
+    CopyComponent(AllComponents{}, dstRegistry, srcRegistry, enttMap);
+
+    return newScene;
+}
 
 void Scene::OnUpdate(DeltaTime deltaTime) {
     m_Registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& script) {

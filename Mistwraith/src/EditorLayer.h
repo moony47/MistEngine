@@ -29,7 +29,6 @@ private:
     void NewScene();
     void OpenScene();
     void OpenScene(const std::filesystem::path& path);
-    
     void SaveScene() const;
 
     void RenderEditorDockspace();
@@ -43,7 +42,8 @@ private:
     void UI_Toolbar();
 
 private:
-    Ref<Scene> m_ActiveScene;
+    Ref<Scene> m_ActiveScene, m_EditorScene;
+
     EditorCamera m_EditorCamera;
 
     Ref<Framebuffer> m_Framebuffer;
