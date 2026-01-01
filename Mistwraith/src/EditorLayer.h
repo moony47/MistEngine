@@ -6,7 +6,6 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ContentBrowserPanel.h"
 
-// using namespace Mist;
 namespace Mist {
 
 class EditorLayer : public Layer {

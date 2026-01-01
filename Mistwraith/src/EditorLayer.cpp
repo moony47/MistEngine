@@ -109,6 +109,15 @@ void EditorLayer::OpenScene() {
 }
 
 void EditorLayer::OpenScene(const std::filesystem::path& path) {
+
+    if (m_SceneState != SceneState::Edit)
+        OnSceneStop();
+
+    if (path.extension().string() != ".yaml") {
+        MIST_WARN("[EditorLayer::OpenScene] Could not load {0} as it is not a scene file", path.filename().string());
+        return;
+    }
+
     NewScene();
     SceneSerialiser serialiser(m_EditorScene);
     serialiser.Deserialise(path.string());
@@ -250,7 +259,10 @@ void EditorLayer::RenderViewportGizmos(DeltaTime deltaTime) {
 
 void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Viewport");
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+    ImGui::Begin("Viewport", nullptr,
+                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse |
+                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
     auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
     auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
     auto viewportOffset = ImGui::GetWindowPos();
@@ -286,14 +298,14 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
     RenderUIToolbar();
 
     ImGui::End();
-    ImGui::PopStyleVar();
+    ImGui::PopStyleVar(2);
 }
 
 void EditorLayer::RenderUIToolbar() {
     bool showPlayBorder = m_SceneState == SceneState::Play;
     if (showPlayBorder)
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05, 0.5, 0.1, 1.0));
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
     auto& colours = ImGui::GetStyle().Colors;

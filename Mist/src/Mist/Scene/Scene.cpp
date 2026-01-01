@@ -60,7 +60,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 
     newScene->m_ViewportWidth = other->m_ViewportWidth;
     newScene->m_ViewportHeight = other->m_ViewportHeight;
-    newScene->m_PrimaryCameraEntity = other->m_PrimaryCameraEntity;
+    newScene->m_PrimaryCameraEntity = new Entity{newScene.get(), (entt::entity)*other->m_PrimaryCameraEntity};
 
     auto& srcRegistry = other->m_Registry;
     auto& dstRegistry = newScene->m_Registry;

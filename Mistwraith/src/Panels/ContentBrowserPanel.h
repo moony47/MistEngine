@@ -8,7 +8,6 @@ namespace Mist {
 class ContentBrowserPanel {
 public:
     ContentBrowserPanel();
-    // ContentBrowserPanel();
 
     void OnImGuiRender();
 
