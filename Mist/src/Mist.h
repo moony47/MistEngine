@@ -26,6 +26,7 @@
 #include "Mist/Core/Layer.h"
 #include "Mist/Core/Logger.h"
 #include "Mist/Core/MouseButtonCodes.h"
+#include "Mist/Core/UUID.h"
 
 #include "Mist/Debug/Instrumentor.h"
 

@@ -1,20 +1,23 @@
 #pragma once
+#include "Mist/Cameras/SceneCamera.h"
+#include "Mist/Core/UUID.h"
+
 #include <glm/glm.hpp>
 #include <string>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-#include "Mist/Cameras/SceneCamera.h"
-
 namespace Mist {
 
-struct TagComponent {
+struct IDComponent {
+    UUID ID;
     std::string Tag;
 
-    TagComponent() = default;
-    TagComponent(const TagComponent&) = default;
-    TagComponent(const std::string& tag) :
+    IDComponent() = delete;
+    IDComponent(const IDComponent&) = default;
+    IDComponent(const UUID id, const std::string& tag) :
+        ID(id),
         Tag(tag) {};
 };
 
@@ -24,10 +27,12 @@ struct SpriteComponent {
     float TilingFactor = 1.0f;
 
     SpriteComponent(const SpriteComponent&) = default;
-    SpriteComponent(const std::string& textureName = "None", const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f}, float tilingFactor = 1.0f) :
+    SpriteComponent(const std::string& textureName = "None",
+                    const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f},
+                    float tilingFactor = 1.0f) :
         TextureName(textureName),
         Colour(colour),
-        TilingFactor (tilingFactor) {};
+        TilingFactor(tilingFactor) {};
     SpriteComponent(const glm::vec4& colour) :
         Colour(colour) {};
 };
@@ -133,9 +138,6 @@ struct NativeScriptComponent {
 template <typename... Component>
 struct ComponentGroup {};
 
-using AllComponents = ComponentGroup<TransformComponent,
-                                     SpriteComponent,
-                                     CameraComponent,
-                                     NativeScriptComponent>;
+using AllComponents = ComponentGroup<TransformComponent, SpriteComponent, CameraComponent, NativeScriptComponent>;
 
 } // namespace Mist

@@ -4,6 +4,7 @@
 #include "Mist/Core/DeltaTime.h"
 #include "Mist/Events/Event.h"
 #include "Mist/Renderer/Renderer2D.h"
+#include "Mist/Core/UUID.h"
 
 #include <entt.hpp>
 
@@ -18,7 +19,7 @@ public:
 
     static Ref<Scene> Copy(Ref<Scene> other);
 
-    Entity& CreateEntity(const std::string& name = "");
+    Entity& CreateEntity(const UUID uuid = {}, const std::string& name = "Entity");
     void DestroyEntity(Entity entity);
 
     void OnUpdate(DeltaTime deltaTime);

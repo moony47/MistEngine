@@ -39,7 +39,7 @@ private:
     void OnScenePlay();
     void OnSceneStop();
 
-    void UI_Toolbar();
+    void RenderUIToolbar();
 
 private:
     Ref<Scene> m_ActiveScene, m_EditorScene;

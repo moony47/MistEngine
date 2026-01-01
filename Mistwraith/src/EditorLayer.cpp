@@ -12,36 +12,10 @@ namespace Mist {
 
 extern const std::filesystem::path g_AssetPath;
 
-static const size_t s_MapWidth = 24;
-static const char* s_MapTiles = "WWWWWWWWWWWWWWWWWWWWWWWW"
-                                "WWWWWWGGGGGGGGGGGGWWWWWW"
-                                "WWWWWGGGGGGGGGGGGGGWWWWW"
-                                "WWWWGGGGGGGWWWWGGGGGWWWW"
-                                "WWWGGGGGWWWWWWWWGGGGWWWW"
-                                "WWGGGGGGWWWWWWWWGGGGWWWW"
-                                "WWGGGGGGWWWWWWGGGGGWWWWW"
-                                "WWGGGGGGGGWWWGGGGGWWWWWW"
-                                "WWGGGGGGGGGGGGGGGWWWWWWW"
-                                "WWWGGGGGGGGGGGGGWWWWWWWW"
-                                "WWWWGGGGGGGGGGWWWWWWWWWW"
-                                "WWWWWWWWWWWWWWWWWWWWWWWW"
-                                "WWWWWWWWWWWWWWWWWWWWWWWW"
-                                "WWWWWWWWWWWWWWWGGGWWWWWW"
-                                "WWWWWWWWWWWWWGGGGGGWWWWW"
-                                "WWWWWWWWWWWWWGGGGGGWWWWW"
-                                "WWWWWWWWWWWWGGGGGGWWWWWW"
-                                "WWWWWWWWWWWWWWGGWWWWWWWW"
-                                "WWWWWWWWWWWWWWWWWWWWWWWW"
-                                "WWWWWWWWWWWWWWWWWWWWWWWW"
-                                "WWWWWWWWWWWWWWWWWWWWWWWW";
-static const size_t s_MapHeight = strlen(s_MapTiles) / s_MapWidth;
-
 EditorLayer::EditorLayer() :
-    Layer("EditorLayer") {
-}
+    Layer("EditorLayer") {};
 
-EditorLayer::~EditorLayer() {
-}
+EditorLayer::~EditorLayer() {};
 
 void EditorLayer::OnAttach() {
     MIST_PROFILE_FUNCTION();
@@ -71,32 +45,12 @@ void EditorLayer::OnAttach() {
 
 void EditorLayer::OnDetach() {
     MIST_PROFILE_FUNCTION();
-
-    // Delete textures
-    MIST_TEXLIB->Remove("Diamond");
-    MIST_TEXLIB->Remove("Star");
-    MIST_TEXLIB->Remove("SpriteSheet", true);
 }
 
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
     if (m_ViewportFocussed)
         m_ActiveScene->OnUpdate(deltaTime);
-}
-
-void EditorLayer::FindHoveredEntity() {
-    auto [mx, my] = ImGui::GetMousePos();
-    mx -= m_ViewportBounds[0].x;
-    my = (m_ViewportBounds[1].y - m_ViewportBounds[0].y) - (my - m_ViewportBounds[0].y);
-
-    int mouseX = (int)mx;
-    int mouseY = (int)my;
-
-    if (mouseX >= 0 && mouseY >= 0 && mouseX < m_ViewportSize.x && mouseY < m_ViewportSize.y) {
-        int entity = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-        m_HoveredEntity = entity == -1 ? Entity{} : Entity{m_ActiveScene.get(), (entt::entity)entity};
-    } else
-        m_HoveredEntity = {};
 }
 
 void EditorLayer::OnRender(DeltaTime deltaTime) {
@@ -124,6 +78,21 @@ void EditorLayer::OnRender(DeltaTime deltaTime) {
     FindHoveredEntity();
 
     m_Framebuffer->Unbind();
+}
+
+void EditorLayer::FindHoveredEntity() {
+    auto [mx, my] = ImGui::GetMousePos();
+    mx -= m_ViewportBounds[0].x;
+    my = (m_ViewportBounds[1].y - m_ViewportBounds[0].y) - (my - m_ViewportBounds[0].y);
+
+    int mouseX = (int)mx;
+    int mouseY = (int)my;
+
+    if (mouseX >= 0 && mouseY >= 0 && mouseX < m_ViewportSize.x && mouseY < m_ViewportSize.y) {
+        int entity = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+        m_HoveredEntity = entity == -1 ? Entity{} : Entity{m_ActiveScene.get(), (entt::entity)entity};
+    } else
+        m_HoveredEntity = {};
 }
 
 void EditorLayer::NewScene() {
@@ -220,7 +189,7 @@ void EditorLayer::RenderDebugPanel(DeltaTime deltaTime) {
     ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
 #endif
     ImGui::Text("Hovered Entity: %s",
-                m_HoveredEntity ? m_HoveredEntity.GetComponent<TagComponent>().Tag.c_str() : "None");
+                m_HoveredEntity ? m_HoveredEntity.GetComponent<IDComponent>().Tag.c_str() : "None");
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
     ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
@@ -314,27 +283,13 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
     if (m_SceneState == SceneState::Edit)
         RenderViewportGizmos(deltaTime);
 
-    UI_Toolbar();
+    RenderUIToolbar();
 
     ImGui::End();
     ImGui::PopStyleVar();
 }
 
-void EditorLayer::OnScenePlay() {
-    m_SceneState = SceneState::Play;
-
-    m_ActiveScene = Scene::Copy(m_EditorScene);
-    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-}
-
-void EditorLayer::OnSceneStop() {
-    m_SceneState = SceneState::Edit;
-
-    m_ActiveScene = m_EditorScene;
-    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-}
-
-void EditorLayer::UI_Toolbar() {
+void EditorLayer::RenderUIToolbar() {
     bool showPlayBorder = m_SceneState == SceneState::Play;
     if (showPlayBorder)
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05, 0.5, 0.1, 1.0));
@@ -398,6 +353,20 @@ void EditorLayer::OnImGuiRender(DeltaTime deltaTime) {
     ImGui::End(); // End Dockspace
 }
 
+void EditorLayer::OnScenePlay() {
+    m_SceneState = SceneState::Play;
+
+    m_ActiveScene = Scene::Copy(m_EditorScene);
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+
+void EditorLayer::OnSceneStop() {
+    m_SceneState = SceneState::Edit;
+
+    m_ActiveScene = m_EditorScene;
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
 
@@ -448,7 +417,7 @@ void EditorLayer::OnEvent(Event& e) {
     });
 
     dispatcher.Dispatch<MouseButtonReleasedEvent>(
-        [h = m_ViewportHovered, &shp = m_SceneHierarchyPanel, he = m_HoveredEntity](const MouseButtonReleasedEvent& e) {
+        [&shp = m_SceneHierarchyPanel, h = m_ViewportHovered, he = m_HoveredEntity](const MouseButtonReleasedEvent& e) {
             // If left clicked, select the hovered entity / deselect if nothing is hovered
             if (e.GetPressType() == MousePressedType::Click && e.GetMouseButton() == MouseButton::Left && h) {
                 shp.SetSelectedEntity(he);

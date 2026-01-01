@@ -13,6 +13,13 @@ public:
     Entity(Scene* scene, entt::entity entityID);
     Entity(const Entity&) = default;
 
+    UUID GetID() {
+        return GetComponent<IDComponent>().ID;
+    }
+    const std::string& GetName() {
+        return GetComponent<IDComponent>().Tag;
+    }
+
     template <typename T>
     bool HasComponent() {
         return m_Scene->m_Registry.any_of<T>(m_EntityID);

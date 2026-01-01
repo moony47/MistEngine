@@ -34,7 +34,7 @@ void SceneHierarchyPanel::OnImGuiRender() {
         // Blank space context menu
         if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
             if (ImGui::MenuItem("New Entity"))
-                m_Context->CreateEntity("Empty");
+                m_Context->CreateEntity({}, "Empty");
 
             ImGui::EndPopup();
         }
@@ -53,7 +53,7 @@ void SceneHierarchyPanel::OnImGuiRender() {
 }
 
 void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
-    auto& tag = entity.GetComponent<TagComponent>().Tag;
+    auto& tag = entity.GetComponent<IDComponent>().Tag;
 
     ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) |
                                ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -211,21 +211,35 @@ static void DrawComponent(const std::string& name, Entity entity, UIFunction uiF
 }
 
 void SceneHierarchyPanel::DrawComponents(Entity entity) {
-    if (entity.HasComponent<TagComponent>()) {
-        auto& tag = entity.GetComponent<TagComponent>().Tag;
+    auto& idComp = entity.GetComponent<IDComponent>();
 
+    float width = ImGui::GetContentRegionAvail().x;
+
+    {
         static char buffer[256];
-        memset(buffer, 0, sizeof(buffer));
-        strcpy_s(buffer, sizeof(buffer), tag.c_str());
+        constexpr float uuidWidth = 130.0f;
 
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), idComp.Tag.c_str());
+
+        ImGui::PushItemWidth(width - uuidWidth);
         if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-            tag = std::string(buffer);
+            idComp.Tag = std::string(buffer);
+        ImGui::PopItemWidth();
+
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(12) << std::hex << idComp.ID << std::dec;
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), ss.str().c_str());
+
+        ImGui::PushStyleColor(ImGuiCol_Text, {0.5f, 0.5f, 0.5f, 1.0f});
+        ImGui::SameLine();
+        ImGui::Text("%s", buffer);
+        ImGui::PopStyleColor();
     }
 
-    ImGui::SameLine();
-    ImGui::PushItemWidth(-1);
-
-    if (ImGui::Button("Add Component"))
+    
+    if (ImGui::Button("Add Component", {width, 0}))
         ImGui::OpenPopup("AddComponent");
 
     if (ImGui::BeginPopup("AddComponent")) {
@@ -240,7 +254,6 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
         ImGui::EndPopup();
     }
-    ImGui::PopItemWidth();
 
     DrawComponent<TransformComponent>("Transform", entity, [](Entity entity, TransformComponent& comp) {
         glm::vec3 position = comp.GetPosition();
@@ -309,7 +322,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
-                std::filesystem::path path = g_AssetPath / (const wchar_t*) payload->Data;
+                std::filesystem::path path = g_AssetPath / (const wchar_t*)payload->Data;
                 comp.TextureName = path.stem().string();
                 if (!MIST_TEXLIB->Exists(comp.TextureName))
                     MIST_TEXLIB->Create(comp.TextureName, path.string());

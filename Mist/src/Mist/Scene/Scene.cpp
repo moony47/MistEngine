@@ -14,12 +14,12 @@ namespace Mist {
 template <typename... Component>
 static void CopyComponent(entt::registry& dst,
                           entt::registry& src,
-                          const std::unordered_map<std::string, entt::entity>& enttMap) {
+                          const std::unordered_map<UUID, entt::entity>& enttMap) {
     (
         [&]() {
             auto view = src.view<Component>();
             for (auto srcEntity : view) {
-                entt::entity dstEntity = enttMap.at(src.get<TagComponent>(srcEntity).Tag);
+                entt::entity dstEntity = enttMap.at(src.get<IDComponent>(srcEntity).ID);
 
                 auto& srcComponent = src.get<Component>(srcEntity);
                 dst.emplace_or_replace<Component>(dstEntity, srcComponent);
@@ -32,7 +32,7 @@ template <typename... Component>
 static void CopyComponent(ComponentGroup<Component...>,
                           entt::registry& dst,
                           entt::registry& src,
-                          const std::unordered_map<std::string, entt::entity>& enttMap) {
+                          const std::unordered_map<UUID, entt::entity>& enttMap) {
     CopyComponent<Component...>(dst, src, enttMap);
 }
 
@@ -64,13 +64,13 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 
     auto& srcRegistry = other->m_Registry;
     auto& dstRegistry = newScene->m_Registry;
-    std::unordered_map<std::string, entt::entity> enttMap;
+    std::unordered_map<UUID, entt::entity> enttMap;
 
-    auto view = srcRegistry.view<TagComponent>();
-    for (auto e : view) {
-        const std::string& tag = srcRegistry.get<TagComponent>(e).Tag;
-        Entity newEntity = newScene->CreateEntity(tag);
-        enttMap[tag] = newEntity;
+    auto view = srcRegistry.view<IDComponent>();
+    for (auto it = view.rbegin(); it != view.rend(); it++) {
+        const IDComponent& idComp = srcRegistry.get<IDComponent>(*it);
+        Entity newEntity = newScene->CreateEntity(idComp.ID, idComp.Tag);
+        enttMap[idComp.ID] = newEntity;
     }
 
     CopyComponent(AllComponents{}, dstRegistry, srcRegistry, enttMap);
@@ -164,10 +164,10 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height) {
         camera.Camera.SetViewportSize(width, height);
 }
 
-Entity& Scene::CreateEntity(const std::string& name) {
+Entity& Scene::CreateEntity(const UUID uuid, const std::string& name) {
     Entity* entity = new Entity(this, m_Registry.create());
+    entity->AddComponent<IDComponent>(uuid, name);
     entity->AddComponent<TransformComponent>();
-    entity->AddComponent<TagComponent>(name.empty() ? "Entity" : name);
     return *entity;
 }
 
@@ -197,7 +197,7 @@ void Scene::OnComponentAdded(Entity entity, T& component) {
 }
 
 template <>
-void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component) {};
+void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component) {};
 template <>
 void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {};
 template <>

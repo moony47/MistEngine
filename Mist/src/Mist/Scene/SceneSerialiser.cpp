@@ -66,15 +66,13 @@ Emitter& operator<<(Emitter& out, const glm::vec4& vec) {
 }
 
 void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
-    out << BeginMap;
-    out << Key << "Entity" << Value << "1234";
+    MIST_CORE_ASSERT(entity.HasComponent<IDComponent>(),
+                     "[SceneSerialiser::SerialiseEntity] Cannot serialise entity with no UUID");
 
-    if (entity.HasComponent<TagComponent>()) {
-        out << Key << "TagComponent" << BeginMap;
-        auto& tag = entity.GetComponent<TagComponent>().Tag;
-        out << Key << "Tag" << Value << tag;
-        out << EndMap;
-    }
+    out << BeginMap;
+
+    out << Key << "Entity" << Value << entity.GetID();
+    out << Key << "Tag" << Value << entity.GetName();
 
     if (entity.HasComponent<TransformComponent>()) {
         out << Key << "TransformComponent" << BeginMap;
@@ -110,6 +108,7 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
         out << Key << "SpriteComponent" << BeginMap;
         auto& sprite = entity.GetComponent<SpriteComponent>();
         out << Key << "Colour" << Value << sprite.Colour;
+        out << Key << "TilingFactor" << Value << sprite.TilingFactor;
         out << Key << "TextureName" << Value << sprite.TextureName;
         out << EndMap;
 
@@ -124,12 +123,14 @@ SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene) :
     m_Scene(scene) {};
 
 void SceneSerialiser::Serialise(const std::string& filepath) {
+
     Emitter out;
 
     out << BeginMap;
     out << Key << "Scene" << Value << "Untitled";
     out << Key << "PrimaryCamera" << Value
-        << (m_Scene->m_PrimaryCameraEntity ? m_Scene->m_PrimaryCameraEntity->GetComponent<TagComponent>().Tag : "");
+        << (m_Scene->m_PrimaryCameraEntity ? (uint64_t)m_Scene->m_PrimaryCameraEntity->GetComponent<IDComponent>().ID
+                                           : 0);
     {
         out << Key << "Entities" << Value << BeginSeq;
         auto view = m_Scene->m_Registry.view<entt::entity>();
@@ -176,20 +177,17 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
     std::string sceneName = data["Scene"].as<std::string>();
     MIST_CORE_TRACE("Deserialising scene: {0}", sceneName);
 
-    std::string primaryCameraName = data["PrimaryCamera"].as<std::string>();
+    UUID primaryCameraUUID = data["PrimaryCamera"].as<uint64_t>();
 
     Node entities = data["Entities"];
     if (entities)
         for (auto entity : entities) {
-            uint64_t uuid = entity["Entity"].as<uint64_t>();
+            UUID uuid = entity["Entity"].as<uint64_t>();
+            std::string name = entity["Tag"].as<std::string>();
 
-            std::string name;
-            Node tagNode = entity["TagComponent"];
-            if (tagNode)
-                name = tagNode["Tag"].as<std::string>();
-            MIST_CORE_TRACE("Deserialising entity: UUID = {0}, Name = {1}", uuid, name);
+            MIST_CORE_TRACE("Deserialising entity: Name = {0}, UUID = {1}", name, uuid);
 
-            Entity deserialisedEntity = m_Scene->CreateEntity(name);
+            Entity deserialisedEntity = m_Scene->CreateEntity(uuid, name);
 
             if (Node transformNode = entity["TransformComponent"]) {
                 auto& transformComp = deserialisedEntity.GetComponent<TransformComponent>();
@@ -215,13 +213,14 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
 
                 cameraComp.FixedAspectRatio = cameraNode["FixedAspectRatio"].as<bool>();
 
-                if (primaryCameraName == name)
+                if (primaryCameraUUID == uuid)
                     m_Scene->SetPrimaryCamera(deserialisedEntity);
             }
 
             if (Node spriteNode = entity["SpriteComponent"]) {
                 auto& spriteComp = deserialisedEntity.AddComponent<SpriteComponent>();
                 spriteComp.Colour = spriteNode["Colour"].as<glm::vec4>();
+                spriteComp.TilingFactor = spriteNode["TilingFactor"].as<float>();
                 spriteComp.TextureName = spriteNode["TextureName"].as<std::string>();
             }
         }
