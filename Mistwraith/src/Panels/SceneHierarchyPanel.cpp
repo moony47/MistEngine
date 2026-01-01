@@ -9,77 +9,6 @@ namespace Mist {
 
 extern const std::filesystem::path g_AssetPath;
 
-SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
-    SetContext(context);
-}
-
-void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
-    m_Context = context;
-    m_SelectionContext = {};
-}
-
-void SceneHierarchyPanel::OnImGuiRender() {
-    {
-        // ImGui::SetNextWindowSizeConstraints({200.0f, 300.0f}, {999999.0f, 999999.0f});
-        ImGui::Begin("Scene Hierarchy");
-
-        for (auto entityID : m_Context->m_Registry.view<entt::entity>()) {
-            Entity entity(m_Context.get(), entityID);
-            DrawEntityNode(entity);
-        }
-
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
-            m_SelectionContext = {};
-
-        // Blank space context menu
-        if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
-            if (ImGui::MenuItem("New Entity"))
-                m_Context->CreateEntity({}, "Empty");
-
-            ImGui::EndPopup();
-        }
-
-        ImGui::End();
-    }
-
-    {
-        // ImGui::SetNextWindowSizeConstraints({370.0f, 400.0f}, {999999.0f, 999999.0f});
-        ImGui::Begin("Properties");
-        if (m_SelectionContext) {
-            DrawComponents(m_SelectionContext);
-        }
-        ImGui::End();
-    }
-}
-
-void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
-    auto& tag = entity.GetComponent<IDComponent>().Tag;
-
-    ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) |
-                               ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-
-    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
-    if (ImGui::IsItemClicked())
-        m_SelectionContext = entity;
-
-    bool entityDeleted = false;
-    if (ImGui::BeginPopupContextItem()) {
-        entityDeleted = ImGui::MenuItem("Delete Entity", 0, false, *m_Context->m_PrimaryCameraEntity != entity);
-        ImGui::EndPopup();
-    }
-
-    if (opened) {
-        // TODO: Display children
-        ImGui::TreePop();
-    }
-
-    if (entityDeleted) {
-        m_Context->DestroyEntity(entity);
-        if (m_SelectionContext == entity)
-            m_SelectionContext = {};
-    }
-}
-
 static bool DrawVec3Control(const std::string& label,
                             glm::vec3& values,
                             float resetValue = 0.0f,
@@ -207,6 +136,77 @@ static void DrawComponent(const std::string& name, Entity entity, UIFunction uiF
 
         if (removeComponent)
             entity.RemoveComponent<T>();
+    }
+}
+
+SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
+    SetContext(context);
+}
+
+void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
+    m_Context = context;
+    m_SelectionContext = {};
+}
+
+void SceneHierarchyPanel::OnImGuiRender() {
+    {
+        // ImGui::SetNextWindowSizeConstraints({200.0f, 300.0f}, {999999.0f, 999999.0f});
+        ImGui::Begin("Scene Hierarchy");
+
+        for (auto entityID : m_Context->m_Registry.view<entt::entity>()) {
+            Entity entity(m_Context.get(), entityID);
+            DrawEntityNode(entity);
+        }
+
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
+            m_SelectionContext = {};
+
+        // Blank space context menu
+        if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
+            if (ImGui::MenuItem("New Entity"))
+                m_Context->CreateEntity({}, "Empty");
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::End();
+    }
+
+    {
+        // ImGui::SetNextWindowSizeConstraints({370.0f, 400.0f}, {999999.0f, 999999.0f});
+        ImGui::Begin("Properties");
+        if (m_SelectionContext) {
+            DrawComponents(m_SelectionContext);
+        }
+        ImGui::End();
+    }
+}
+
+void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
+    auto& tag = entity.GetComponent<IDComponent>().Tag;
+
+    ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) |
+                               ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+    if (ImGui::IsItemClicked())
+        m_SelectionContext = entity;
+
+    bool entityDeleted = false;
+    if (ImGui::BeginPopupContextItem()) {
+        entityDeleted = ImGui::MenuItem("Delete Entity", 0, false, *m_Context->m_PrimaryCameraEntity != entity);
+        ImGui::EndPopup();
+    }
+
+    if (opened) {
+        // TODO: Display children
+        ImGui::TreePop();
+    }
+
+    if (entityDeleted) {
+        m_Context->DestroyEntity(entity);
+        if (m_SelectionContext == entity)
+            m_SelectionContext = {};
     }
 }
 
