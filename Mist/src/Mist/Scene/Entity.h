@@ -17,7 +17,7 @@ public:
         return GetComponent<IDComponent>().ID;
     }
     const std::string& GetName() {
-        return GetComponent<IDComponent>().Tag;
+        return GetComponent<IDComponent>().Name;
     }
 
     template <typename T>
@@ -35,8 +35,6 @@ public:
 
     template <typename T>
     T* TryGetComponent() {
-        MIST_CORE_ASSERT(HasComponent<T>(), "[Entity::GetComponent] Entity does not have such component");
-
         return m_Scene->m_Registry.try_get<T>(m_EntityID);
     }
 
@@ -49,6 +47,11 @@ public:
         MIST_CORE_ASSERT(!HasComponent<T>(), "[Entity::AddComponent] Entity already has such component");
 
         return m_Scene->m_Registry.emplace<T>(m_EntityID, std::forward<Args>(args)...);
+    }
+
+    template <typename T, typename... Args>
+    T& AddOrReplaceComponent(Args&&... args) {
+        return m_Scene->m_Registry.emplace_or_replace<T>(m_EntityID, std::forward<Args>(args)...);
     }
 
     template <typename T>

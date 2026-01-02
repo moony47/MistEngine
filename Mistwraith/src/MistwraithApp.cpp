@@ -9,7 +9,7 @@ using namespace Mist;
 class Mistwraith : public Application {
 public:
     Mistwraith(ApplicationCommandLineArgs args) :
-        Application("Mistwraith Editor", args) {
+        Application("Mistwraith", args) {
         PushLayer(CreateRef<EditorLayer>());
     }
 

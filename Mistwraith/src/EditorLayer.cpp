@@ -1,12 +1,11 @@
 #include "CameraController.h"
 #include "EditorLayer.h"
 
-#include <ImGuizmo.h>
-
+#include "Mist/Maths/Maths.h"
 #include "Mist/Scene/SceneSerialiser.h"
 #include "Mist/Utils/PlatformUtils.h"
 
-#include "Mist/Maths/Maths.h"
+#include <ImGuizmo.h>
 
 namespace Mist {
 
@@ -41,6 +40,7 @@ void EditorLayer::OnAttach() {
     // m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
     m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+    m_ContentBrowserPanel.SetContext(this);
 }
 
 void EditorLayer::OnDetach() {
@@ -99,17 +99,17 @@ void EditorLayer::NewScene() {
     m_EditorScene = CreateRef<Scene>();
     m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
     m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    m_EditorScenePath = std::filesystem::path();
     OnSceneStop();
 }
 
 void EditorLayer::OpenScene() {
-    std::string filepath = FileDialogs::OpenFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
+    std::filesystem::path filepath = FileDialogs::OpenFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
     if (!filepath.empty())
         OpenScene(filepath);
 }
 
 void EditorLayer::OpenScene(const std::filesystem::path& path) {
-
     if (m_SceneState != SceneState::Edit)
         OnSceneStop();
 
@@ -119,16 +119,29 @@ void EditorLayer::OpenScene(const std::filesystem::path& path) {
     }
 
     NewScene();
+    m_EditorScenePath = path;
     SceneSerialiser serialiser(m_EditorScene);
     serialiser.Deserialise(path.string());
 }
 
-void EditorLayer::SaveScene() const {
-    std::string filepath = FileDialogs::SaveFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
+void EditorLayer::SaveScene() {
+    if (!m_EditorScenePath.empty())
+        SerialiseScene();
+    else
+        SaveSceneAs();
+}
+
+void EditorLayer::SaveSceneAs() {
+    std::filesystem::path filepath = FileDialogs::SaveFile("Mist Scene (*.mist.yaml)\0*.mist.yaml\0");
     if (!filepath.empty()) {
-        SceneSerialiser serialiser(m_EditorScene);
-        serialiser.Serialise(filepath);
+        m_EditorScenePath = filepath;
+        SerialiseScene();
     }
+}
+
+void EditorLayer::SerialiseScene() {
+    SceneSerialiser serialiser(m_EditorScene);
+    serialiser.Serialise(m_EditorScenePath.string());
 }
 
 void EditorLayer::RenderEditorDockspace() {
@@ -176,15 +189,22 @@ void EditorLayer::RenderEditorDockspace() {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Mistwraith")) {
-            ImGui::Separator();
             if (ImGui::MenuItem("Exit"))
                 MIST_APP.Close();
+            // ImGui::Separator();
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("New Scene", "Ctrl+N"))
                 NewScene();
             if (ImGui::MenuItem("Open Scene...", "Ctrl+O"))
                 OpenScene();
-            if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
+            ImGui::Separator();
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
                 SaveScene();
+            if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
+                SaveSceneAs();
+            // ImGui::Separator();
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -198,7 +218,7 @@ void EditorLayer::RenderDebugPanel(DeltaTime deltaTime) {
     ImGui::Checkbox("Profiling", &MIST_PROFILE_ENABLED);
 #endif
     ImGui::Text("Hovered Entity: %s",
-                m_HoveredEntity ? m_HoveredEntity.GetComponent<IDComponent>().Tag.c_str() : "None");
+                m_HoveredEntity ? m_HoveredEntity.GetComponent<IDComponent>().Name.c_str() : "None");
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
     ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
@@ -379,6 +399,26 @@ void EditorLayer::OnSceneStop() {
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
+void EditorLayer::DuplicateEntity() {
+    if (m_SceneState != SceneState::Edit)
+        return;
+
+    Entity selected = m_SceneHierarchyPanel.GetSelectedEntity();
+    if (selected)
+        m_EditorScene->DuplicateEntity(selected);
+}
+
+void EditorLayer::DeleteEntity() {
+    if (m_SceneState != SceneState::Edit)
+        return;
+
+    Entity selected = m_SceneHierarchyPanel.GetSelectedEntity();
+    if (selected) {
+        m_SceneHierarchyPanel.ClearSelectedEntity();
+        m_EditorScene->DestroyEntity(selected);
+    }
+}
+
 void EditorLayer::OnEvent(Event& e) {
     MIST_PROFILE_FUNCTION();
 
@@ -398,8 +438,12 @@ void EditorLayer::OnEvent(Event& e) {
         switch (e.GetKeyCode()) {
             // File Options
             case Key::S:
-                if (controlPressed && shiftPressed)
-                    SaveScene();
+                if (controlPressed) {
+                    if (shiftPressed)
+                        SaveSceneAs();
+                    else
+                        SaveScene();
+                }
                 break;
             case Key::O:
                 if (controlPressed)
@@ -408,6 +452,15 @@ void EditorLayer::OnEvent(Event& e) {
             case Key::N:
                 if (controlPressed)
                     NewScene();
+                break;
+
+            // Scene Hotkeys
+            case Key::D:
+                if (controlPressed)
+                    DuplicateEntity();
+                break;
+            case Key::Delete:
+                DeleteEntity();
                 break;
 
             // Gizmo Types

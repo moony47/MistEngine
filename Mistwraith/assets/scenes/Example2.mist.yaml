@@ -40,9 +40,9 @@ Entities:
   - Entity: 652218804848011443
     Tag: Star
     TransformComponent:
-      Position: [-1.7, 2.7, 0.5]
-      Rotation: [-0.11868239, 0, -1.6528268]
-      Scale: [5, 5.4, 1]
+      Position: [-3.2187455, 0.94522786, 0.5]
+      Rotation: [-0.11868247, -1.4901161e-08, -1.6528268]
+      Scale: [5, 5.399996, 1]
     SpriteComponent:
       Colour: [0.9111967, 0, 1, 1]
       TilingFactor: 1

@@ -3,8 +3,8 @@
 #include <Mist.h>
 #include <Mist/Cameras/EditorCamera.h>
 
-#include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Mist {
 
@@ -28,7 +28,10 @@ private:
     void NewScene();
     void OpenScene();
     void OpenScene(const std::filesystem::path& path);
-    void SaveScene() const;
+    void SaveScene();
+    void SaveSceneAs();
+
+    void SerialiseScene();
 
     void RenderEditorDockspace();
     void RenderDebugPanel(DeltaTime deltaTime);
@@ -38,32 +41,41 @@ private:
     void OnScenePlay();
     void OnSceneStop();
 
+    void DuplicateEntity();
+    void DeleteEntity();
+
     void RenderUIToolbar();
 
+    friend class ContentBrowserPanel;
+
 private:
+    // Edit/Play State
+    enum class SceneState {
+        Edit = 0,
+        Play = 1
+    };
+    SceneState m_SceneState = SceneState::Edit;
+
+    // Scenes
     Ref<Scene> m_ActiveScene, m_EditorScene;
-
     EditorCamera m_EditorCamera;
+    std::filesystem::path m_EditorScenePath;
 
+    // Scene Viewport
     Ref<Framebuffer> m_Framebuffer;
     glm::vec2 m_ViewportSize{0.0f, 0.0f};
     glm::vec2 m_ViewportBounds[2];
 
-    bool m_ViewportFocussed = false, m_ViewportHovered = false;
-
+    // Controls
     int m_GizmoType = 7;
-
     Entity m_HoveredEntity;
-
-    enum class SceneState {
-        Edit = 0, Play = 1
-    };
-    SceneState m_SceneState = SceneState::Edit;
+    bool m_ViewportFocussed = false, m_ViewportHovered = false;
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
     ContentBrowserPanel m_ContentBrowserPanel;
 
+    // Textures
     Ref<Texture2D> m_IconPlay, m_IconStop;
 };
 

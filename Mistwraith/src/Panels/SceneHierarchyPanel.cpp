@@ -183,7 +183,7 @@ void SceneHierarchyPanel::OnImGuiRender() {
 }
 
 void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
-    auto& tag = entity.GetComponent<IDComponent>().Tag;
+    auto& tag = entity.GetComponent<IDComponent>().Name;
 
     ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : NULL) |
                                ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -220,11 +220,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         constexpr float uuidWidth = 130.0f;
 
         memset(buffer, 0, sizeof(buffer));
-        strcpy_s(buffer, sizeof(buffer), idComp.Tag.c_str());
+        strcpy_s(buffer, sizeof(buffer), idComp.Name.c_str());
 
         ImGui::PushItemWidth(width - uuidWidth);
         if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-            idComp.Tag = std::string(buffer);
+            idComp.Name = std::string(buffer);
         ImGui::PopItemWidth();
 
         std::stringstream ss;

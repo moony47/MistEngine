@@ -2,7 +2,6 @@
 #include "Scene.h"
 
 #include "Mist/Renderer/Texture.h"
-
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
 #include "Mist/Scene/ScriptableEntity.h"
@@ -12,16 +11,15 @@
 namespace Mist {
 
 template <typename... Component>
-static void CopyComponent(entt::registry& dst,
-                          entt::registry& src,
-                          const std::unordered_map<UUID, entt::entity>& enttMap) {
+static void CopyComponentsAndUUIDs(entt::registry& dst,
+                                   entt::registry& src,
+                                   const std::unordered_map<UUID, entt::entity>& enttMap) {
     (
         [&]() {
             auto view = src.view<Component>();
-            for (auto srcEntity : view) {
+            for (entt::entity srcEntity : view) {
                 entt::entity dstEntity = enttMap.at(src.get<IDComponent>(srcEntity).ID);
-
-                auto& srcComponent = src.get<Component>(srcEntity);
+                Component& srcComponent = src.get<Component>(srcEntity);
                 dst.emplace_or_replace<Component>(dstEntity, srcComponent);
             }
         }(),
@@ -29,26 +27,26 @@ static void CopyComponent(entt::registry& dst,
 }
 
 template <typename... Component>
-static void CopyComponent(ComponentGroup<Component...>,
-                          entt::registry& dst,
-                          entt::registry& src,
-                          const std::unordered_map<UUID, entt::entity>& enttMap) {
-    CopyComponent<Component...>(dst, src, enttMap);
+static void CopyComponentsAndUUIDs(ComponentGroup<Component...>,
+                                   entt::registry& dst,
+                                   entt::registry& src,
+                                   const std::unordered_map<UUID, entt::entity>& enttMap) {
+    CopyComponentsAndUUIDs<Component...>(dst, src, enttMap);
 }
 
 template <typename... Component>
-static void CopyComponentIfExists(Entity dst, Entity src) {
+static void CopyComponentsIfExist(Entity dst, Entity src) {
     (
         [&]() {
             if (src.HasComponent<Component>())
-                dst.AddComponent<Component>(src.GetComponent<Component>());
+                dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
         }(),
         ...);
 }
 
 template <typename... Component>
-static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src) {
-    CopyComponentIfExists<Component...>(dst, src);
+static void CopyComponentsIfExist(ComponentGroup<Component...>, Entity dst, Entity src) {
+    CopyComponentsIfExist<Component...>(dst, src);
 }
 
 Scene::Scene() {};
@@ -60,7 +58,8 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 
     newScene->m_ViewportWidth = other->m_ViewportWidth;
     newScene->m_ViewportHeight = other->m_ViewportHeight;
-    newScene->m_PrimaryCameraEntity = new Entity{newScene.get(), (entt::entity)*other->m_PrimaryCameraEntity};
+    if (other->m_PrimaryCameraEntity)
+        newScene->m_PrimaryCameraEntity = new Entity{newScene.get(), (entt::entity)*other->m_PrimaryCameraEntity};
 
     auto& srcRegistry = other->m_Registry;
     auto& dstRegistry = newScene->m_Registry;
@@ -69,14 +68,16 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     auto view = srcRegistry.view<IDComponent>();
     for (auto it = view.rbegin(); it != view.rend(); it++) {
         const IDComponent& idComp = srcRegistry.get<IDComponent>(*it);
-        Entity newEntity = newScene->CreateEntity(idComp.ID, idComp.Tag);
+        Entity newEntity = newScene->CreateEntity(idComp.ID, idComp.Name);
         enttMap[idComp.ID] = newEntity;
     }
 
-    CopyComponent(AllComponents{}, dstRegistry, srcRegistry, enttMap);
+    CopyComponentsAndUUIDs(AllComponents(), dstRegistry, srcRegistry, enttMap);
 
     return newScene;
 }
+
+void Scene::OnStart() {};
 
 void Scene::OnUpdate(DeltaTime deltaTime) {
     m_Registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& script) {
@@ -117,8 +118,6 @@ void Scene::OnRender(DeltaTime deltaTime) {
 
     Renderer2D::EndView();
 }
-
-// void Scene::OnUpdateEditor(DeltaTime deltaTime, EditorCamera& camera) {}
 
 void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
     // Render the scene from primary camera's view
@@ -164,11 +163,18 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height) {
         camera.Camera.SetViewportSize(width, height);
 }
 
-Entity& Scene::CreateEntity(const UUID uuid, const std::string& name) {
-    Entity* entity = new Entity(this, m_Registry.create());
-    entity->AddComponent<IDComponent>(uuid, name);
-    entity->AddComponent<TransformComponent>();
-    return *entity;
+Entity Scene::CreateEntity(const UUID uuid, const std::string& name) {
+    Entity entity(this, m_Registry.create());
+    entity.AddComponent<IDComponent>(uuid, name);
+    entity.AddComponent<TransformComponent>();
+    return entity;
+}
+
+Entity Scene::DuplicateEntity(Entity entity) {
+    Entity newEntity = CreateEntity();
+    newEntity.GetComponent<IDComponent>().Name = entity.GetName() + "_Copy";
+    CopyComponentsIfExist(AllComponents(), newEntity, entity);
+    return newEntity;
 }
 
 void Scene::DestroyEntity(Entity entity) {

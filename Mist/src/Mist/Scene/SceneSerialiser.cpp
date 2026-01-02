@@ -1,8 +1,7 @@
 #include "mistpch.h"
 #include "SceneSerialiser.h"
 
-#include <Mist/Renderer/Texture.h>
-#include <algorithm>
+#include "Mist/Renderer/Texture.h"
 
 using namespace YAML;
 

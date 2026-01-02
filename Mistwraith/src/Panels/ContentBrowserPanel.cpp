@@ -1,6 +1,8 @@
 #include "ContentBrowserPanel.h"
 #include "mistpch.h"
 
+#include "../EditorLayer.h"
+
 #include <imgui.h>
 
 namespace Mist {
@@ -14,6 +16,64 @@ ContentBrowserPanel::ContentBrowserPanel() :
     m_BackIcon = m_DirectoryIcon;
 };
 
+void ContentBrowserPanel::RenderBackButton(float thumbnailSize) {
+    ImGui::ImageButton("..", (ImTextureID)m_BackIcon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+        m_CurrentDirectory = m_CurrentDirectory.parent_path();
+    ImGui::TextWrapped("..");
+    ImGui::NextColumn();
+}
+
+void ContentBrowserPanel::OnDoubleClick(const std::filesystem::directory_entry& dirEntry) {
+    auto relativePath = std::filesystem::relative(dirEntry.path(), g_AssetPath);
+
+    if (dirEntry.is_directory())
+        m_CurrentDirectory /= relativePath.filename().string();
+    else if (dirEntry.path().extension() == ".yaml") {
+        const wchar_t* path = relativePath.c_str();
+        m_EditorLayer->OpenScene(g_AssetPath / path);
+    }
+}
+
+void ContentBrowserPanel::RenderAssets(float thumbnailSize, float padding, ImVec2& panelSize) {
+    float cellSize = thumbnailSize + padding;
+
+    int columnCount = (int)(panelSize.x / cellSize);
+    if (columnCount < 1)
+        columnCount = 1;
+
+    ImGui::Columns(columnCount, 0, false);
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
+    if (m_CurrentDirectory != g_AssetPath)
+        RenderBackButton(thumbnailSize);
+
+    for (auto& dirEntry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
+        auto relativePath = std::filesystem::relative(dirEntry.path(), g_AssetPath);
+        std::string filename = relativePath.filename().string();
+
+        Ref<Texture2D> icon = dirEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
+        ImGui::ImageButton(filename.c_str(), (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1},
+                           {1, 0});
+
+        if (ImGui::BeginDragDropSource()) {
+            const wchar_t* itemPath = relativePath.c_str();
+            ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t),
+                                      ImGuiCond_Once);
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+            OnDoubleClick(dirEntry);
+
+        ImGui::TextWrapped(filename.c_str());
+        ImGui::NextColumn();
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::Columns(1);
+}
+
 void ContentBrowserPanel::OnImGuiRender() {
     static float padding = 8.0f;
     static float thumbnailSize = 96.0f;
@@ -22,63 +82,17 @@ void ContentBrowserPanel::OnImGuiRender() {
 
     ImVec2 panelSize = ImGui::GetWindowSize();
 
-    {
-        float cellSize = thumbnailSize + padding;
+    RenderAssets(thumbnailSize, padding, panelSize);
 
-        int columnCount = (int)(panelSize.x / cellSize);
-        if (columnCount < 1)
-            columnCount = 1;
-
-        ImGui::Columns(columnCount, 0, false);
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-
-        if (m_CurrentDirectory != g_AssetPath) {
-            ImGui::ImageButton("..", (ImTextureID)m_BackIcon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1},
-                               {1, 0});
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                m_CurrentDirectory = m_CurrentDirectory.parent_path();
-            ImGui::TextWrapped("..");
-            ImGui::NextColumn();
-        }
-
-        for (auto& dirEntry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-            auto relativePath = std::filesystem::relative(dirEntry.path(), g_AssetPath);
-            std::string filename = relativePath.filename().string();
-
-            Ref<Texture2D> icon = dirEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
-            ImGui::ImageButton(filename.c_str(), (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize},
-                               {0, 1}, {1, 0});
-
-            if (ImGui::BeginDragDropSource()) {
-                const wchar_t* itemPath = relativePath.c_str();
-                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t),
-                                          ImGuiCond_Once);
-                ImGui::EndDragDropSource();
-            }
-
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                if (dirEntry.is_directory())
-                    m_CurrentDirectory /= filename;
-
-            ImGui::TextWrapped(filename.c_str());
-            ImGui::NextColumn();
-        }
-
-        ImGui::PopStyleColor();
-        ImGui::Columns(1);
-    }
-
-    {
-        static float offset = 25.0f;
-        ImGui::SetCursorPosY(panelSize.y - offset);
-        if (ImGui::TreeNode("Display Options")) {
-            offset = 85.0f;
-            ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 8, 256);
-            ImGui::SliderFloat("Padding", &padding, 0, 32);
-            ImGui::TreePop();
-        } else
-            offset = 25.0f;
-    }
+    static float offset = 25.0f;
+    ImGui::SetCursorPosY(panelSize.y - offset);
+    if (ImGui::TreeNode("Display Options")) {
+        offset = 85.0f;
+        ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 8, 256);
+        ImGui::SliderFloat("Padding", &padding, 0, 32);
+        ImGui::TreePop();
+    } else
+        offset = 25.0f;
 
     ImGui::End();
 }

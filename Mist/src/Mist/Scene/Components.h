@@ -12,13 +12,13 @@ namespace Mist {
 
 struct IDComponent {
     UUID ID;
-    std::string Tag;
+    std::string Name;
 
     IDComponent() = delete;
     IDComponent(const IDComponent&) = default;
-    IDComponent(const UUID id, const std::string& tag) :
+    IDComponent(const UUID id, const std::string& name) :
         ID(id),
-        Tag(tag) {};
+        Name(name) {};
 };
 
 struct SpriteComponent {

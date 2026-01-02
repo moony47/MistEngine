@@ -2,9 +2,9 @@
 
 #include "Mist/Cameras/EditorCamera.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Core/UUID.h"
 #include "Mist/Events/Event.h"
 #include "Mist/Renderer/Renderer2D.h"
-#include "Mist/Core/UUID.h"
 
 #include <entt.hpp>
 
@@ -19,20 +19,22 @@ public:
 
     static Ref<Scene> Copy(Ref<Scene> other);
 
-    Entity& CreateEntity(const UUID uuid = {}, const std::string& name = "Entity");
+    Entity CreateEntity(const UUID uuid = {}, const std::string& name = "Entity");
+    Entity DuplicateEntity(Entity entity);
     void DestroyEntity(Entity entity);
 
+    void OnStart();
     void OnUpdate(DeltaTime deltaTime);
     void OnRender(DeltaTime deltaTime);
 
-    // void OnUpdateEditor(DeltaTime deltaTime, EditorCamera& camera);
+    // void OnStartEditor();
+    // void OnUpdateEditor(DeltaTime deltaTime);
     void OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera);
 
     void OnEvent(Event& e);
-
     void OnViewportResize(uint32_t width, uint32_t height);
 
-    entt::registry& Get() {
+    inline entt::registry& Get() {
         return m_Registry;
     }
 
