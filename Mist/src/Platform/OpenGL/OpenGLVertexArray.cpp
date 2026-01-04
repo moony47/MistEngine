@@ -31,7 +31,6 @@ namespace Mist {
 		MIST_PROFILE_FUNCTION();
 
 		MIST_GLCALL(glCreateVertexArrays(1, &m_RendererID));
-		Bind();
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
@@ -102,7 +101,9 @@ namespace Mist {
 		m_IndexBuffer = ib;
 
 		MIST_GLCALL(glBindVertexArray(m_RendererID));
+        Bind();
 		ib->Bind();
+        Unbind();
 	}
 
 } // namespace Mist

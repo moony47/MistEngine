@@ -71,7 +71,7 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
     out << BeginMap;
 
     out << Key << "Entity" << Value << entity.GetID();
-    out << Key << "Tag" << Value << entity.GetName();
+    out << Key << "Name" << Value << entity.GetName();
 
     if (entity.HasComponent<TransformComponent>()) {
         out << Key << "TransformComponent" << BeginMap;
@@ -103,16 +103,33 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
         out << EndMap;
     }
 
-    if (entity.HasComponent<SpriteComponent>()) {
-        out << Key << "SpriteComponent" << BeginMap;
-        auto& sprite = entity.GetComponent<SpriteComponent>();
-        out << Key << "Colour" << Value << sprite.Colour;
-        out << Key << "TilingFactor" << Value << sprite.TilingFactor;
-        out << Key << "TextureName" << Value << sprite.TextureName;
-        out << EndMap;
+    if (entity.HasComponent<RenderableComponent>()) {
+        auto& renderable = entity.GetComponent<RenderableComponent>();
+        Renderable typeIndex = renderable.GetType();
 
-        if (!m_TexturePaths.contains(sprite.TextureName))
-            m_TexturePaths[sprite.TextureName] = MIST_TEX(sprite.TextureName)->GetPath();
+        out << Key << "RenderableComponent" << BeginMap;
+        out << Key << "Type" << Value << (size_t)typeIndex;
+
+        switch (typeIndex) {
+            case Renderable::Sprite: {
+                auto& sprite = renderable.GetComponent<SpriteComponent>();
+                out << Key << "Colour" << Value << sprite.Colour;
+                out << Key << "TilingFactor" << Value << sprite.TilingFactor;
+                out << Key << "TextureName" << Value << sprite.TextureName;
+
+                if (!m_TexturePaths.contains(sprite.TextureName))
+                    m_TexturePaths[sprite.TextureName] = MIST_TEX(sprite.TextureName)->GetPath();
+                break;
+            }
+            case Renderable::Circle: {
+                auto& circle = renderable.GetComponent<CircleComponent>();
+                out << Key << "Colour" << Value << circle.Colour;
+                out << Key << "Thickness" << Value << circle.Thickness;
+                out << Key << "Fade" << Value << circle.Fade;
+                break;
+            }
+        }
+        out << EndMap;
     }
 
     out << EndMap;
@@ -182,7 +199,7 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
     if (entities)
         for (auto entity : entities) {
             UUID uuid = entity["Entity"].as<uint64_t>();
-            std::string name = entity["Tag"].as<std::string>();
+            std::string name = entity["Name"].as<std::string>();
 
             MIST_CORE_TRACE("Deserialising entity: Name = {0}, UUID = {1}", name, uuid);
 
@@ -216,11 +233,25 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
                     m_Scene->SetPrimaryCamera(deserialisedEntity);
             }
 
-            if (Node spriteNode = entity["SpriteComponent"]) {
-                auto& spriteComp = deserialisedEntity.AddComponent<SpriteComponent>();
-                spriteComp.Colour = spriteNode["Colour"].as<glm::vec4>();
-                spriteComp.TilingFactor = spriteNode["TilingFactor"].as<float>();
-                spriteComp.TextureName = spriteNode["TextureName"].as<std::string>();
+            if (Node renderableNode = entity["RenderableComponent"]) {
+                Renderable type = (Renderable)renderableNode["Type"].as<size_t>();
+                RenderableComponent& renderable = deserialisedEntity.AddComponent<RenderableComponent>();
+                switch (type) {
+                    case Renderable::Sprite: {
+                        SpriteComponent& spriteComp = renderable.SetComponent<SpriteComponent>();
+                        spriteComp.Colour = renderableNode["Colour"].as<glm::vec4>();
+                        spriteComp.TilingFactor = renderableNode["TilingFactor"].as<float>();
+                        spriteComp.TextureName = renderableNode["TextureName"].as<std::string>();
+                        break;
+                    }
+                    case Renderable::Circle: {
+                        CircleComponent& circleComp = renderable.SetComponent<CircleComponent>();
+                        circleComp.Colour = renderableNode["Colour"].as<glm::vec4>();
+                        circleComp.Thickness = renderableNode["Thickness"].as<float>();
+                        circleComp.Fade = renderableNode["Fade"].as<float>();
+                        break;
+                    }
+                }
             }
         }
 

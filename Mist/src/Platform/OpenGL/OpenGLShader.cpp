@@ -227,7 +227,7 @@ void OpenGLShader::CompileOrGetOpenGLBinaries() {
             in.read((char*)data.data(), size);
         } else {
             spirv_cross::CompilerGLSL glslCompiler(spirv);
-            m_OpenGLSourceCode[stage] = glslCompiler.compile();
+           m_OpenGLSourceCode[stage] = glslCompiler.compile();
             auto& source = m_OpenGLSourceCode[stage];
 
             shaderc::SpvCompilationResult module =

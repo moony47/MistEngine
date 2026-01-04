@@ -1,7 +1,7 @@
 #version 450 core
 
-layout(location = 0) out vec4 colour;
-layout(location = 1) out int entity;
+layout(location = 0) out vec4 o_Colour;
+layout(location = 1) out int o_Entity;
 
 struct VertexOutput {
 	vec4	Colour;
@@ -54,10 +54,10 @@ void main() {
 		case 30: texColor *= texture(u_Texture[30], Input.TexCoord * Input.TilingFactor); break;
 		case 31: texColor *= texture(u_Texture[31], Input.TexCoord * Input.TilingFactor); break;
 	}
-
-	//if (texColor.a == 0.0)
-	//	discard;
 	
-	colour = texColor;
-	entity = v_EntityID;
+	//if (texColor.a < 0.1)
+	//	discard;
+
+	o_Colour = texColor;
+	o_Entity = v_EntityID;
 }

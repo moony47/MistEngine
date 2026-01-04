@@ -91,6 +91,33 @@ void Scene::OnUpdate(DeltaTime deltaTime) {
     });
 }
 
+void Scene::RenderRenderableEntities() {
+    auto group = m_Registry.group<RenderableComponent, TransformComponent>();
+
+    group.sort<RenderableComponent>([](const RenderableComponent& first, const RenderableComponent& second) {
+        return first.LayerZ > second.LayerZ;
+    });
+
+    for (auto entity : group) {
+        auto [renderable, transform] = m_Registry.get<RenderableComponent, TransformComponent>(entity);
+        Renderable type = renderable.GetType();
+        switch (type) {
+            case Renderable::Sprite: {
+                SpriteComponent sprite = renderable.GetComponent<SpriteComponent>();
+                Renderer2D::DrawQuad(
+                    {(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
+                break;
+            }
+            case Renderable::Circle: {
+                CircleComponent circle = renderable.GetComponent<CircleComponent>();
+                Renderer2D::DrawCircle(
+                    {(int)entity, transform.GetTransform(), circle.Colour, circle.Thickness, circle.Fade});
+                break;
+            }
+        }
+    }
+}
+
 void Scene::OnRender(DeltaTime deltaTime) {
     if (!m_PrimaryCameraEntity)
         return;
@@ -105,16 +132,7 @@ void Scene::OnRender(DeltaTime deltaTime) {
     // Render the scene from primary camera's view
     Renderer2D::BeginView(mainCamera->GetProjection(), transformMatrix);
 
-    auto group = m_Registry.group<SpriteComponent, TransformComponent>();
-    group.sort<TransformComponent>(
-        [pos = transformComp.GetPosition()](const TransformComponent& first, const TransformComponent& second) {
-            return glm::distance2(first.GetPosition(), pos) > glm::distance2(second.GetPosition(), pos);
-        });
-
-    for (auto entity : group) {
-        auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad({transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
-    }
+    RenderRenderableEntities();
 
     Renderer2D::EndView();
 }
@@ -123,17 +141,7 @@ void Scene::OnRenderEditor(DeltaTime deltaTime, EditorCamera& camera) {
     // Render the scene from primary camera's view
     Renderer2D::BeginView(camera);
 
-    auto group = m_Registry.group<SpriteComponent, TransformComponent>();
-    group.sort<TransformComponent>(
-        [pos = camera.GetPosition()](const TransformComponent& first, const TransformComponent& second) {
-            return glm::distance2(first.GetPosition(), pos) > glm::distance2(second.GetPosition(), pos);
-        });
-
-    for (auto entity : group) {
-        auto [sprite, transform] = group.get<SpriteComponent, TransformComponent>(entity);
-        Renderer2D::DrawQuad(
-            {(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
-    }
+    RenderRenderableEntities();
 
     Renderer2D::EndView();
 }
@@ -207,7 +215,7 @@ void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
 template <>
 void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {};
 template <>
-void Scene::OnComponentAdded<SpriteComponent>(Entity entity, SpriteComponent& component) {};
+void Scene::OnComponentAdded<RenderableComponent>(Entity entity, RenderableComponent& component) {};
 template <>
 void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {};
 template <>

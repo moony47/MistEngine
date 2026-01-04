@@ -4,12 +4,14 @@
 
 #include <glm/glm.hpp>
 #include <string>
+#include <variant>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace Mist {
 
+// Every entity must have an IDComponent for unique identification
 struct IDComponent {
     UUID ID;
     std::string Name;
@@ -21,21 +23,90 @@ struct IDComponent {
         Name(name) {};
 };
 
+// ------------------------ Renderables --------------------------
+
+// Type mapping to allow following methods of using API:
+//   1:  auto& sprite = renderable.GetComponent<SpriteComponent>();
+//   2:  auto& sprite = renderable.GetComponent<Renderable::Sprite>();
+//   3:  auto& sprite = renderable.GetComponent<Renderable::Sprite, SpriteComponent>();
+// Similarly for SetComponent:
+//   1:  auto& sprite = renderable.SetComponent<SpriteComponent>();
+//   2:  auto& sprite = renderable.SetComponent<Renderable::Sprite>();
+//   3:  auto& sprite = renderable.SetComponent<Renderable::Sprite, SpriteComponent>();
+enum class Renderable : size_t {
+    Sprite = 0,
+    Circle = 1
+};
+
+template <Renderable T>
+struct MapR2C;
+template <typename T>
+struct MapC2R;
+
 struct SpriteComponent {
-    std::string TextureName;
-    glm::vec4 Colour;
+    std::string TextureName = "None";
+    glm::vec4 Colour = {1.0f, 1.0f, 1.0f, 1.0f};
     float TilingFactor = 1.0f;
 
+    SpriteComponent() = default;
     SpriteComponent(const SpriteComponent&) = default;
-    SpriteComponent(const std::string& textureName = "None",
-                    const glm::vec4& colour = {1.0f, 1.0f, 1.0f, 1.0f},
-                    float tilingFactor = 1.0f) :
-        TextureName(textureName),
-        Colour(colour),
-        TilingFactor(tilingFactor) {};
-    SpriteComponent(const glm::vec4& colour) :
-        Colour(colour) {};
 };
+
+template <>
+struct MapR2C<Renderable::Sprite> {
+    using type = SpriteComponent;
+};
+template <>
+struct MapC2R<SpriteComponent> {
+    static constexpr Renderable type = Renderable::Sprite;
+};
+
+struct CircleComponent {
+    glm::vec4 Colour{1.0f, 1.0f, 1.0f, 1.0f};
+    float Thickness = 1.0f;
+    float Fade = 0.005f;
+
+    CircleComponent() = default;
+    CircleComponent(const CircleComponent&) = default;
+};
+
+template <>
+struct MapR2C<Renderable::Circle> {
+    using type = CircleComponent;
+};
+template <>
+struct MapC2R<CircleComponent> {
+    static constexpr Renderable type = Renderable::Circle;
+};
+
+struct RenderableComponent {
+    float LayerZ = 0.0f;
+    std::variant<SpriteComponent, CircleComponent> Component;
+
+    inline Renderable GetType() const {
+        return (Renderable)Component.index();
+    }
+
+public:
+    template <Renderable type, typename T = MapR2C<type>::type>
+    T& GetComponent() {
+        return std::get<T>(Component);
+    }
+    template <typename T>
+    T& GetComponent() {
+        return std::get<T>(Component);
+    }
+
+    template <Renderable type, typename T = MapR2C<type>::type>
+    T& SetComponent() {
+        return Component.emplace<(size_t)type>();
+    }
+    template <typename T, Renderable type = MapC2R<T>::type>
+    T& SetComponent() {
+        return Component.emplace<(size_t)type>();
+    }
+};
+// ---------------------------------------------------------------
 
 struct TransformComponent {
 
@@ -138,6 +209,6 @@ struct NativeScriptComponent {
 template <typename... Component>
 struct ComponentGroup {};
 
-using AllComponents = ComponentGroup<TransformComponent, SpriteComponent, CameraComponent, NativeScriptComponent>;
+using AllComponents = ComponentGroup<TransformComponent, RenderableComponent, CameraComponent, NativeScriptComponent>;
 
 } // namespace Mist

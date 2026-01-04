@@ -25,6 +25,7 @@ public:
 
     void OnStart();
     void OnUpdate(DeltaTime deltaTime);
+    void RenderRenderableEntities();
     void OnRender(DeltaTime deltaTime);
 
     // void OnStartEditor();

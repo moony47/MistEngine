@@ -222,8 +222,9 @@ void EditorLayer::RenderDebugPanel(DeltaTime deltaTime) {
     ImGui::Text("Application FPS: %.3f ms/frame (%.1f FPS)", deltaTime.GetMilliseconds(),
                 1.0f / deltaTime.GetSeconds());
     ImGui::Text("     Quads: %i", Mist::Renderer2D::GetStats().QuadCount);
-    ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().GetVertexCount());
-    ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().GetIndexCount());
+    ImGui::Text("   Circles: %i", Mist::Renderer2D::GetStats().CircleCount);
+    ImGui::Text("  Vertices: %i", Mist::Renderer2D::GetStats().VertexCount());
+    ImGui::Text("   Indices: %i", Mist::Renderer2D::GetStats().IndexCount());
     ImGui::Text("Draw Calls: %i", Mist::Renderer2D::GetStats().DrawCalls);
 
     ImGui::End();

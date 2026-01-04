@@ -2,10 +2,10 @@ Scene: Untitled
 PrimaryCamera: 7573241364504797796
 Entities:
   - Entity: 7573241364504797796
-    Tag: Camera
+    Name: Camera
     TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Position: [-2.087954, 1.9743148, 1.6070278]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       FixedAspectRatio: false
@@ -15,36 +15,39 @@ Entities:
         PerspectiveNear: 0.01
         PerspectiveFar: 1000
         OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
+        OrthographicNear: -5.2
+        OrthographicFar: 8
   - Entity: 14063947693120206113
-    Tag: Square
+    Name: Square
     TransformComponent:
-      Position: [2.1, 0, 0]
-      Rotation: [0.055850536, 0.2146755, -0.6003933]
-      Scale: [-1, 1, 1]
-    SpriteComponent:
-      Colour: [0.11973592, 0.969112, 0, 1]
+      Position: [-2.1813483, 2.112428, 0]
+      Rotation: [0, -0, 0]
+      Scale: [2.1799996, 2.1799996, 2.1799996]
+    RenderableComponent:
+      Type: 0
+      Colour: [0.007721901, 0, 1, 1]
       TilingFactor: 1
       TextureName: None
   - Entity: 11775440811618101538
-    Tag: Diamond
+    Name: Diamond
     TransformComponent:
-      Position: [0.5433712, -0.37315392, 0]
-      Rotation: [0.015707955, -1.314233, 7.3402435e-09]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Colour: [0.2, 0.7791507, 0.8, 1]
+      Position: [-2.114159, 2.0044544, 0.9931551]
+      Rotation: [0, 0, 0]
+      Scale: [4.160037, 4.159974, 4.1600356]
+    RenderableComponent:
+      Type: 0
+      Colour: [1, 0.62548256, 0, 1]
       TilingFactor: 1
       TextureName: Diamond
   - Entity: 652218804848011443
-    Tag: Star
+    Name: Star
     TransformComponent:
-      Position: [-3.2187455, 0.94522786, 0.5]
-      Rotation: [-0.11868247, -1.4901161e-08, -1.6528268]
-      Scale: [5, 5.399996, 1]
-    SpriteComponent:
-      Colour: [0.9111967, 0, 1, 1]
+      Position: [-1.9894266, 2.064054, 0.5]
+      Rotation: [0, 0, 0]
+      Scale: [3.0300004, 3.0299997, 3.0299997]
+    RenderableComponent:
+      Type: 0
+      Colour: [0.8880305, 0, 1, 1]
       TilingFactor: 1
       TextureName: Star
 Textures:

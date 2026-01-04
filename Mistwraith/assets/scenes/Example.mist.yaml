@@ -2,10 +2,10 @@ Scene: Untitled
 PrimaryCamera: 14496814304023940960
 Entities:
   - Entity: 14496814304023940960
-    Tag: Camera
+    Name: Camera
     TransformComponent:
-      Position: [0, 0, 3.0019784]
-      Rotation: [0, -0, 0]
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       FixedAspectRatio: false
@@ -15,68 +15,52 @@ Entities:
         PerspectiveNear: 0.01
         PerspectiveFar: 1000
         OrthographicSize: 10
-        OrthographicNear: -5
-        OrthographicFar: 5
+        OrthographicNear: -18
+        OrthographicFar: 16.1
   - Entity: 12321280383192116520
-    Tag: Diamond
+    Name: Diamond
     TransformComponent:
-      Position: [1.4161925, -2.0960598, 0]
+      Position: [-2.9482331, 0.071287096, 0]
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
-    SpriteComponent:
-      Colour: [0.11973592, 0.969112, 0, 1]
+    RenderableComponent:
+      Type: 0
+      Colour: [0.1235522, 1, 0, 1]
       TilingFactor: 1
       TextureName: Diamond
   - Entity: 3359567056575332137
-    Tag: Square
+    Name: Square
     TransformComponent:
-      Position: [0.89125204, 1.4142339, 0]
-      Rotation: [-0.7349423, -0, 0]
-      Scale: [1, 0.9999997, 0.9999997]
-    SpriteComponent:
-      Colour: [0.2, 0.7791507, 0.8, 1]
+      Position: [-0.89013153, 1.6591833, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 0.99999106]
+    RenderableComponent:
+      Type: 0
+      Colour: [0, 0.9189191, 1, 1]
       TilingFactor: 1
       TextureName: None
   - Entity: 6992193622590748839
-    Tag: Star
+    Name: Star
     TransformComponent:
-      Position: [-3.0557027, 0.25880247, -6.1035156e-05]
-      Rotation: [-0.4033088, -0.7610622, -1.1502186]
+      Position: [1.2942299, -0.3198617, -6.124412e-05]
+      Rotation: [0, -0, 0]
       Scale: [0.99999815, 0.99999815, 0.9999994]
-    SpriteComponent:
-      Colour: [0.8880309, 0.3712782, 0.25372308, 1]
+    RenderableComponent:
+      Type: 0
+      Colour: [1, 0, 0, 1]
       TilingFactor: 1
       TextureName: Star
-  - Entity: 1634272687247466064
-    Tag: Square_Copy
-    TransformComponent:
-      Position: [-1.4877517, -1.6614263, 6.1035156e-05]
-      Rotation: [1.1658851, -0.51850975, 0.6712849]
-      Scale: [0.9999995, 1.0000001, 1.0000001]
-    SpriteComponent:
-      Colour: [0.2, 0.7791507, 0.8, 1]
-      TilingFactor: 1
-      TextureName: None
   - Entity: 15708394014736012186
-    Tag: Star_Copy
+    Name: Circle
     TransformComponent:
-      Position: [0.3336194, -0.5365106, 0]
-      Rotation: [-0.9226489, 0.4256012, -1.5994637]
-      Scale: [0.9999997, 0.99999833, 0.99999905]
-    SpriteComponent:
-      Colour: [0.8880309, 0.3712782, 0.25372308, 1]
-      TilingFactor: 1
-      TextureName: Star
-  - Entity: 899983136496095465
-    Tag: Diamond_Copy
-    TransformComponent:
-      Position: [2.1, 0, 0]
-      Rotation: [0.32925233, 0.26637998, -1.5056199]
-      Scale: [0.99999917, 0.9999983, 0.9999989]
-    SpriteComponent:
-      Colour: [0.11973592, 0.969112, 0, 1]
-      TilingFactor: 1
-      TextureName: Diamond
+      Position: [-0.6651166, -0.60437405, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1.0000188, 1.000032, 0.99999887]
+    RenderableComponent:
+      Type: 1
+      Colour: [1, 0.6486486, 0, 1]
+      Thickness: 0.151
+      Fade: 0.005
 Textures:
   - Name: Diamond
     Path: assets\textures\Diamond.png

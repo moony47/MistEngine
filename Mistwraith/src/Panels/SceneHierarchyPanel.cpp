@@ -238,7 +238,6 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         ImGui::PopStyleColor();
     }
 
-    
     if (ImGui::Button("Add Component", {width, 0}))
         ImGui::OpenPopup("AddComponent");
 
@@ -248,7 +247,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::MenuItem("Sprite")) {
-            m_SelectionContext.AddComponent<SpriteComponent>();
+            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<Renderable::Sprite>();
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::MenuItem("Circle")) {
+            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<Renderable::Circle>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -304,30 +307,71 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         }
     });
 
-    DrawComponent<SpriteComponent>("Sprite", entity, [](Entity entity, SpriteComponent& comp) {
-        ImGui::ColorEdit4("Colour", value_ptr(comp.Colour));
+    DrawComponent<RenderableComponent>("Renderable", entity, [](Entity entity, RenderableComponent& comp) {
+        constexpr size_t NUM_TYPES = 2;
+        static const std::string TYPE_NAMES[NUM_TYPES] = {"Sprite", "Circle"};
 
-        ImGui::DragFloat("Tiling Factor", &comp.TilingFactor, 0.1f, 0.0f, 100.0f);
-
-        if (ImGui::BeginCombo("Texture", comp.TextureName.c_str())) {
-            for (auto iter = MIST_TEXLIB->Begin(); iter != MIST_TEXLIB->End(); iter++) {
-                bool isSelected = comp.TextureName == iter->first;
-                if (ImGui::Selectable(iter->first.c_str(), isSelected))
-                    comp.TextureName = iter->first;
+        Renderable type = comp.GetType();
+        if (ImGui::BeginCombo("Type", TYPE_NAMES[(size_t)type].c_str())) {
+            for (size_t i = 0; i < NUM_TYPES; i++) {
+                bool isSelected = (size_t)type == i;
+                bool selectionChanged = ImGui::Selectable(TYPE_NAMES[i].c_str(), isSelected);
+                if (!isSelected && selectionChanged) {
+                    switch (i) {
+                        case 0:
+                            comp.SetComponent<Renderable::Sprite>();
+                            break;
+                        case 1:
+                            comp.SetComponent<Renderable::Circle>();
+                            break;
+                    }
+                }
                 if (isSelected)
                     ImGui::SetItemDefaultFocus();
             }
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginDragDropTarget()) {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
-                std::filesystem::path path = g_AssetPath / (const wchar_t*)payload->Data;
-                comp.TextureName = path.stem().string();
-                if (!MIST_TEXLIB->Exists(comp.TextureName))
-                    MIST_TEXLIB->Create(comp.TextureName, path.string());
+        ImGui::InputFloat("Z Layer", &comp.LayerZ, 0.1f, 0.5f, "%.2f");
+
+        switch (type) {
+            case Renderable::Sprite: {
+                SpriteComponent& sprite = comp.GetComponent<SpriteComponent>();
+
+                ImGui::ColorEdit4("Colour", value_ptr(sprite.Colour));
+
+                ImGui::DragFloat("Tiling Factor", &sprite.TilingFactor, 0.1f, 0.0f, 100.0f);
+
+                if (ImGui::BeginCombo("Texture", sprite.TextureName.c_str())) {
+                    for (auto iter = MIST_TEXLIB->Begin(); iter != MIST_TEXLIB->End(); iter++) {
+                        bool isSelected = sprite.TextureName == iter->first;
+                        if (ImGui::Selectable(iter->first.c_str(), isSelected))
+                            sprite.TextureName = iter->first;
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::BeginDragDropTarget()) {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                        std::filesystem::path path = g_AssetPath / (const wchar_t*)payload->Data;
+                        sprite.TextureName = path.stem().string();
+                        if (!MIST_TEXLIB->Exists(sprite.TextureName))
+                            MIST_TEXLIB->Create(sprite.TextureName, path.string());
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                break;
             }
-            ImGui::EndDragDropTarget();
+            case Renderable::Circle: {
+                CircleComponent& circle = comp.GetComponent<CircleComponent>();
+
+                ImGui::ColorEdit4("Colour", value_ptr(circle.Colour));
+                ImGui::DragFloat("Thickness", &circle.Thickness, 0.025f, 0.001f, 1.0f);
+                ImGui::DragFloat("Fade", &circle.Fade, 0.00025f, 0.001f, 1.0f);
+                break;
+            }
         }
     });
 }
