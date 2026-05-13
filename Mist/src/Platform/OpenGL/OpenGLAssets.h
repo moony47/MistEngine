@@ -12,8 +12,7 @@ public:
 protected:
     void Unbind_Impl() override;
 
-    Ref<Shader> Create_Impl(const std::string& name,
-                            const std::string& shaderDirectory) override;
+    Ref<Shader> Create_Impl(const std::string& name, const std::string& shaderDirectory) override;
 };
 
 class OpenGLTexture2DLibrary : public Texture2DLibrary {

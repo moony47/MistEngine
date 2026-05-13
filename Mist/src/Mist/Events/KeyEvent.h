@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mist/Core/KeyCodes.h"
 #include "Event.h"
+#include "Mist/Core/KeyCodes.h"
 
 namespace Mist {
 

@@ -1,7 +1,25 @@
 #include "mistpch.h"
 #include "SceneSerialiser.h"
 
+#include "Components.h"
+#include "Entity.h"
 #include "Mist/Renderer/Texture.h"
+#include "Scene.h"
+#include <Mist/Cameras/SceneCamera.h>
+#include <Mist/Core/Core.h>
+#include <Mist/Core/Logger.h>
+#include <Mist/Core/UUID.h>
+#include <cstdint>
+#include <entt.hpp>
+#include <fstream>
+#include <glm/fwd.hpp>
+#include <sstream>
+#include <string>
+#include <yaml-cpp/emitter.h>
+#include <yaml-cpp/emittermanip.h>
+#include <yaml-cpp/emitterstyle.h>
+#include <yaml-cpp/node/node.h>
+#include <yaml-cpp/node/parse.h>
 
 using namespace YAML;
 
@@ -70,8 +88,8 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
 
     out << BeginMap;
 
-    out << Key << "Entity" << Value << entity.GetID();
-    out << Key << "Name" << Value << entity.GetName();
+    out << Key << "Entity" << Value << entity.UUID();
+    out << Key << "Name" << Value << entity.Name();
 
     if (entity.HasComponent<TransformComponent>()) {
         out << Key << "TransformComponent" << BeginMap;
@@ -112,7 +130,7 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
 
         switch (typeIndex) {
             case Renderable::Sprite: {
-                auto& sprite = renderable.GetComponent<SpriteComponent>();
+                SpriteComponent& sprite = renderable.GetComponent<SpriteComponent>();
                 out << Key << "Colour" << Value << sprite.Colour;
                 out << Key << "TilingFactor" << Value << sprite.TilingFactor;
                 out << Key << "TextureName" << Value << sprite.TextureName;
@@ -122,10 +140,18 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
                 break;
             }
             case Renderable::Circle: {
-                auto& circle = renderable.GetComponent<CircleComponent>();
+                CircleComponent& circle = renderable.GetComponent<CircleComponent>();
                 out << Key << "Colour" << Value << circle.Colour;
                 out << Key << "Thickness" << Value << circle.Thickness;
                 out << Key << "Fade" << Value << circle.Fade;
+                break;
+            }
+            case Renderable::Line: {
+                LineComponent& line = renderable.GetComponent<LineComponent>();
+                out << Key << "Point1" << Value << line.Point1;
+                out << Key << "Point2" << Value << line.Point2;
+                out << Key << "Colour" << Value << line.Colour;
+                out << Key << "Thickness" << Value << line.Thickness;
                 break;
             }
         }
@@ -249,6 +275,14 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
                         circleComp.Colour = renderableNode["Colour"].as<glm::vec4>();
                         circleComp.Thickness = renderableNode["Thickness"].as<float>();
                         circleComp.Fade = renderableNode["Fade"].as<float>();
+                        break;
+                    }
+                    case Renderable::Line: {
+                        LineComponent& lineComp = renderable.SetComponent<LineComponent>();
+                        lineComp.Point1 = renderableNode["Point1"].as<glm::vec3>();
+                        lineComp.Point2 = renderableNode["Point2"].as<glm::vec3>();
+                        lineComp.Colour = renderableNode["Colour"].as<glm::vec4>();
+                        lineComp.Thickness = renderableNode["Thickness"].as<float>();
                         break;
                     }
                 }

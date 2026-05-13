@@ -3,8 +3,8 @@
 #include "Mist/Renderer/Texture.h"
 #include "OpenGL/OpenGLRenderer.h"
 
-#include <string>
 #include <filesystem>
+#include <string>
 
 namespace Mist {
 

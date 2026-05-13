@@ -1,9 +1,13 @@
 #pragma once
 
+#ifndef FMT_HEADER_ONLY
+    #define FMT_HEADER_ONLY
+#endif
+
 #include "Mist/Core/Core.h"
 
-#include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
+#include "spdlog/spdlog.h"
 
 namespace Mist {
 

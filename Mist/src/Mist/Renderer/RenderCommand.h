@@ -29,6 +29,12 @@ public:
     inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) {
         s_RendererAPI->DrawIndexed(vertexArray, indexCount);
     }
+    inline static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount = 0) {
+        s_RendererAPI->DrawLines(vertexArray, vertexCount);
+    }
+    inline static void SetLineThickness(float thickness) {
+        s_RendererAPI->SetLineThickness(thickness);
+    }
 
 private:
     static RendererAPI* s_RendererAPI;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "RenderCommand.h"
 #include "Mist/Cameras/Camera.h"
+#include "RenderCommand.h"
 #include "Shader.h"
 
 namespace Mist {
@@ -16,13 +16,12 @@ public:
     static void BeginView(OrthographicCamera& camera);
     static void EndView();
 
-    static void Submit(const Ref<Shader>& shader,
-                       const Ref<VertexArray>& vertexArray,
-                       const glm::mat4& transform);
+    static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform);
 
     inline static RendererAPI::API GetAPI() {
         return RendererAPI::GetAPI();
     }
+
 private:
     struct SceneData {
         glm::mat4 VP;

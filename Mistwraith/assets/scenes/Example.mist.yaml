@@ -42,14 +42,15 @@ Entities:
   - Entity: 6992193622590748839
     Name: Star
     TransformComponent:
-      Position: [1.2942299, -0.3198617, -6.124412e-05]
+      Position: [-1.6044269, 2.4810863, 0]
       Rotation: [0, -0, 0]
       Scale: [0.99999815, 0.99999815, 0.9999994]
     RenderableComponent:
-      Type: 0
-      Colour: [1, 0, 0, 1]
-      TilingFactor: 1
-      TextureName: Star
+      Type: 2
+      Point1: [-1.6044269, 2.4810863, 0]
+      Point2: [0, 0, 0]
+      Colour: [0.7258687, 0, 1, 1]
+      Thickness: 4
   - Entity: 15708394014736012186
     Name: Circle
     TransformComponent:
@@ -64,5 +65,3 @@ Entities:
 Textures:
   - Name: Diamond
     Path: assets\textures\Diamond.png
-  - Name: Star
-    Path: assets\textures\Star.png

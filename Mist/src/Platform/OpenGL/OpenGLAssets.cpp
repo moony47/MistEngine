@@ -12,8 +12,7 @@ void OpenGLShaderLibrary::Unbind_Impl() {
     MIST_GLCALL(glUseProgram(0));
 }
 
-Ref<Shader> OpenGLShaderLibrary::Create_Impl(const std::string& name,
-                                             const std::string& shaderDirectory) {
+Ref<Shader> OpenGLShaderLibrary::Create_Impl(const std::string& name, const std::string& shaderDirectory) {
     return std::make_shared<OpenGLShader>(name, shaderDirectory);
 }
 

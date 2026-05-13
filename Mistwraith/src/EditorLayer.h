@@ -6,6 +6,8 @@
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/SceneHierarchyPanel.h"
 
+#include "Mist/Scripting/IManagedRuntime.h"
+
 namespace Mist {
 
 class EditorLayer : public Layer {
@@ -49,6 +51,8 @@ private:
     friend class ContentBrowserPanel;
 
 private:
+    Ref<IManagedRuntime> m_DotnetRuntime;
+
     // Edit/Play State
     enum class SceneState {
         Edit = 0,

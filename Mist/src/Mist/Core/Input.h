@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Mist/Core/Core.h"
 #include "Mist/Core/KeyCodes.h"
 #include "Mist/Core/MouseButtonCodes.h"
-#include "Mist/Core/Core.h"
 
 namespace Mist {
 

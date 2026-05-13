@@ -1,12 +1,14 @@
 #pragma once
 
-#include <GLAD/glad.h>
 #include "glm/glm.hpp"
+#include <GLAD/glad.h>
 
-#define MIST_GLASSERT(x) if (!(x)) __debugbreak()
-#define MIST_GLCALL(x) \
-    ClearGLErrors();\
-    x;\
+#define MIST_GLASSERT(x)                                                                                               \
+    if (!(x))                                                                                                          \
+    __debugbreak()
+#define MIST_GLCALL(x)                                                                                                 \
+    ClearGLErrors();                                                                                                   \
+    x;                                                                                                                 \
     MIST_GLASSERT(LogGLCall(#x, __FILE__, __LINE__))
 
 namespace Mist {

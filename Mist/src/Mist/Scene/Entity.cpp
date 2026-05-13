@@ -1,5 +1,7 @@
 #include "mistpch.h"
 #include "Entity.h"
+#include "Scene.h"
+#include <entt.hpp>
 
 namespace Mist {
 

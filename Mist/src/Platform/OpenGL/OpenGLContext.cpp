@@ -3,6 +3,10 @@
 
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
+#include <Mist/Core/Core.h>
+#include <Mist/Core/Logger.h>
+#include <Mist/Debug/Instrumentor.h>
+#include <string>
 
 namespace Mist {
 

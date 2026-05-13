@@ -3,7 +3,12 @@
 #include "Components.h"
 #include "Scene.h"
 
+#include <Mist/Core/Core.h>
+#include <Mist/Core/UUID.h>
+#include <cstdint>
 #include <entt.hpp>
+#include <string>
+#include <utility>
 
 namespace Mist {
 
@@ -13,16 +18,29 @@ public:
     Entity(Scene* scene, entt::entity entityID);
     Entity(const Entity&) = default;
 
-    UUID GetID() {
+    inline UUID UUID() {
         return GetComponent<IDComponent>().ID;
     }
-    const std::string& GetName() {
+    inline const std::string& Name() {
         return GetComponent<IDComponent>().Name;
+    }
+    inline TransformComponent& Transform() {
+        return GetComponent<TransformComponent>();
     }
 
     template <typename T>
     bool HasComponent() {
         return m_Scene->m_Registry.any_of<T>(m_EntityID);
+    }
+    template <>
+    bool HasComponent<SpriteComponent>() {
+        auto* ptr = TryGetComponent<RenderableComponent>();
+        return ptr && ptr->GetType() == Renderable::Sprite;
+    }
+    template <>
+    bool HasComponent<CircleComponent>() {
+        auto* ptr = TryGetComponent<RenderableComponent>();
+        return ptr && ptr->GetType() == Renderable::Circle;
     }
 
     template <typename T>
@@ -36,10 +54,6 @@ public:
     template <typename T>
     T* TryGetComponent() {
         return m_Scene->m_Registry.try_get<T>(m_EntityID);
-    }
-
-    inline TransformComponent& Transform() {
-        return GetComponent<TransformComponent>();
     }
 
     template <typename T, typename... Args>

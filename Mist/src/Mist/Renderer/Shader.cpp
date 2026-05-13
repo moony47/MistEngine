@@ -37,8 +37,7 @@ Ref<Shader> ShaderLibrary::Get(const std::string& name) {
     return m_Shaders[name];
 }
 
-Ref<Shader> ShaderLibrary::Create(const std::string& name,
-                                  const std::string& shaderDirectory) {
+Ref<Shader> ShaderLibrary::Create(const std::string& name, const std::string& shaderDirectory) {
     MIST_PROFILE_FUNCTION();
 
     MIST_CORE_ASSERT(!ShaderExists(name), "[ShaderLibrary::Create] Shader already exists");

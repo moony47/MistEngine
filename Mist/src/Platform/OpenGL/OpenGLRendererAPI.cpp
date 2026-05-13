@@ -26,8 +26,18 @@ void OpenGLRendererAPI::Clear() {
 
 void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount) {
     vertexArray->Bind();
-    MIST_GLCALL(glDrawElements(GL_TRIANGLES, indexCount ? indexCount : (uint32_t)vertexArray->GetIndexBuffer()->GetCount(),
+    MIST_GLCALL(glDrawElements(GL_TRIANGLES,
+                               indexCount ? indexCount : (uint32_t)vertexArray->GetIndexBuffer()->GetCount(),
                                GL_UNSIGNED_INT, nullptr));
+}
+
+void OpenGLRendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount) {
+    vertexArray->Bind();
+    MIST_GLCALL(glDrawArrays(GL_LINES, 0, vertexCount));
+}
+
+void OpenGLRendererAPI::SetLineThickness(float thickness) {
+    MIST_GLCALL(glLineWidth(thickness));
 }
 
 } // namespace Mist

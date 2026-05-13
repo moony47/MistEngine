@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Mist.h>
-//using namespace Mist;
+
 namespace Mist {
 
 class CameraController : public ScriptableEntity {

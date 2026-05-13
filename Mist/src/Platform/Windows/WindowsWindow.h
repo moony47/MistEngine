@@ -2,12 +2,11 @@
 
 #include "Mist/Renderer/GraphicsContext.h"
 
-#include "Mist/Core/Window.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Core/Window.h"
 
-#include <ImGui/imgui.h>
 #include <GLFW/glfw3.h>
-
+#include <ImGui/imgui.h>
 
 namespace Mist {
 

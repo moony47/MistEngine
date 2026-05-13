@@ -2,7 +2,10 @@
 #include "OpenGLFramebuffer.h"
 
 #include <GLAD/glad.h>
-#include <glm/common.hpp>
+#include <Mist/Core/Core.h>
+#include <Mist/Renderer/Framebuffer.h>
+#include <algorithm>
+#include <cstdint>
 
 namespace Mist {
 
@@ -56,7 +59,7 @@ static void AttachDepthTexture(
 }
 
 static void CreateTextures(bool multisampled, uint32_t* outAttachmentIDs, size_t count) {
-    glCreateTextures(TextureTarget(multisampled), (GLsizei) count, outAttachmentIDs);
+    glCreateTextures(TextureTarget(multisampled), (GLsizei)count, outAttachmentIDs);
 }
 
 static void BindTexture(bool multisampled, uint32_t attachmentID) {
@@ -187,7 +190,8 @@ int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
 }
 
 void OpenGLFramebuffer::ClearColourAttachment(size_t index, int clearValue) {
-    MIST_CORE_ASSERT(index < m_ColourAttachments.size(), "[OpenGLFramebuffer::ClearColourAttachment] Attachment index out of range");
+    MIST_CORE_ASSERT(index < m_ColourAttachments.size(),
+                     "[OpenGLFramebuffer::ClearColourAttachment] Attachment index out of range");
 
     auto& spec = m_ColourAttachmentSpecs[index];
     glClearTexImage(m_ColourAttachments[index], 0, Utils::GLFormat(spec.TextureFormat), GL_INT, &clearValue);

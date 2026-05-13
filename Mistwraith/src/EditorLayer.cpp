@@ -1,9 +1,10 @@
-#include "CameraController.h"
 #include "EditorLayer.h"
+#include "CameraController.h"
 
-#include "Mist/Maths/Maths.h"
 #include "Mist/Scene/SceneSerialiser.h"
 #include "Mist/Utils/PlatformUtils.h"
+
+#include "Mist/Scripting/DotNetRuntime.h"
 
 #include <ImGuizmo.h>
 
@@ -29,6 +30,9 @@ void EditorLayer::OnAttach() {
         {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth});
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
+    m_DotnetRuntime = CreateRef<DotNetRuntime>();
+    m_DotnetRuntime->Initialize("D:/dev/MistEngine/ScriptEngine/bin/Release/net8.0/ScriptEngine.dll");
+
     // Create scene
     auto cmdLineArgs = MIST_APP.GetCommandLineArgs();
     if (cmdLineArgs.Count > 1) {
@@ -37,7 +41,9 @@ void EditorLayer::OnAttach() {
     } else
         NewScene();
 
-    // m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+    Entity en = m_ActiveScene->CreateEntity({}, "MovingEntity");
+    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>();
+    script.ScriptClassName = "SimpleMovement";
 
     m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
     m_ContentBrowserPanel.SetContext(this);
@@ -96,7 +102,7 @@ void EditorLayer::FindHoveredEntity() {
 }
 
 void EditorLayer::NewScene() {
-    m_EditorScene = CreateRef<Scene>();
+    m_EditorScene = CreateRef<Scene>(m_DotnetRuntime);
     m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
     m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
     m_EditorScenePath = std::filesystem::path();
@@ -325,7 +331,7 @@ void EditorLayer::RenderViewportPanel(DeltaTime deltaTime) {
 void EditorLayer::RenderUIToolbar() {
     bool showPlayBorder = m_SceneState == SceneState::Play;
     if (showPlayBorder)
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05, 0.5, 0.1, 1.0));
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05f, 0.5f, 0.1f, 1.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));

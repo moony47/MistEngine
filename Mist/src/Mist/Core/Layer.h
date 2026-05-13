@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Mist/Core/Core.h"
-#include "Mist/Events/EventSystem.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Events/EventSystem.h"
 
 namespace Mist {
 

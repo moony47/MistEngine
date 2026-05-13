@@ -1,6 +1,7 @@
 #pragma once
 #include "Mist/Cameras/SceneCamera.h"
 #include "Mist/Core/UUID.h"
+#include "Mist/Scripting/ManagedScript.h"
 
 #include <glm/glm.hpp>
 #include <string>
@@ -35,7 +36,8 @@ struct IDComponent {
 //   3:  auto& sprite = renderable.SetComponent<Renderable::Sprite, SpriteComponent>();
 enum class Renderable : size_t {
     Sprite = 0,
-    Circle = 1
+    Circle = 1,
+    Line = 2
 };
 
 template <Renderable T>
@@ -79,15 +81,33 @@ struct MapC2R<CircleComponent> {
     static constexpr Renderable type = Renderable::Circle;
 };
 
+struct LineComponent {
+    glm::vec3 Point1 = glm::vec3(0.0f);
+    glm::vec3 Point2 = glm::vec3(0.0f);
+    glm::vec4 Colour{1.0f, 1.0f, 1.0f, 1.0f};
+    float Thickness = 1.0f;
+
+    LineComponent() = default;
+    LineComponent(const LineComponent&) = default;
+};
+
+template <>
+struct MapR2C<Renderable::Line> {
+    using type = LineComponent;
+};
+template <>
+struct MapC2R<LineComponent> {
+    static constexpr Renderable type = Renderable::Line;
+};
+
 struct RenderableComponent {
     float LayerZ = 0.0f;
-    std::variant<SpriteComponent, CircleComponent> Component;
+    std::variant<SpriteComponent, CircleComponent, LineComponent> Component;
 
     inline Renderable GetType() const {
         return (Renderable)Component.index();
     }
 
-public:
     template <Renderable type, typename T = MapR2C<type>::type>
     T& GetComponent() {
         return std::get<T>(Component);
@@ -206,9 +226,19 @@ struct NativeScriptComponent {
     }
 };
 
+struct ManagedScriptComponent {
+    ManagedScript* Instance = nullptr;  // Pointer to C# managed script instance
+    std::string ScriptClassName;        // Fully qualified C# class name (e.g., "GameScripts.PlayerController")
+    UUID ScriptID;                      // Unique identifier for this script
+    bool HasBeenCreated = false;        // Track if OnCreate() has been called
+
+    ManagedScriptComponent() = default;
+    ManagedScriptComponent(const ManagedScriptComponent&) = default;
+};
+
 template <typename... Component>
 struct ComponentGroup {};
 
-using AllComponents = ComponentGroup<TransformComponent, RenderableComponent, CameraComponent, NativeScriptComponent>;
+using AllComponents = ComponentGroup<TransformComponent, RenderableComponent, CameraComponent, NativeScriptComponent, ManagedScriptComponent>;
 
 } // namespace Mist

@@ -1,9 +1,12 @@
 #pragma once
 
-#include <Mist.h>
-
+#include <Mist/Renderer/Texture.h>
 #include <filesystem>
+#include <imgui.h>
 
+#include <Mist/Core/Core.h>
+#include <Mist/Renderer/Texture.h>
+#include <imgui.h>
 namespace Mist {
 
 class EditorLayer;

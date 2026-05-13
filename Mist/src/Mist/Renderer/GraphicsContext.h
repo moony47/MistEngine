@@ -8,4 +8,4 @@ public:
     virtual void SwapBuffers() = 0;
 };
 
-} // namespace Mists
+} // namespace Mist

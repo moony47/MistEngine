@@ -34,7 +34,7 @@ public:
         return -m_AspectRatio * m_ZoomLevel;
     }
     inline float GetRight() {
-        return m_AspectRatio* m_ZoomLevel;
+        return m_AspectRatio * m_ZoomLevel;
     }
     inline float GetBottom() {
         return -m_ZoomLevel;

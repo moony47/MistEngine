@@ -4,6 +4,9 @@
 #include "Mist/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLUniformBuffer.h"
 
+#include "RendererAPI.h"
+#include <Mist/Core/Core.h>
+#include <cstdint>
 namespace Mist {
 
 Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding) {

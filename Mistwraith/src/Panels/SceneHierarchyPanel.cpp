@@ -12,7 +12,8 @@ extern const std::filesystem::path g_AssetPath;
 static bool DrawVec3Control(const std::string& label,
                             glm::vec3& values,
                             float resetValue = 0.0f,
-                            float columnWidth = 100.0f) {
+                            float columnWidth = 100.0f,
+                            bool readonly = false) {
     bool modified = false;
     float lineHeight = 24.0f;
     ImVec2 buttonSize = {lineHeight + 3.0f, lineHeight};
@@ -28,7 +29,7 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::Text(label.c_str());
     ImGui::NextColumn();
 
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0, 0});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0, 3.0f});
 
     float barWidth = ImGui::CalcItemWidth() / 3;
 
@@ -38,7 +39,8 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.25f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
     ImGui::PushFont(boldFont);
-    if (ImGui::Button("X", buttonSize)) {
+
+    if (ImGui::Button("X", buttonSize) && !readonly) {
         modified = true;
         values.x = resetValue;
     }
@@ -46,7 +48,8 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    modified |= ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+    modified |= ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f",
+                                 readonly ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None);
 
     ImGui::PopItemWidth();
     ImGui::SameLine();
@@ -57,7 +60,7 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.75f, 0.4f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.65f, 0.3f, 1.0f));
     ImGui::PushFont(boldFont);
-    if (ImGui::Button("Y", buttonSize)) {
+    if (ImGui::Button("Y", buttonSize) && !readonly) {
         modified = true;
         values.y = resetValue;
     }
@@ -65,7 +68,8 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    modified |= ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+    modified |= ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f",
+                                 readonly ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None);
 
     ImGui::PopItemWidth();
     ImGui::SameLine();
@@ -76,7 +80,7 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.8f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
     ImGui::PushFont(boldFont);
-    if (ImGui::Button("Z", buttonSize)) {
+    if (ImGui::Button("Z", buttonSize) && !readonly) {
         modified = true;
         values.z = resetValue;
     }
@@ -84,7 +88,8 @@ static bool DrawVec3Control(const std::string& label,
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    modified |= ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+    modified |= ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f",
+                                 readonly ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None);
 
     ImGui::PopItemWidth();
 
@@ -247,11 +252,15 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::MenuItem("Sprite")) {
-            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<Renderable::Sprite>();
+            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<SpriteComponent>();
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::MenuItem("Circle")) {
-            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<Renderable::Circle>();
+            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<CircleComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::MenuItem("Line")) {
+            m_SelectionContext.AddComponent<RenderableComponent>().SetComponent<LineComponent>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -308,8 +317,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     });
 
     DrawComponent<RenderableComponent>("Renderable", entity, [](Entity entity, RenderableComponent& comp) {
-        constexpr size_t NUM_TYPES = 2;
-        static const std::string TYPE_NAMES[NUM_TYPES] = {"Sprite", "Circle"};
+        constexpr size_t NUM_TYPES = 3;
+        static const std::string TYPE_NAMES[NUM_TYPES] = {"Sprite", "Circle", "Line"};
 
         Renderable type = comp.GetType();
         if (ImGui::BeginCombo("Type", TYPE_NAMES[(size_t)type].c_str())) {
@@ -317,12 +326,15 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 bool isSelected = (size_t)type == i;
                 bool selectionChanged = ImGui::Selectable(TYPE_NAMES[i].c_str(), isSelected);
                 if (!isSelected && selectionChanged) {
-                    switch (i) {
-                        case 0:
+                    switch ((Renderable)i) {
+                        case Renderable::Sprite:
                             comp.SetComponent<Renderable::Sprite>();
                             break;
-                        case 1:
+                        case Renderable::Circle:
                             comp.SetComponent<Renderable::Circle>();
+                            break;
+                        case Renderable::Line:
+                            comp.SetComponent<Renderable::Line>();
                             break;
                     }
                 }
@@ -334,12 +346,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
         ImGui::InputFloat("Z Layer", &comp.LayerZ, 0.1f, 0.5f, "%.2f");
 
-        switch (type) {
+        switch (comp.GetType()) {
             case Renderable::Sprite: {
                 SpriteComponent& sprite = comp.GetComponent<SpriteComponent>();
 
                 ImGui::ColorEdit4("Colour", value_ptr(sprite.Colour));
-
                 ImGui::DragFloat("Tiling Factor", &sprite.TilingFactor, 0.1f, 0.0f, 100.0f);
 
                 if (ImGui::BeginCombo("Texture", sprite.TextureName.c_str())) {
@@ -370,6 +381,17 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::ColorEdit4("Colour", value_ptr(circle.Colour));
                 ImGui::DragFloat("Thickness", &circle.Thickness, 0.025f, 0.001f, 1.0f);
                 ImGui::DragFloat("Fade", &circle.Fade, 0.00025f, 0.001f, 1.0f);
+                break;
+            }
+            case Renderable::Line: {
+                LineComponent& line = comp.GetComponent<LineComponent>();
+
+                line.Point1 = entity.Transform().GetPosition();
+                DrawVec3Control("Point1", line.Point1, 0.0f, 100.0f, true);
+                DrawVec3Control("Point2", line.Point2, 0.0f, 100.0f, false);
+
+                ImGui::ColorEdit4("Colour", value_ptr(line.Colour));
+                ImGui::DragFloat("Thickness", &line.Thickness, 0.5f, 0.1f, 100.0f);
                 break;
             }
         }

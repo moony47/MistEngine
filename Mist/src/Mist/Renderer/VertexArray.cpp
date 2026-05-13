@@ -1,5 +1,5 @@
-#include "mistpch.h"
 #include "VertexArray.h"
+#include "mistpch.h"
 
 #include "OpenGL/OpenGLVertexArray.h"
 #include "Renderer.h"

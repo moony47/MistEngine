@@ -84,7 +84,7 @@ public:
                              bool addToLib = true);
 
     void Remove(const std::string& name, bool removeSubTextures = false);
-    
+
     inline const std::string& GetRootTexture(const std::string& name) {
         std::string& source = m_Textures[name].second;
         if (source.empty())

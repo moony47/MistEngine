@@ -81,7 +81,7 @@ private:
 
 class AppTickEvent : public Event {
 public:
-    AppTickEvent(){
+    AppTickEvent() {
     }
 
     EVENT_CLASS_TYPE(AppTick)

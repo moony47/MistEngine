@@ -32,15 +32,15 @@ inline std::ostream& operator<<(std::ostream& os, MouseButton mouseCode) {
         case MouseButton::Last:
             os << "LastMouseButton";
             break;
-        //case MouseButton::Button1:
-        //    os << "MouseButton1";
-        //    break;
-        //case MouseButton::Button2:
-        //    os << "MouseButton2";
-        //    break;
-        //case MouseButton::Button3:
-        //    os << "MouseButton3";
-        //    break;
+        // case MouseButton::Button1:
+        //     os << "MouseButton1";
+        //     break;
+        // case MouseButton::Button2:
+        //     os << "MouseButton2";
+        //     break;
+        // case MouseButton::Button3:
+        //     os << "MouseButton3";
+        //     break;
         case MouseButton::Button4:
             os << "MouseButton4";
             break;
@@ -53,9 +53,9 @@ inline std::ostream& operator<<(std::ostream& os, MouseButton mouseCode) {
         case MouseButton::Button7:
             os << "MouseButton7";
             break;
-        //case MouseButton::Button8:
-        //    os << "MouseButton8";
-        //    break;
+            // case MouseButton::Button8:
+            //     os << "MouseButton8";
+            //     break;
     }
     return os;
 }

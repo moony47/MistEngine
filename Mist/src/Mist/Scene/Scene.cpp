@@ -1,12 +1,22 @@
-#include "mistpch.h"
 #include "Scene.h"
+#include "mistpch.h"
 
-#include "Mist/Renderer/Texture.h"
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
 #include "Mist/Scene/ScriptableEntity.h"
 
-#include <glm/ext/matrix_float4x4.hpp>
+#include <Mist/Cameras/Camera.h>
+#include <Mist/Cameras/EditorCamera.h>
+#include <Mist/Core/Core.h>
+#include <Mist/Core/DeltaTime.h>
+#include <Mist/Core/UUID.h>
+#include <Mist/Events/Event.h>
+#include <Mist/Renderer/Renderer2D.h>
+#include <cstdint>
+#include <entt.hpp>
+#include <glm/fwd.hpp>
+#include <string>
+#include <unordered_map>
 
 namespace Mist {
 
@@ -49,12 +59,13 @@ static void CopyComponentsIfExist(ComponentGroup<Component...>, Entity dst, Enti
     CopyComponentsIfExist<Component...>(dst, src);
 }
 
-Scene::Scene() {};
+Scene::Scene(Ref<IManagedRuntime> runtime) :
+    m_ManagedRuntime(runtime) {};
 
 Scene::~Scene() {};
 
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
-    Ref<Scene> newScene = CreateRef<Scene>();
+    Ref<Scene> newScene = CreateRef<Scene>(other->m_ManagedRuntime);
 
     newScene->m_ViewportWidth = other->m_ViewportWidth;
     newScene->m_ViewportHeight = other->m_ViewportHeight;
@@ -80,15 +91,35 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 void Scene::OnStart() {};
 
 void Scene::OnUpdate(DeltaTime deltaTime) {
-    m_Registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& script) {
-        if (!script.Instance) {
-            script.Instance = script.InstantiateScript();
-            script.Instance->m_Entity = Entity{this, entity};
-            script.Instance->OnCreate();
-        }
+    m_Registry.view<NativeScriptComponent>().each(
+        [this, deltaTime](entt::entity entity, NativeScriptComponent& script) {
+            if (!script.Instance) {
+                script.Instance = script.InstantiateScript();
+                script.Instance->m_Entity = Entity{this, entity};
+                script.Instance->OnCreate();
+            }
 
-        script.Instance->OnUpdate(deltaTime);
-    });
+            script.Instance->OnUpdate(deltaTime);
+        });
+
+    m_Registry.view<ManagedScriptComponent>().each(
+        [this, deltaTime](entt::entity entity, ManagedScriptComponent& script) {
+            // Create instance on first frame
+            if (!script.Instance && !script.HasBeenCreated) {
+                script.Instance = m_ManagedRuntime->CreateInstance(script.ScriptClassName);
+                if (script.Instance) {
+                    script.HasBeenCreated = true;
+                    script.Instance->OnCreate();
+                } else {
+                    MIST_ERROR("Failed to create script: {0}", script.ScriptClassName);
+                    return;
+                }
+            }
+
+            // Call OnUpdate every frame
+            if (script.Instance)
+                script.Instance->OnUpdate(deltaTime);
+        });
 }
 
 void Scene::RenderRenderableEntities() {
@@ -106,12 +137,25 @@ void Scene::RenderRenderableEntities() {
                 SpriteComponent sprite = renderable.GetComponent<SpriteComponent>();
                 Renderer2D::DrawQuad(
                     {(int)entity, transform.GetTransform(), sprite.Colour, sprite.TextureName, sprite.TilingFactor});
+                auto& matrix = transform.GetTransform();
+                Renderer2D::DrawRect({
+                    (int)entity, matrix * glm::vec4{ 0.5f,  0.5f, 0.0f, 1.0f},
+                    matrix * glm::vec4{-0.5f,  0.5f, 0.0f, 1.0f},
+                       matrix * glm::vec4{-0.5f, -0.5f, 0.0f, 1.0f},
+                    matrix * glm::vec4{ 0.5f, -0.5f, 0.0f, 1.0f},
+                       glm::vec4(0.2f, 0.8f, 0.3f, 1.0f), 1.0f
+                });
                 break;
             }
             case Renderable::Circle: {
                 CircleComponent circle = renderable.GetComponent<CircleComponent>();
                 Renderer2D::DrawCircle(
                     {(int)entity, transform.GetTransform(), circle.Colour, circle.Thickness, circle.Fade});
+                break;
+            }
+            case Renderable::Line: {
+                LineComponent line = renderable.GetComponent<LineComponent>();
+                Renderer2D::DrawLine({(int)entity, line.Point1, line.Point2, line.Colour, line.Thickness});
                 break;
             }
         }
@@ -180,7 +224,7 @@ Entity Scene::CreateEntity(const UUID uuid, const std::string& name) {
 
 Entity Scene::DuplicateEntity(Entity entity) {
     Entity newEntity = CreateEntity();
-    newEntity.GetComponent<IDComponent>().Name = entity.GetName() + "_Copy";
+    newEntity.GetComponent<IDComponent>().Name = entity.Name() + "_Copy";
     CopyComponentsIfExist(AllComponents(), newEntity, entity);
     return newEntity;
 }
@@ -220,5 +264,7 @@ template <>
 void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {};
 template <>
 void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {};
+template <>
+void Scene::OnComponentAdded<ManagedScriptComponent>(Entity entity, ManagedScriptComponent& component) {};
 
 } // namespace Mist

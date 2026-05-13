@@ -10,15 +10,15 @@
 
 namespace Mist {
 
-    struct ApplicationCommandLineArgs {
+struct ApplicationCommandLineArgs {
     int Count = 0;
-        char** Args = nullptr;
+    char** Args = nullptr;
 
-        const char* operator[](int index) const {
-            MIST_CORE_ASSERT(index < Count, "[ApplicationCommandLineArgs::operator[]] Index is out of range");
-            return Args[index];
-        }
-    };
+    const char* operator[](int index) const {
+        MIST_CORE_ASSERT(index < Count, "[ApplicationCommandLineArgs::operator[]] Index is out of range");
+        return Args[index];
+    }
+};
 
 class Application {
 public:

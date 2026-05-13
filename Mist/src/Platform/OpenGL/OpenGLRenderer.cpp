@@ -4,8 +4,8 @@
 
 #include <GLAD/glad.h>
 
-#include "OpenGLVertexArray.h"
 #include "OpenGLShader.h"
+#include "OpenGLVertexArray.h"
 
 namespace Mist {
 

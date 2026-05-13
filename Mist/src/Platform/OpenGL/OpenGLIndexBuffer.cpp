@@ -27,4 +27,4 @@ void OpenGLIndexBuffer::Unbind() const {
     MIST_GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-}
+} // namespace Mist

@@ -3,8 +3,8 @@
 
 #include <random>
 
-#include <unordered_map>
 
+#include <cstdint>
 namespace Mist {
 
 static std::random_device s_RandomDevice;

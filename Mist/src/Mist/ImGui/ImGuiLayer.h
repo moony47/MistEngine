@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mist/Core/Layer.h"
 #include "Mist/Core/DeltaTime.h"
+#include "Mist/Core/Layer.h"
 
 namespace Mist {
 

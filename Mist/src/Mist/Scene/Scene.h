@@ -5,6 +5,7 @@
 #include "Mist/Core/UUID.h"
 #include "Mist/Events/Event.h"
 #include "Mist/Renderer/Renderer2D.h"
+#include "Mist/Scripting/IManagedRuntime.h"
 
 #include <entt.hpp>
 
@@ -14,7 +15,7 @@ class Entity;
 
 class Scene {
 public:
-    Scene();
+    Scene(Ref<IManagedRuntime> runtime);
     ~Scene();
 
     static Ref<Scene> Copy(Ref<Scene> other);
@@ -48,6 +49,8 @@ private:
 
 private:
     entt::registry m_Registry;
+
+    Ref<IManagedRuntime> m_ManagedRuntime;
 
     Entity* m_PrimaryCameraEntity = nullptr;
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
