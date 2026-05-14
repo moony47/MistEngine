@@ -227,18 +227,23 @@ struct NativeScriptComponent {
 };
 
 struct ManagedScriptComponent {
-    ManagedScript* Instance = nullptr;  // Pointer to C# managed script instance
-    std::string ScriptClassName;        // Fully qualified C# class name (e.g., "GameScripts.PlayerController")
-    UUID ScriptID;                      // Unique identifier for this script
-    bool HasBeenCreated = false;        // Track if OnCreate() has been called
+    ManagedScript* Instance = nullptr; // Pointer to C# managed script instance
+    std::string ScriptClassName;       // Fully qualified C# class name (e.g., "GameScripts.PlayerController")
+    UUID ScriptID;                     // Unique identifier for this script
+    bool HasBeenCreated = false;       // Track if OnCreate() has been called
 
-    ManagedScriptComponent() = default;
+    ManagedScriptComponent(std::string className) :
+        ScriptClassName(className) {};
     ManagedScriptComponent(const ManagedScriptComponent&) = default;
 };
 
 template <typename... Component>
 struct ComponentGroup {};
 
-using AllComponents = ComponentGroup<TransformComponent, RenderableComponent, CameraComponent, NativeScriptComponent, ManagedScriptComponent>;
+using AllComponents = ComponentGroup<TransformComponent,
+                                     RenderableComponent,
+                                     CameraComponent,
+                                     NativeScriptComponent,
+                                     ManagedScriptComponent>;
 
 } // namespace Mist

@@ -30,8 +30,16 @@ void EditorLayer::OnAttach() {
         {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth});
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
+#ifdef MIST_DEBUG
     m_DotnetRuntime = CreateRef<DotNetRuntime>();
-    m_DotnetRuntime->Initialize("D:/dev/MistEngine/ScriptEngine/bin/Release/net8.0/ScriptEngine.dll");
+    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Debug\\net10.0\\ScriptEngine.dll");
+#elif MIST_RELEASE
+    m_DotnetRuntime = CreateRef<DotNetRuntime>();
+    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Release\\net10.0\\ScriptEngine.dll");
+#elif MIST_DIST
+    m_DotnetRuntime = CreateRef<DotNetRuntime>();
+    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Dist\\net10.0\\ScriptEngine.dll");
+#endif
 
     // Create scene
     auto cmdLineArgs = MIST_APP.GetCommandLineArgs();
@@ -42,8 +50,7 @@ void EditorLayer::OnAttach() {
         NewScene();
 
     Entity en = m_ActiveScene->CreateEntity({}, "MovingEntity");
-    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>();
-    script.ScriptClassName = "SimpleMovement";
+    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>("Mist.Scripting.SimpleMovement");
 
     m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
     m_ContentBrowserPanel.SetContext(this);
@@ -55,7 +62,7 @@ void EditorLayer::OnDetach() {
 
 void EditorLayer::OnUpdate(DeltaTime deltaTime) {
     MIST_PROFILE_FUNCTION();
-    if (m_ViewportFocussed)
+    if (m_SceneState == SceneState::Play)
         m_ActiveScene->OnUpdate(deltaTime);
 }
 

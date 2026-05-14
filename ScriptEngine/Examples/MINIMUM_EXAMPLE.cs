@@ -1,3 +1,5 @@
+namespace Mist.Scripting;
+
 /*
  * MINIMUM REQUIRED TO WRITE A C# SCRIPT
  * ======================================
@@ -5,12 +7,10 @@
  * That's it. A user needs just this:
  */
 
-public class MyScript : ManagedScript
-{
-    public override void OnUpdate(float deltaTime)
-    {
-        // Your game logic here
-    }
+public class MyScript : ManagedScript {
+	public override void OnUpdate (float deltaTime) {
+		// Your game logic here
+	}
 }
 
 /*
@@ -21,33 +21,28 @@ public class MyScript : ManagedScript
  * FULL EXAMPLE WITH ALL METHODS:
  */
 
-public class FullExample : ManagedScript
-{
-    private float timer = 0f;
+public class FullExample : ManagedScript {
+	private float timer = 0f;
 
-    public override void OnCreate()
-    {
-        // Called once when the script instance is created
-        System.Console.WriteLine("Script initialized!");
-    }
+	public override void OnCreate () {
+		// Called once when the script instance is created
+		System.Console.WriteLine("Script initialized!");
+	}
 
-    public override void OnUpdate(float deltaTime)
-    {
-        // Called every frame
-        timer += deltaTime;
-        
-        if (timer > 1f)
-        {
-            System.Console.WriteLine("One second has passed!");
-            timer = 0f;
-        }
-    }
+	public override void OnUpdate (float deltaTime) {
+		// Called every frame
+		timer += deltaTime;
 
-    public override void OnDestroy()
-    {
-        // Called when the entity is destroyed
-        System.Console.WriteLine("Script cleanup!");
-    }
+		if (timer > 1f) {
+			System.Console.WriteLine("One second has passed!");
+			timer = 0f;
+		}
+	}
+
+	public override void OnDestroy () {
+		// Called when the entity is destroyed
+		System.Console.WriteLine("Script cleanup!");
+	}
 }
 
 /*

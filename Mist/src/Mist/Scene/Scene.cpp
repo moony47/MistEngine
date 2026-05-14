@@ -1,5 +1,5 @@
-#include "Scene.h"
 #include "mistpch.h"
+#include "Scene.h"
 
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
@@ -109,7 +109,6 @@ void Scene::OnUpdate(DeltaTime deltaTime) {
                 script.Instance = m_ManagedRuntime->CreateInstance(script.ScriptClassName);
                 if (script.Instance) {
                     script.HasBeenCreated = true;
-                    script.Instance->OnCreate();
                 } else {
                     MIST_ERROR("Failed to create script: {0}", script.ScriptClassName);
                     return;

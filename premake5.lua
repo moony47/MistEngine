@@ -1,7 +1,8 @@
 workspace "MistEngine"
     architecture "x64"
     startproject "Mistwraith"
-
+    
+    platforms { "x64" }
     configurations {
         "Debug",
         "Release",
@@ -53,13 +54,29 @@ group "Dependencies"
     include "Mist/vendor/yaml-cpp"
 
 group ""
+    project "ScriptEngine"
+        location "ScriptEngine"
+        architecture "x64"
+        kind "SharedLib"
+        language "C#"
+        dotnetframework "net10.0"
+        clr "Unsafe"
+        
+        files {
+            "%{prj.name}/**.cs",
+        }
+
+        filter "platforms:AnyCPU"
+            vsprops {
+		        GenerateRuntimeConfigurationFiles = "true"
+	        }
+
     project "Mist"
         location "Mist"
         kind "StaticLib"
         language "C++"
         cppdialect "C++23"
         staticruntime "off"
-        
 
         targetdir ("bin/" .. outputdir .. "/%{prj.name}")
         objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -118,7 +135,7 @@ group ""
         }
 
         filter "files:Mist/vendor/ImGuizmo/**.cpp"
-            flags{ "NoPCH" }
+            enablepch "on"
 
         filter "system:windows"
             systemversion "latest"
@@ -166,6 +183,8 @@ group ""
                 "%{Library.SPIRV_Cross_Release}",
                 "%{Library.SPIRV_Cross_GLSL_Release}",
             }
+
+        filter {}
 
     project "Mistwraith"
         location "Mistwraith"
@@ -236,6 +255,8 @@ group ""
             runtime "Release"
             optimize "on"
 
+        filter {}
+
     project "Sandbox"
         location "Sandbox"
         kind "ConsoleApp"
@@ -296,3 +317,5 @@ group ""
             }
             runtime "Release"
             optimize "On"
+
+        filter {}
