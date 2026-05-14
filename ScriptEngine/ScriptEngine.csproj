@@ -48,7 +48,6 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Examples\MINIMUM_EXAMPLE.cs" />
     <Compile Include="Examples\SimpleMovement.cs" />
     <Compile Include="ManagedScript.cs" />
   </ItemGroup>
