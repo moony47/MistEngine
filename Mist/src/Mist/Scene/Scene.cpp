@@ -105,11 +105,9 @@ void Scene::OnUpdate(DeltaTime deltaTime) {
     m_Registry.view<ManagedScriptComponent>().each(
         [this, deltaTime](entt::entity entity, ManagedScriptComponent& script) {
             // Create instance on first frame
-            if (!script.Instance && !script.HasBeenCreated) {
-                script.Instance = m_ManagedRuntime->CreateInstance(script.ScriptClassName);
-                if (script.Instance) {
-                    script.HasBeenCreated = true;
-                } else {
+            if (!script.Instance) {
+                script.Instance = m_ManagedRuntime->CreateInstance(script.ScriptClassName, entity, this);
+                if (!script.Instance) {
                     MIST_ERROR("Failed to create script: {0}", script.ScriptClassName);
                     return;
                 }

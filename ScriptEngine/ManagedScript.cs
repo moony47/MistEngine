@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Mist.Scripting;
@@ -9,44 +10,131 @@ namespace Mist.Scripting;
 /// </summary>
 public abstract class ManagedScript {
 
+	private unsafe static class Callbacks {
+		internal static delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void> GetTransformComponent;
+		internal static delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void> GetIDComponent;
+		internal static delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void> GetCameraComponent;
+
+		internal static delegate* unmanaged[Stdcall]<IntPtr, out float, out float, out float, void> GetTransformPosition;
+		internal static delegate* unmanaged[Stdcall]<IntPtr, float, float, float, void> SetTransformPosition;
+	}
+
 	[UnmanagedCallersOnly]
-	public static unsafe IntPtr CreateScript (char* typeNamePtr) {
-		// Convert native wchar_t* to C# string
-		string typeName = Marshal.PtrToStringUni((IntPtr) typeNamePtr);
+	public static unsafe int RegisterCallback (char* callbackName, IntPtr callbackPtr) {
+		try {
+			string callbackLabel = Marshal.PtrToStringUni((IntPtr) callbackName);
+			Console.WriteLine($"RegisterCallback: {callbackLabel}");
 
-		// Find the type in the current assembly
-		Type t = Type.GetType(typeName);
+			switch (callbackLabel) {
+				case "GetTransformComponent":
+					Callbacks.GetTransformComponent = (delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void>) callbackPtr;
+					break;
+				case "GetIDComponent":
+					Callbacks.GetIDComponent = (delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void>) callbackPtr;
+					break;
+				case "GetCameraComponent":
+					Callbacks.GetCameraComponent = (delegate* unmanaged[Stdcall]<IntPtr, out IntPtr, void>) callbackPtr;
+					break;
+				case "SetTransformPosition":
+					Callbacks.SetTransformPosition = (delegate* unmanaged[Stdcall]<IntPtr, float, float, float, void>) callbackPtr;
+					break;
+				case "GetTransformPosition":
+					Callbacks.GetTransformPosition = (delegate* unmanaged[Stdcall]<IntPtr, out float, out float, out float, void>) callbackPtr;
+					break;
+				default:
+					throw new ArgumentException($"Unexpected callback label: {callbackLabel}");
+			}
 
-		if (t != null && !t.IsAbstract && typeof(ManagedScript).IsAssignableFrom(t)) {
-			object instance = Activator.CreateInstance(t);
-			return GCHandle.ToIntPtr(GCHandle.Alloc(instance));
+			return 1;
+		} catch (Exception ex) {
+			Console.WriteLine($"Error in OnCreate: {ex}");
+			return 0;
+		}
+	}
+
+	[UnmanagedCallersOnly]
+	public static unsafe IntPtr CreateManagedScript (char* typeNamePtr) {
+		try {
+			string typeName = Marshal.PtrToStringUni((IntPtr) typeNamePtr);
+			Console.WriteLine($"CreateManagedScript: {typeName}");
+
+			Type t = Type.GetType(typeName);
+
+			if (t != null && !t.IsAbstract && typeof(ManagedScript).IsAssignableFrom(t)) {
+				ManagedScript instance = (ManagedScript) Activator.CreateInstance(t);
+				return GCHandle.ToIntPtr(GCHandle.Alloc(instance));
+			}
+		} catch (Exception ex) {
+			Console.WriteLine($"Error in OnCreate: {ex}");
 		}
 
 		return IntPtr.Zero;
 	}
 
 	[UnmanagedCallersOnly]
-	public static void OnCreateNative (IntPtr handle) {
-		GCHandle gcHandle = GCHandle.FromIntPtr(handle);
-		ManagedScript instance = (ManagedScript) gcHandle.Target;
+	public static void OnCreateNative (IntPtr entityPtr, IntPtr scriptPtr) {
+		try {
+			Console.WriteLine($"OnCreateNative");
 
-		instance.OnCreate();
+			GCHandle gcHandle = GCHandle.FromIntPtr(scriptPtr);
+			ManagedScript instance = (ManagedScript) gcHandle.Target;
+			instance.entityPtr = entityPtr;
+
+			instance.OnCreate();
+		} catch (Exception ex) {
+			Console.WriteLine($"Error in OnCreate: {ex}");
+		}
 	}
 
 	[UnmanagedCallersOnly]
-	public static void OnUpdateNative (IntPtr handle, float deltaTime) {
-		GCHandle gcHandle = GCHandle.FromIntPtr(handle);
-		ManagedScript instance = (ManagedScript) gcHandle.Target;
+	public static void OnUpdateNative (IntPtr entityPtr, IntPtr scriptPtr, float deltaTime) {
+		try {
+			Console.WriteLine($"OnUpdateNative");
 
-		instance.OnUpdate(deltaTime);
+			GCHandle gcHandle = GCHandle.FromIntPtr(scriptPtr);
+			ManagedScript instance = (ManagedScript) gcHandle.Target;
+			instance.entityPtr = entityPtr;
+
+			instance.OnUpdate(deltaTime);
+		} catch (Exception ex) {
+			Console.WriteLine($"Error in OnUpdate: {ex}");
+		}
 	}
 
 	[UnmanagedCallersOnly]
-	public static void OnDestroyNative (IntPtr handle) {
-		GCHandle gcHandle = GCHandle.FromIntPtr(handle);
-		ManagedScript instance = (ManagedScript) gcHandle.Target;
+	public static void OnDestroyNative (IntPtr entityPtr, IntPtr scriptPtr) {
+		try {
+			Console.WriteLine($"OnDestroyNative");
 
-		instance.OnDestroy();
+			GCHandle gcHandle = GCHandle.FromIntPtr(scriptPtr);
+			ManagedScript instance = (ManagedScript) gcHandle.Target;
+			instance.entityPtr = entityPtr;
+
+			instance.OnDestroy();
+		} catch (Exception ex) {
+			Console.WriteLine($"Error in OnDestroy: {ex}");
+		}
+	}
+
+
+	IntPtr entityPtr;
+
+	protected unsafe IntPtr TransformPtr {
+		get {
+			Callbacks.GetTransformComponent(entityPtr, out IntPtr transformPtr);
+			return transformPtr;
+		}
+	}
+
+	protected void SetTransformPosition (float x, float y, float z) {
+		unsafe {
+			Callbacks.SetTransformPosition(TransformPtr, x, y, z);
+		}
+	}
+	protected void GetTransformPosition (out float x, out float y, out float z) {
+		unsafe {
+			Callbacks.GetTransformPosition(TransformPtr, out x, out y, out z);
+		}
 	}
 
 	/// <summary> 

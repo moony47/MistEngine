@@ -6,7 +6,7 @@ namespace Mist.Scripting;
 /// Example C# script showing the minimal code needed to create game behavior
 /// </summary>
 public class SimpleMovement : ManagedScript {
-	private float moveSpeed = 5.0f;
+	float moveSpeed = 5.0f;
 
 	public override void OnCreate () {
 		// Initialization code here
@@ -16,7 +16,18 @@ public class SimpleMovement : ManagedScript {
 	public override void OnUpdate (float deltaTime) {
 		// Game logic here
 		// This is called every frame
-		Console.WriteLine($"C# - OnUpdate({deltaTime}ms)");
+
+		GetTransformPosition(out float x, out float y, out float z);
+
+		Random rn = new Random();
+
+		x += rn.Next(-2, 3) / 500f;
+		y += rn.Next(-2, 3) / 500f;
+		z += rn.Next(-2, 3) / 500f;
+
+		SetTransformPosition(x, y, z);
+
+		Console.WriteLine($"C# - OnUpdate({deltaTime}ms)\nPosition:{x},{y},{z}");
 	}
 
 	public override void OnDestroy () {

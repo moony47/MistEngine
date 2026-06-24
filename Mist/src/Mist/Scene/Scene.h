@@ -58,6 +58,7 @@ private:
     friend class Entity;
     friend class SceneSerialiser;
     friend class SceneHierarchyPanel;
+    friend class ManagedScript;
 };
 
 } // namespace Mist

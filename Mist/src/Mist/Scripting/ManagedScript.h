@@ -1,11 +1,16 @@
 #pragma once
 
+#include <entt.hpp>
+
 namespace Mist {
 
+class Entity;
+class Scene;
+
 using managed_script = void*;
-using on_create_fn = void (*)(managed_script);
-using on_update_fn = void (*)(managed_script, float);
-using on_destroy_fn = void (*)(managed_script);
+using on_create_fn = void (*)(Entity*, managed_script);
+using on_update_fn = void (*)(Entity*, managed_script, float);
+using on_destroy_fn = void (*)(Entity*, managed_script);
 
 class ManagedScript {
 public:
@@ -14,7 +19,7 @@ public:
     static on_destroy_fn s_OnDestroyFunc;
 
 public:
-    ManagedScript(void* instance);
+    ManagedScript(entt::entity entity, Scene* scene, managed_script instance);
     ~ManagedScript();
 
     void OnCreate() const;
@@ -22,7 +27,8 @@ public:
     void OnDestroy() const;
 
 private:
-    void* m_ManagedScriptInstance;
+    managed_script m_ManagedScriptInstance;
+    Entity* m_Entity;
 };
 
 } // namespace Mist

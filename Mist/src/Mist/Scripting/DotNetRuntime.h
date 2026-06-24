@@ -3,6 +3,7 @@
 #include "ManagedScript.h"
 #include "IManagedRuntime.h"
 #include <unordered_map>
+#include <entt.hpp>
 
 namespace Mist {
 
@@ -19,6 +20,9 @@ using load_assembly_fn = int (*)(const wchar_t*, const wchar_t*, const wchar_t*,
 
 // Function pointer types for ManagedScript .NET class
 using create_script_fn = managed_script (*)(const wchar_t*);
+using register_callback_fn = int (*)(const wchar_t*, void*);
+
+class Scene;
 
 // .NET 10 runtime implementation
 class DotNetRuntime : public IManagedRuntime {
@@ -30,7 +34,7 @@ public:
     void Shutdown() override;
 
     // NEEDS fully qualified class name e.g. "GameScripts.PlayerController"
-    ManagedScript* CreateInstance(const std::string& className) override;
+    ManagedScript* CreateInstance(const std::string& className, entt::entity entity, Scene* scene) override;
     void DestroyInstance(ManagedScript* instance) override;
 
     bool IsInitialized() const override;
@@ -38,6 +42,7 @@ public:
 private:
     bool LoadHostfxr();
     bool InitializeRuntime();
+    bool RegisterCallbacks();
 
 private:
     bool m_Initialized = false;
@@ -53,6 +58,7 @@ private:
     hostfxr_close_fn m_HostfxrClose = nullptr;
     load_assembly_fn m_LoadAssemblyFunc = nullptr;
     create_script_fn m_CreateScriptFunc = nullptr;
+    register_callback_fn m_RegisterCallback = nullptr;
 };
 
 } // namespace Mist

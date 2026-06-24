@@ -49,9 +49,6 @@ void EditorLayer::OnAttach() {
     } else
         NewScene();
 
-    Entity en = m_ActiveScene->CreateEntity({}, "MovingEntity");
-    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>("Mist.Scripting.SimpleMovement");
-
     m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
     m_ContentBrowserPanel.SetContext(this);
 }
@@ -135,6 +132,9 @@ void EditorLayer::OpenScene(const std::filesystem::path& path) {
     m_EditorScenePath = path;
     SceneSerialiser serialiser(m_EditorScene);
     serialiser.Deserialise(path.string());
+
+    Entity en = m_ActiveScene->CreateEntity({}, "MovingEntity");
+    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>("Mist.Scripting.SimpleMovement");
 }
 
 void EditorLayer::SaveScene() {

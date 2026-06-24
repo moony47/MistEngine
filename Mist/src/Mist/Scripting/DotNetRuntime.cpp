@@ -5,6 +5,9 @@
 #include "Mist/Core/Logger.h"
 #include <filesystem>
 
+#include "Mist/Scene/Entity.h"
+#include "Mist/Scripting/Callbacks.h"
+
 namespace Mist {
 
 DotNetRuntime::~DotNetRuntime() {
@@ -29,6 +32,11 @@ bool DotNetRuntime::Initialize(const std::string& assemblyPath) {
 
     if (!InitializeRuntime()) {
         MIST_ERROR("Failed to initialize .NET runtime");
+        return false;
+    }
+
+    if (!RegisterCallbacks()) {
+        MIST_ERROR("Failed to register native callbacks to .NET runtime");
         return false;
     }
 
@@ -324,39 +332,38 @@ bool DotNetRuntime::InitializeRuntime() {
                         &wide_assembly_path[0], size_needed);
 
     create_script_fn create_script = nullptr;
+    register_callback_fn register_callback = nullptr;
     on_create_fn on_create = nullptr;
     on_update_fn on_update = nullptr;
     on_destroy_fn on_destroy = nullptr;
 
-    result = m_LoadAssemblyFunc(
-        wide_assembly_path.c_str(),
-        L"Mist.Scripting.ManagedScript, ScriptEngine",
-        L"CreateScript", (const wchar_t*)(char*)-1, nullptr, (void**)&create_script);
+    result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+                                L"CreateManagedScript", (const wchar_t*)(char*)-1, nullptr, (void**)&create_script);
     if (result != 0)
-        MIST_ERROR("Failed to get ManagedScript.CreateScript function (error code: {0})", result);
+        MIST_ERROR("Failed to get ManagedScript.CreateManagedScript function (error code: {0})", result);
 
-    result = m_LoadAssemblyFunc(
-        wide_assembly_path.c_str(),
-        L"Mist.Scripting.ManagedScript, ScriptEngine",
-        L"OnCreateNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_create);
+    result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+                                L"RegisterCallback", (const wchar_t*)(char*)-1, nullptr, (void**)&register_callback);
+    if (result != 0)
+        MIST_ERROR("Failed to get ManagedScript.RegisterCallback function (error code: {0})", result);
+
+    result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+                                L"OnCreateNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_create);
     if (result != 0)
         MIST_ERROR("Failed to get ManagedScript.OnCreateNative function (error code: {0})", result);
 
-    result = m_LoadAssemblyFunc(
-        wide_assembly_path.c_str(),
-        L"Mist.Scripting.ManagedScript, ScriptEngine",
-        L"OnUpdateNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_update);
+    result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+                                L"OnUpdateNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_update);
     if (result != 0)
         MIST_ERROR("Failed to get ManagedScript.OnUpdateNative function (error code: {0})", result);
 
-    result = m_LoadAssemblyFunc(
-        wide_assembly_path.c_str(),
-        L"Mist.Scripting.ManagedScript, ScriptEngine",
-        L"OnDestroyNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_destroy);
+    result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+                                L"OnDestroyNative", (const wchar_t*)(char*)-1, nullptr, (void**)&on_destroy);
     if (result != 0)
         MIST_ERROR("Failed to get ManagedScript.OnDestroyNative function (error code: {0})", result);
 
     m_CreateScriptFunc = reinterpret_cast<create_script_fn>(create_script);
+    m_RegisterCallback = reinterpret_cast<register_callback_fn>(register_callback);
     ManagedScript::s_OnCreateFunc = reinterpret_cast<on_create_fn>(on_create);
     ManagedScript::s_OnUpdateFunc = reinterpret_cast<on_update_fn>(on_update);
     ManagedScript::s_OnDestroyFunc = reinterpret_cast<on_destroy_fn>(on_destroy);
@@ -364,7 +371,19 @@ bool DotNetRuntime::InitializeRuntime() {
     return true;
 }
 
-ManagedScript* DotNetRuntime::CreateInstance(const std::string& className) {
+bool DotNetRuntime::RegisterCallbacks() {
+    bool success = true;
+
+    success &= m_RegisterCallback(L"GetTransformComponent", (void*)&ScriptingCallbacks::GetTransformComponent);
+    success &= m_RegisterCallback(L"GetIDComponent", (void*)&ScriptingCallbacks::GetIDComponent);
+    success &= m_RegisterCallback(L"GetCameraComponent", (void*)&ScriptingCallbacks::GetCameraComponent);
+    success &= m_RegisterCallback(L"SetTransformPosition", (void*)&ScriptingCallbacks::SetTransformPosition);
+    success &= m_RegisterCallback(L"GetTransformPosition", (void*)&ScriptingCallbacks::GetTransformPosition);
+
+    return success;
+}
+
+ManagedScript* DotNetRuntime::CreateInstance(const std::string& className, entt::entity entity, Scene* scene) {
     if (!m_Initialized) {
         MIST_ERROR("Cannot create script instance: Runtime not initialized");
         return nullptr;
@@ -374,7 +393,7 @@ ManagedScript* DotNetRuntime::CreateInstance(const std::string& className) {
     std::wstring wide_class_name(size_needed, 0);
     MultiByteToWideChar(CP_UTF8, 0, &className[0], (int)className.size(), &wide_class_name[0], size_needed);
 
-    ManagedScript* managed_script = new ManagedScript(m_CreateScriptFunc(wide_class_name.c_str()));
+    ManagedScript* managed_script = new ManagedScript(entity, scene, m_CreateScriptFunc(wide_class_name.c_str()));
 
     MIST_INFO("{0} instance created", className);
     return managed_script;
@@ -409,6 +428,7 @@ void DotNetRuntime::Shutdown() {
 
     m_LoadAssemblyFunc = nullptr;
     m_CreateScriptFunc = nullptr;
+    m_RegisterCallback = nullptr;
 
     ManagedScript::s_OnCreateFunc = nullptr;
     ManagedScript::s_OnUpdateFunc = nullptr;
