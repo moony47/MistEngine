@@ -3,35 +3,50 @@ using System;
 namespace Mist.Scripting;
 
 /// <summary>
-/// Example C# script showing the minimal code needed to create game behavior
+/// Example script showing the minimal code needed to create game behavior
 /// </summary>
 public class SimpleMovement : ManagedScript {
-	float moveSpeed = 5.0f;
+    float moveSpeed = 1.0f;
 
-	public override void OnCreate () {
-		// Initialization code here
-		Console.WriteLine($"C# - OnCreate");
-	}
+    public override void OnCreate() {
+        // Initialization code
+        Console.WriteLine($"[ManagedRuntime] OnCreate - {GetName()}[{GetID():X}]");
+    }
 
-	public override void OnUpdate (float deltaTime) {
-		// Game logic here
-		// This is called every frame
+    public override void OnUpdate(float deltaTime) {
+        // Game logic - This is called every frame
 
-		GetTransformPosition(out float x, out float y, out float z);
+        if (IsKeyPressed(Key.W))
+            PositionY += moveSpeed * deltaTime;
+        if (IsKeyPressed(Key.A))
+            PositionX -= moveSpeed * deltaTime;
+        if (IsKeyPressed(Key.S))
+            PositionY -= moveSpeed * deltaTime;
+        if (IsKeyPressed(Key.D))
+            PositionX += moveSpeed * deltaTime;
+    }
 
-		Random rn = new Random();
+    public override void OnKeyPressed(Key key) {
+        Console.WriteLine($"[ManagedRuntime] OnKeyPressed - {key}");
+    }
+    public override void OnKeyReleased(Key key) {
+        Console.WriteLine($"[ManagedRuntime] OnKeyReleased - {key}");
+    }
+    public override void OnMousePressed(MouseButton button) {
+        Console.WriteLine($"[ManagedRuntime] OnMousePressed - {button}");
+    }
+    public override void OnMouseReleased(MouseButton button) {
+        Console.WriteLine($"[ManagedRuntime] OnMouseReleased - {button}");
+    }
+    public override void OnMouseMoved(float x, float y) {
+        Console.WriteLine($"[ManagedRuntime] OnMouseMoved - ({x}, {y})");
+    }
+    public override void OnMouseScrolled(float xOffset, float yOffset) {
+        Console.WriteLine($"[ManagedRuntime] OnMouseScrolled - ({xOffset}, {yOffset})");
+    }
 
-		x += rn.Next(-2, 3) / 500f;
-		y += rn.Next(-2, 3) / 500f;
-		z += rn.Next(-2, 3) / 500f;
-
-		SetTransformPosition(x, y, z);
-
-		Console.WriteLine($"C# - OnUpdate({deltaTime}ms)\nPosition:{x},{y},{z}");
-	}
-
-	public override void OnDestroy () {
-		// Cleanup code here
-		Console.WriteLine($"C# - OnDestroy");
-	}
+    public override void OnDestroy() {
+        // Cleanup code
+        Console.WriteLine($"[ManagedRuntime] OnDestroy");
+    }
 }
