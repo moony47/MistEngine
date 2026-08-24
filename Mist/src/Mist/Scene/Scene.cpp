@@ -191,11 +191,21 @@ void Scene::OnEvent(Event& e) {
     if (e.Handled)
         return;
 
-    auto view = m_Registry.view<NativeScriptComponent>();
-    for (auto entity : view) {
-        auto& script = view.get<NativeScriptComponent>(entity);
-        if (script.Instance)
-            script.Instance->OnEvent(e);
+    {
+        auto view = m_Registry.view<NativeScriptComponent>();
+        for(auto entity : view) {
+            auto& script = view.get<NativeScriptComponent>(entity);
+            if(script.Instance)
+                script.Instance->OnEvent(e);
+        }
+    }
+    {
+        auto view = m_Registry.view<ManagedScriptComponent>();
+        for(auto entity : view) {
+            auto& script = view.get<ManagedScriptComponent>(entity);
+            if(script.Instance)
+                script.Instance->OnEvent(e);
+        }
     }
 }
 

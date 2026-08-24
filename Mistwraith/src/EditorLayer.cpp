@@ -30,15 +30,13 @@ void EditorLayer::OnAttach() {
         {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth});
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
+    m_DotnetRuntime = CreateRef<DotNetRuntime>();                                       
 #ifdef MIST_DEBUG
-    m_DotnetRuntime = CreateRef<DotNetRuntime>();
-    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Debug\\net10.0\\ScriptEngine.dll");
+    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Debug\\net10.0\\ScriptEngine.dll");
 #elif MIST_RELEASE
-    m_DotnetRuntime = CreateRef<DotNetRuntime>();
-    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Release\\net10.0\\ScriptEngine.dll");
+    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Release\\net10.0\\ScriptEngine.dll");
 #elif MIST_DIST
-    m_DotnetRuntime = CreateRef<DotNetRuntime>();
-    m_DotnetRuntime->Initialize("D:\\dev\\MistEngine\\ScriptEngine\\bin\\Dist\\net10.0\\ScriptEngine.dll");
+    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Dist\\net10.0\\ScriptEngine.dll");
 #endif
 
     // Create scene
