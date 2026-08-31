@@ -3,6 +3,8 @@
 #include "ManagedScript.h"
 #include "IManagedRuntime.h"
 #include <unordered_map>
+#include <vector>
+#include <string>
 #include <entt.hpp>
 
 namespace Mist {
@@ -21,6 +23,10 @@ using load_assembly_fn = int (*)(const wchar_t*, const wchar_t*, const wchar_t*,
 // Function pointer types for ManagedScript .NET class
 using create_script_fn = managed_script (*)(const wchar_t*);
 using register_callback_fn = int (*)(const wchar_t*, void*);
+using discover_script_types_fn = void (*)(bool);
+using get_script_type_count_fn = int (*)();
+using get_script_type_at_fn = wchar_t* (*)(int);
+using free_script_type_name_fn = void (*)(wchar_t*);
 
 class Scene;
 
@@ -38,6 +44,8 @@ public:
     void DestroyInstance(ManagedScript* instance) override;
 
     bool IsInitialized() const override;
+
+    std::vector<std::string> GetManagedScriptTypes(bool refresh) const override;
 
 private:
     bool LoadHostfxr();
@@ -59,6 +67,11 @@ private:
     load_assembly_fn m_LoadAssemblyFunc = nullptr;
     create_script_fn m_CreateScriptFunc = nullptr;
     register_callback_fn m_RegisterCallback = nullptr;
+    discover_script_types_fn m_DiscoverScriptTypesFunc = nullptr;
+    get_script_type_count_fn m_GetScriptTypeCountFunc = nullptr;
+    get_script_type_at_fn m_GetScriptTypeAtFunc = nullptr;
+    free_script_type_name_fn m_FreeScriptTypeNameFunc = nullptr;
 };
 
 } // namespace Mist
+

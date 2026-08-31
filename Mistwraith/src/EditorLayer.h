@@ -51,7 +51,7 @@ private:
     friend class ContentBrowserPanel;
 
 private:
-    Ref<IManagedRuntime> m_DotnetRuntime;
+    //Ref<IManagedRuntime> m_DotnetRuntime;
 
     // Edit/Play State
     enum class SceneState {

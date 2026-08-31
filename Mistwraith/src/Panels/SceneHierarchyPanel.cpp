@@ -1,5 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
+#include "Mist/Scripting/IManagedRuntime.h"
+
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_internal.h>
 
@@ -396,6 +398,24 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             }
         }
     });
+
+    DrawComponent<ManagedScriptComponent>(
+        "ManagedScriptComponent", entity, [](Entity entity, ManagedScriptComponent& comp) {
+            auto scripts = IManagedRuntime::GetManagedRuntime().GetManagedScriptTypes(false);
+
+            if (ImGui::BeginCombo("Texture", comp.ScriptClassName.c_str())) {
+                for (auto iter = scripts.begin(); iter != scripts.end(); iter++) {
+                    bool isSelected = comp.ScriptClassName == *iter;
+                    if (ImGui::Selectable(iter->c_str(), isSelected)) {
+                        comp.ScriptClassName = *iter;
+                        comp.Instance = nullptr;
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+        });
 }
 
 } // namespace Mist

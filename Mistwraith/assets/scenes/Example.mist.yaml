@@ -62,6 +62,19 @@ Entities:
       Colour: [1, 0.6486486, 0, 1]
       Thickness: 0.151
       Fade: 0.005
+  - Entity: 6288918963600273615
+    Name: MovingEntity
+    TransformComponent:
+      Position: [1.840744, 0.48988536, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    RenderableComponent:
+      Type: 1
+      Colour: [1, 1, 1, 1]
+      Thickness: 0.3
+      Fade: 0.03
+    ManagedScriptComponent:
+      ScriptClassName: Mist.Scripting.SimpleMovement
 Textures:
   - Name: Diamond
     Path: assets\textures\Diamond.png

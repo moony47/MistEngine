@@ -229,7 +229,7 @@ struct NativeScriptComponent {
 struct ManagedScriptComponent {
     ManagedScript* Instance = nullptr; // Pointer to C# managed script instance
     std::string ScriptClassName;       // Fully qualified C# class name (e.g., "GameScripts.PlayerController")
-    UUID ScriptID;                     // Unique identifier for this script
+    //UUID ScriptID;                     // Unique identifier for this script
 
     ManagedScriptComponent(std::string className) :
         ScriptClassName(className) {};

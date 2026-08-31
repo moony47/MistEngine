@@ -5,8 +5,8 @@ namespace Mist.Scripting;
 /// <summary>
 /// Example script showing the minimal code needed to create game behavior
 /// </summary>
-public class SimpleMovement : ManagedScript {
-	float moveSpeed = 1.0f;
+public class AdvancedMovement : ManagedScript {
+	float moveSpeed = 10.0f;
 
 	public override void OnCreate () {
 		// Initialization code

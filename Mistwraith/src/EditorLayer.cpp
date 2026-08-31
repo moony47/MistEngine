@@ -30,14 +30,16 @@ void EditorLayer::OnAttach() {
         {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth});
     m_Framebuffer = Mist::Framebuffer::Create(fbSpec);
 
-    m_DotnetRuntime = CreateRef<DotNetRuntime>();                                       
-#ifdef MIST_DEBUG
-    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Debug\\net10.0\\ScriptEngine.dll");
-#elif MIST_RELEASE
-    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Release\\net10.0\\ScriptEngine.dll");
-#elif MIST_DIST
-    m_DotnetRuntime->Initialize("..\\ScriptEngine\\bin\\Dist\\net10.0\\ScriptEngine.dll");
-#endif
+    IManagedRuntime::InitManagedRuntime();
+
+//    IManagedRuntime::s_ManagedRuntime = CreateRef<DotNetRuntime>();
+//#ifdef MIST_DEBUG
+//    IManagedRuntime::s_ManagedRuntime->Initialize("..\\ScriptEngine\\bin\\Debug\\net10.0\\ScriptEngine.dll");
+//#elif MIST_RELEASE
+//    IManagedRuntime::s_ManagedRuntime->Initialize("..\\ScriptEngine\\bin\\Release\\net10.0\\ScriptEngine.dll");
+//#elif MIST_DIST
+//    IManagedRuntime::s_ManagedRuntime->Initialize("..\\ScriptEngine\\bin\\Dist\\net10.0\\ScriptEngine.dll");
+//#endif
 
     // Create scene
     auto cmdLineArgs = MIST_APP.GetCommandLineArgs();
@@ -104,7 +106,7 @@ void EditorLayer::FindHoveredEntity() {
 }
 
 void EditorLayer::NewScene() {
-    m_EditorScene = CreateRef<Scene>(m_DotnetRuntime);
+    m_EditorScene = CreateRef<Scene>();
     m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
     m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
     m_EditorScenePath = std::filesystem::path();
@@ -131,8 +133,9 @@ void EditorLayer::OpenScene(const std::filesystem::path& path) {
     SceneSerialiser serialiser(m_EditorScene);
     serialiser.Deserialise(path.string());
 
-    Entity en = m_ActiveScene->CreateEntity({}, "MovingEntity");
-    ManagedScriptComponent script = en.AddComponent<ManagedScriptComponent>("Mist.Scripting.SimpleMovement");
+    //Entity e = m_ActiveScene->CreateEntity({}, "MovingEntity");
+    //SpriteComponent sc = e.AddComponent<RenderableComponent>().SetComponent<SpriteComponent>();
+    //ManagedScriptComponent script = e.AddComponent<ManagedScriptComponent>("Mist.Scripting.SimpleMovement");
 }
 
 void EditorLayer::SaveScene() {

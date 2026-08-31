@@ -1,6 +1,6 @@
 #include "mistpch.h"
-#include "SceneSerialiser.h"
 
+#include "SceneSerialiser.h"
 #include "Components.h"
 #include "Entity.h"
 #include "Mist/Renderer/Texture.h"
@@ -158,6 +158,13 @@ void SceneSerialiser::SerialiseEntity(Emitter& out, Entity entity) {
         out << EndMap;
     }
 
+    if (entity.HasComponent<ManagedScriptComponent>()) {
+        out << Key << "ManagedScriptComponent" << BeginMap;
+        auto& comp = entity.GetComponent<ManagedScriptComponent>();
+        out << Key << "ScriptClassName" << Value << comp.ScriptClassName;
+        out << EndMap;
+    }
+
     out << EndMap;
 }
 
@@ -286,6 +293,11 @@ bool SceneSerialiser::Deserialise(const std::string& filepath) {
                         break;
                     }
                 }
+            }
+
+            if (Node scriptNode = entity["ManagedScriptComponent"]) {
+                auto& scriptComp =
+                    deserialisedEntity.AddComponent<ManagedScriptComponent>(scriptNode["ScriptClassName"].as<std::string>());
             }
         }
 

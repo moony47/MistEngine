@@ -400,8 +400,38 @@ namespace Mist {
 		if(result != 0)
 			MIST_ERROR("Failed to get ManagedScript.OnMouseScrolledNative function (error code: {0})", result);
 
+		// Load the new script discovery functions
+		discover_script_types_fn discover_script_types = nullptr;
+		get_script_type_count_fn get_script_type_count = nullptr;
+		get_script_type_at_fn get_script_type_at = nullptr;
+		free_script_type_name_fn free_script_type_name = nullptr;
+
+		result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+									L"DiscoverManagedScriptTypes", (const wchar_t*) (char*) -1, nullptr, (void**) &discover_script_types);
+		if(result != 0)
+			MIST_ERROR("Failed to get ManagedScript.DiscoverManagedScriptTypes function (error code: {0})", result);
+
+		result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+									L"GetManagedScriptTypeCount", (const wchar_t*) (char*) -1, nullptr, (void**) &get_script_type_count);
+		if(result != 0)
+			MIST_ERROR("Failed to get ManagedScript.GetManagedScriptTypeCount function (error code: {0})", result);
+
+		result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+									L"GetManagedScriptTypeAt", (const wchar_t*) (char*) -1, nullptr, (void**) &get_script_type_at);
+		if(result != 0)
+			MIST_ERROR("Failed to get ManagedScript.GetManagedScriptTypeAt function (error code: {0})", result);
+
+		result = m_LoadAssemblyFunc(wide_assembly_path.c_str(), L"Mist.Scripting.ManagedScript, ScriptEngine",
+									L"FreeManagedScriptTypeName", (const wchar_t*) (char*) -1, nullptr, (void**) &free_script_type_name);
+		if(result != 0)
+			MIST_ERROR("Failed to get ManagedScript.FreeManagedScriptTypeName function (error code: {0})", result);
+
 		m_CreateScriptFunc = create_script;
 		m_RegisterCallback = register_callback;
+		m_DiscoverScriptTypesFunc = discover_script_types;
+		m_GetScriptTypeCountFunc = get_script_type_count;
+		m_GetScriptTypeAtFunc = get_script_type_at;
+		m_FreeScriptTypeNameFunc = free_script_type_name;
 
 		ManagedScript::s_OnCreateFunc = on_create;
 		ManagedScript::s_OnUpdateFunc = on_update;
@@ -506,4 +536,55 @@ namespace Mist {
 		return m_Initialized;
 	}
 
+	std::vector<std::string> DotNetRuntime::GetManagedScriptTypes(bool refresh) const {
+		std::vector<std::string> typeNames;
+
+		if(!m_Initialized) {
+			MIST_ERROR("Cannot get script types: Runtime not initialized");
+			return typeNames;
+		}
+
+		if(!m_DiscoverScriptTypesFunc) {
+			MIST_ERROR("Cannot get script types: DiscoverManagedScriptTypes function not loaded");
+			return typeNames;
+		}
+
+		if(!m_GetScriptTypeCountFunc || !m_GetScriptTypeAtFunc || !m_FreeScriptTypeNameFunc) {
+			MIST_ERROR("Cannot get script types: Script type retrieval functions not loaded");
+			return typeNames;
+		}
+
+		// First, discover all managed script types
+        m_DiscoverScriptTypesFunc(refresh);
+
+		// Get the count of discovered types
+		int typeCount = m_GetScriptTypeCountFunc();
+		if(typeCount <= 0) {
+			MIST_WARN("No ManagedScript types discovered");
+			return typeNames;
+		}
+
+		MIST_INFO("Retrieved {0} ManagedScript types from runtime", typeCount);
+
+		// Retrieve each type name
+		for(int i = 0; i < typeCount; ++i) {
+			wchar_t* wideTypeName = m_GetScriptTypeAtFunc(i);
+			if(wideTypeName) {
+				// Convert wide string to UTF-8 string
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, wideTypeName, -1, NULL, 0, NULL, NULL);
+				std::string utf8TypeName(size_needed - 1, 0);
+				WideCharToMultiByte(CP_UTF8, 0, wideTypeName, -1, &utf8TypeName[0], size_needed, NULL, NULL);
+
+				typeNames.push_back(utf8TypeName);
+				MIST_INFO("  - {0}", utf8TypeName);
+
+				// Free the allocated memory on the managed side
+				m_FreeScriptTypeNameFunc(wideTypeName);
+			}
+		}
+
+		return typeNames;
+	}
+
 } // namespace Mist
+

@@ -4,6 +4,7 @@
 #include "Mist/Scene/Components.h"
 #include "Mist/Scene/Entity.h"
 #include "Mist/Scene/ScriptableEntity.h"
+#include "Mist/Scripting/IManagedRuntime.h"
 
 #include <Mist/Cameras/Camera.h>
 #include <Mist/Cameras/EditorCamera.h>
@@ -59,13 +60,8 @@ static void CopyComponentsIfExist(ComponentGroup<Component...>, Entity dst, Enti
     CopyComponentsIfExist<Component...>(dst, src);
 }
 
-Scene::Scene(Ref<IManagedRuntime> runtime) :
-    m_ManagedRuntime(runtime) {};
-
-Scene::~Scene() {};
-
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
-    Ref<Scene> newScene = CreateRef<Scene>(other->m_ManagedRuntime);
+    Ref<Scene> newScene = CreateRef<Scene>();
 
     newScene->m_ViewportWidth = other->m_ViewportWidth;
     newScene->m_ViewportHeight = other->m_ViewportHeight;
@@ -106,7 +102,8 @@ void Scene::OnUpdate(DeltaTime deltaTime) {
         [this, deltaTime](entt::entity entity, ManagedScriptComponent& script) {
             // Create instance on first frame
             if (!script.Instance) {
-                script.Instance = m_ManagedRuntime->CreateInstance(script.ScriptClassName, entity, this);
+                script.Instance =
+                    IManagedRuntime::GetManagedRuntime().CreateInstance(script.ScriptClassName, entity, this);
                 if (!script.Instance) {
                     MIST_ERROR("Failed to create script: {0}", script.ScriptClassName);
                     return;
